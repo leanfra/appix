@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.appix.v1;
+
+option go_package = "appix/api/appix/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.appix.v1";
+
+service Hostgroups {
+	rpc CreateHostgroups (CreateHostgroupsRequest) returns (CreateHostgroupsReply);
+	rpc UpdateHostgroups (UpdateHostgroupsRequest) returns (UpdateHostgroupsReply);
+	rpc DeleteHostgroups (DeleteHostgroupsRequest) returns (DeleteHostgroupsReply);
+	rpc GetHostgroups (GetHostgroupsRequest) returns (GetHostgroupsReply);
+	rpc ListHostgroups (ListHostgroupsRequest) returns (ListHostgroupsReply);
+}
+
+message CreateHostgroupsRequest {}
+message CreateHostgroupsReply {}
+
+message UpdateHostgroupsRequest {}
+message UpdateHostgroupsReply {}
+
+message DeleteHostgroupsRequest {}
+message DeleteHostgroupsReply {}
+
+message GetHostgroupsRequest {}
+message GetHostgroupsReply {}
+
+message ListHostgroupsRequest {}
+message ListHostgroupsReply {}

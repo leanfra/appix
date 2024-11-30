@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.appix.v1;
+
+option go_package = "appix/api/appix/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.appix.v1";
+
+service Features {
+	rpc CreateFeatures (CreateFeaturesRequest) returns (CreateFeaturesReply);
+	rpc UpdateFeatures (UpdateFeaturesRequest) returns (UpdateFeaturesReply);
+	rpc DeleteFeatures (DeleteFeaturesRequest) returns (DeleteFeaturesReply);
+	rpc GetFeatures (GetFeaturesRequest) returns (GetFeaturesReply);
+	rpc ListFeatures (ListFeaturesRequest) returns (ListFeaturesReply);
+}
+
+message CreateFeaturesRequest {}
+message CreateFeaturesReply {}
+
+message UpdateFeaturesRequest {}
+message UpdateFeaturesReply {}
+
+message DeleteFeaturesRequest {}
+message DeleteFeaturesReply {}
+
+message GetFeaturesRequest {}
+message GetFeaturesReply {}
+
+message ListFeaturesRequest {}
+message ListFeaturesReply {}

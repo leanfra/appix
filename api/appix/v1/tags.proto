@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package api.appix.v1;
+
+option go_package = "appix/api/appix/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.appix.v1";
+
+import "google/api/annotations.proto";
+
+
+
+// gratos::model
+message Tag {
+	string id = 1;
+	string key = 2;
+	string value = 3;
+}
+
+service Tags {
+	rpc CreateTags (CreateTagsRequest) returns (CreateTagsReply){
+		option (google.api.http) = {
+			post: "/v1/tags/create"
+			body: "*"
+		};
+	};
+	rpc UpdateTags (UpdateTagsRequest) returns (UpdateTagsReply){
+		option (google.api.http) = {
+			post: "/v1/tags/update"
+			body: "*"
+		};
+	};
+	rpc DeleteTags (DeleteTagsRequest) returns (DeleteTagsReply){
+		option (google.api.http) = {
+			post: "/v1/tags/delete"
+			body: "*"
+		};
+	};
+	rpc GetTags (GetTagsRequest) returns (GetTagsReply){
+		option (google.api.http) = {
+			get: "/v1/tags/{id}"
+		};
+	};
+	rpc ListTags (ListTagsRequest) returns (ListTagsReply){
+		option (google.api.http) = {
+			post: "/v1/tags/list"
+			body: "*"
+		};
+	};
+}
+
+message CreateTagsRequest {
+	repeated Tag tags = 1;
+}
+message CreateTagsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
+
+message UpdateTagsRequest {
+	repeated Tag tags = 1;
+}
+message UpdateTagsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
+
+message DeleteTagsRequest {
+	repeated string ids = 1;
+}
+
+message DeleteTagsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
+
+message GetTagsRequest {
+	string id = 1;
+}
+
+message GetTagsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+	Tag tag = 4;
+}
+
+// gratos::model
+message TagFilter {
+	string key = 1;
+	string value = 2;
+}
+
+// gratos::model
+message ListTagsFilter {
+	int64 page = 1;
+	int64 page_size = 2;
+	repeated TagFilter filters = 3;
+}
+
+message ListTagsRequest {
+	ListTagsFilter filter = 1;
+}
+
+message ListTagsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+	repeated Tag tags = 4;
+}

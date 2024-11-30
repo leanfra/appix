@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.appix.v1;
+
+option go_package = "appix/api/appix/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.appix.v1";
+
+service Products {
+	rpc CreateProducts (CreateProductsRequest) returns (CreateProductsReply);
+	rpc UpdateProducts (UpdateProductsRequest) returns (UpdateProductsReply);
+	rpc DeleteProducts (DeleteProductsRequest) returns (DeleteProductsReply);
+	rpc GetProducts (GetProductsRequest) returns (GetProductsReply);
+	rpc ListProducts (ListProductsRequest) returns (ListProductsReply);
+}
+
+message CreateProductsRequest {}
+message CreateProductsReply {}
+
+message UpdateProductsRequest {}
+message UpdateProductsReply {}
+
+message DeleteProductsRequest {}
+message DeleteProductsReply {}
+
+message GetProductsRequest {}
+message GetProductsReply {}
+
+message ListProductsRequest {}
+message ListProductsReply {}

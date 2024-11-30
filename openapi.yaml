@@ -1,0 +1,263 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Tags API
+    version: 0.0.1
+paths:
+    /v1/tags/create:
+        post:
+            tags:
+                - Tags
+            operationId: Tags_CreateTags
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateTagsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateTagsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/tags/delete:
+        post:
+            tags:
+                - Tags
+            operationId: Tags_DeleteTags
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DeleteTagsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteTagsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/tags/list:
+        post:
+            tags:
+                - Tags
+            operationId: Tags_ListTags
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ListTagsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListTagsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/tags/update:
+        post:
+            tags:
+                - Tags
+            operationId: Tags_UpdateTags
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateTagsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateTagsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/tags/{id}:
+        get:
+            tags:
+                - Tags
+            operationId: Tags_GetTags
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetTagsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        CreateTagsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: string
+                action:
+                    type: string
+        CreateTagsRequest:
+            type: object
+            properties:
+                tags:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Tag'
+        DeleteTagsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: string
+                action:
+                    type: string
+        DeleteTagsRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: string
+        GetTagsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: string
+                action:
+                    type: string
+                tag:
+                    $ref: '#/components/schemas/Tag'
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListTagsFilter:
+            type: object
+            properties:
+                page:
+                    type: string
+                pageSize:
+                    type: string
+                filters:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/TagFilter'
+            description: 'gratos: model'
+        ListTagsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: string
+                action:
+                    type: string
+                tags:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Tag'
+        ListTagsRequest:
+            type: object
+            properties:
+                filter:
+                    $ref: '#/components/schemas/ListTagsFilter'
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        Tag:
+            type: object
+            properties:
+                id:
+                    type: string
+                key:
+                    type: string
+                value:
+                    type: string
+            description: gratos::model
+        TagFilter:
+            type: object
+            properties:
+                key:
+                    type: string
+                value:
+                    type: string
+            description: 'gratos: model'
+        UpdateTagsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: string
+                action:
+                    type: string
+        UpdateTagsRequest:
+            type: object
+            properties:
+                tags:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Tag'
+tags:
+    - name: Tags

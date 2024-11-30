@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.appix.v1;
+
+option go_package = "appix/api/appix/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.appix.v1";
+
+service Teams {
+	rpc CreateTeams (CreateTeamsRequest) returns (CreateTeamsReply);
+	rpc UpdateTeams (UpdateTeamsRequest) returns (UpdateTeamsReply);
+	rpc DeleteTeams (DeleteTeamsRequest) returns (DeleteTeamsReply);
+	rpc GetTeams (GetTeamsRequest) returns (GetTeamsReply);
+	rpc ListTeams (ListTeamsRequest) returns (ListTeamsReply);
+}
+
+message CreateTeamsRequest {}
+message CreateTeamsReply {}
+
+message UpdateTeamsRequest {}
+message UpdateTeamsReply {}
+
+message DeleteTeamsRequest {}
+message DeleteTeamsReply {}
+
+message GetTeamsRequest {}
+message GetTeamsReply {}
+
+message ListTeamsRequest {}
+message ListTeamsReply {}
