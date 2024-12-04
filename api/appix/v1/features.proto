@@ -6,25 +6,106 @@ option go_package = "appix/api/appix/v1;v1";
 option java_multiple_files = true;
 option java_package = "api.appix.v1";
 
-service Features {
-	rpc CreateFeatures (CreateFeaturesRequest) returns (CreateFeaturesReply);
-	rpc UpdateFeatures (UpdateFeaturesRequest) returns (UpdateFeaturesReply);
-	rpc DeleteFeatures (DeleteFeaturesRequest) returns (DeleteFeaturesReply);
-	rpc GetFeatures (GetFeaturesRequest) returns (GetFeaturesReply);
-	rpc ListFeatures (ListFeaturesRequest) returns (ListFeaturesReply);
+import "google/api/annotations.proto";
+
+// gratos::model
+message Feature {
+	string id = 1;
+	string Name = 2;
+	string value = 3;
 }
 
-message CreateFeaturesRequest {}
-message CreateFeaturesReply {}
+service Features {
+	rpc CreateFeatures (CreateFeaturesRequest) returns (CreateFeaturesReply){
+		option (google.api.http) = {
+			post: "/v1/features/create"
+			body: "*"
+		};
+	};
+	rpc UpdateFeatures (UpdateFeaturesRequest) returns (UpdateFeaturesReply){
+		option (google.api.http) = {
+			post: "/v1/features/update"
+			body: "*"
+		};
+	};
+	rpc DeleteFeatures (DeleteFeaturesRequest) returns (DeleteFeaturesReply){
+		option (google.api.http) = {
+			post: "/v1/features/delete"
+			body: "*"
+		};
+	};
+	rpc GetFeatures (GetFeaturesRequest) returns (GetFeaturesReply){
+		option (google.api.http) = {
+			get: "/v1/features/{id}"
+		};
+	};
+	rpc ListFeatures (ListFeaturesRequest) returns (ListFeaturesReply){
+		option (google.api.http) = {
+			post: "/v1/features/list"
+			body: "*"
+		};
+	};
+}
 
-message UpdateFeaturesRequest {}
-message UpdateFeaturesReply {}
+message CreateFeaturesRequest {
+	repeated Feature features = 1;
+}
 
-message DeleteFeaturesRequest {}
-message DeleteFeaturesReply {}
+message CreateFeaturesReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
 
-message GetFeaturesRequest {}
-message GetFeaturesReply {}
+message UpdateFeaturesRequest {
+	repeated Feature features = 1;
+}
 
-message ListFeaturesRequest {}
-message ListFeaturesReply {}
+message UpdateFeaturesReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
+
+message DeleteFeaturesRequest {
+	repeated string ids = 1;
+}
+message DeleteFeaturesReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
+
+message GetFeaturesRequest {
+	string id = 1;
+}
+message GetFeaturesReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+	Feature feature = 4;
+}
+
+// gratos::model
+message FeatureFilter {
+	string name = 1;
+	string value = 2;
+}
+
+// gratos::model
+message ListFeaturesFilter {
+	int64 page = 1;
+	int64 page_size = 2;
+	repeated FeatureFilter filters = 3;
+}
+
+message ListFeaturesRequest {
+	ListFeaturesFilter filter = 1;
+}
+
+message ListFeaturesReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+	repeated Feature features = 4;
+}

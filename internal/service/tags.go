@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	pb "appix/api/appix/v1"
-
 	biz "appix/internal/biz"
 )
 
