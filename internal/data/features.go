@@ -1,74 +1,60 @@
 package data
 
 import (
+	"appix/internal/biz"
 	"context"
-	"errors"
-	"gorm.io/driver/mysql"
-	"gorm.io/driver/sqlite"
-    "gorm.io/gorm"
 
 	//  TODO: modify project name
 	// biz "appix/internal/biz"
+	"fmt"
 )
 
 type FeaturesRepoImpl struct {
-	db *gorm.DB
+	data *Data
 }
 
-func NewFeaturesRepoImpl(dsn string) (*FeaturesRepoImpl, error) {
+func NewFeaturesRepoImpl(data *Data) (biz.FeaturesRepo, error) {
 
-	var _db *gorm.DB
-	var err error
-	if len(dsn) > 0 {
-        if dsn[:5] == "mysql" {
-            // 连接 MySQL 数据库
-            _db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-        } else if dsn[:6] == "sqlite" {
-            // 连接 SQLite 数据库
-            _db, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
-        } else {
-            return nil, errors.New("Unsupported database DSN format")
-        }
-    } else {
-        return nil, errors.New("DSN is not provided")
-    }
-
-	if err != nil {
-		return nil, err
+	if data == nil {
+		return nil, fmt.Errorf("data config not found")
 	}
+
 	return &FeaturesRepoImpl{
-		db: _db,
+		data: data,
 	}, nil
 }
 
-
 // CreateFeatures is
-func (d *FeaturesRepoImpl) CreateFeatures(ctx context.Context) error {
+func (d *FeaturesRepoImpl) CreateFeatures(ctx context.Context, features []biz.Feature) error {
 	// TODO database operations
 
 	return nil
 }
+
 // UpdateFeatures is
-func (d *FeaturesRepoImpl) UpdateFeatures(ctx context.Context) error {
+func (d *FeaturesRepoImpl) UpdateFeatures(ctx context.Context, features []biz.Feature) error {
 	// TODO database operations
 
 	return nil
 }
+
 // DeleteFeatures is
-func (d *FeaturesRepoImpl) DeleteFeatures(ctx context.Context) error {
+func (d *FeaturesRepoImpl) DeleteFeatures(ctx context.Context, ids []string) error {
 	// TODO database operations
 
 	return nil
 }
+
 // GetFeatures is
-func (d *FeaturesRepoImpl) GetFeatures(ctx context.Context) error {
+func (d *FeaturesRepoImpl) GetFeatures(ctx context.Context, id string) (biz.Feature, error) {
 	// TODO database operations
 
-	return nil
+	return biz.Feature{}, nil
 }
+
 // ListFeatures is
-func (d *FeaturesRepoImpl) ListFeatures(ctx context.Context) error {
+func (d *FeaturesRepoImpl) ListFeatures(ctx context.Context, filter *biz.ListFeaturesFilter) ([]biz.Feature, error) {
 	// TODO database operations
 
-	return nil
+	return []biz.Feature{}, nil
 }

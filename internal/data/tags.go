@@ -3,40 +3,16 @@ package data
 import (
 	"appix/internal/biz"
 	"context"
-	"fmt"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
 type TagsRepoImpl struct {
-	db *gorm.DB
+	data *Data
 }
 
-func NewTagsRepoImpl(dsn string) (*TagsRepoImpl, error) {
+func NewTagsRepoImpl(data *Data) (biz.TagsRepo, error) {
 
-	var _db *gorm.DB
-	var err error
-	if len(dsn) > 0 {
-		if dsn[:5] == "mysql" {
-			// 连接 MySQL 数据库
-			_db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-		} else if dsn[:6] == "sqlite" {
-			// 连接 SQLite 数据库
-			_db, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
-		} else {
-			return nil, fmt.Errorf("UnsupportedDatabaseDSN")
-		}
-	} else {
-		return nil, fmt.Errorf("EmptyDSN")
-	}
-
-	if err != nil {
-		return nil, err
-	}
 	return &TagsRepoImpl{
-		db: _db,
+		data: data,
 	}, nil
 }
 

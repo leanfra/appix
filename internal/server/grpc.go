@@ -1,6 +1,7 @@
 package server
 
 import (
+	apiv1 "appix/api/appix/v1"
 	v1 "appix/api/helloworld/v1"
 	"appix/internal/conf"
 	"appix/internal/service"
@@ -11,7 +12,12 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server,
+	greeter *service.GreeterService,
+	tags *service.TagsService,
+	features *service.FeaturesService,
+	logger log.Logger) *grpc.Server {
+
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -28,5 +34,7 @@ func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, logger log.L
 	}
 	srv := grpc.NewServer(opts...)
 	v1.RegisterGreeterServer(srv, greeter)
+	apiv1.RegisterTagsServer(srv, tags)
+	apiv1.RegisterFeaturesServer(srv, features)
 	return srv
 }

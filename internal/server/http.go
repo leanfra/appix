@@ -1,6 +1,7 @@
 package server
 
 import (
+	appv1 "appix/api/appix/v1"
 	v1 "appix/api/helloworld/v1"
 	"appix/internal/conf"
 	"appix/internal/service"
@@ -11,7 +12,12 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server,
+	greeter *service.GreeterService,
+	tags *service.TagsService,
+	features *service.FeaturesService,
+	logger log.Logger) *http.Server {
+
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -28,5 +34,7 @@ func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.L
 	}
 	srv := http.NewServer(opts...)
 	v1.RegisterGreeterHTTPServer(srv, greeter)
+	appv1.RegisterTagsHTTPServer(srv, tags)
+	appv1.RegisterFeaturesHTTPServer(srv, features)
 	return srv
 }

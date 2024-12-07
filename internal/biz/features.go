@@ -3,6 +3,8 @@ package biz
 import (
 	"context"
 	"fmt"
+
+	"github.com/go-kratos/kratos/v2/log"
 )
 
 type FeaturesRepo interface {
@@ -15,11 +17,13 @@ type FeaturesRepo interface {
 
 type FeaturesUsecase struct {
 	repo FeaturesRepo
+	log  *log.Helper
 }
 
-func NewFeaturesUsecase(repo FeaturesRepo) *FeaturesUsecase {
+func NewFeaturesUsecase(repo FeaturesRepo, logger log.Logger) *FeaturesUsecase {
 	return &FeaturesUsecase{
 		repo: repo,
+		log:  log.NewHelper(logger),
 	}
 }
 

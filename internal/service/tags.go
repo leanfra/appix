@@ -10,10 +10,10 @@ import (
 
 type TagsService struct {
 	pb.UnimplementedTagsServer
-	usecase biz.TagsUsecase
+	usecase *biz.TagsUsecase
 }
 
-func NewTagsService(uc biz.TagsUsecase) *TagsService {
+func NewTagsService(uc *biz.TagsUsecase) *TagsService {
 	return &TagsService{
 		usecase: uc,
 	}

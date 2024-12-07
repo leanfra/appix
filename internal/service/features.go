@@ -10,10 +10,10 @@ import (
 
 type FeaturesService struct {
 	pb.UnimplementedFeaturesServer
-	usecase biz.FeaturesUsecase
+	usecase *biz.FeaturesUsecase
 }
 
-func NewFeaturesService(uc biz.FeaturesUsecase) *FeaturesService {
+func NewFeaturesService(uc *biz.FeaturesUsecase) *FeaturesService {
 	return &FeaturesService{
 		usecase: uc,
 	}
