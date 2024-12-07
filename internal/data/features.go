@@ -46,10 +46,10 @@ func (d *FeaturesRepoImpl) DeleteFeatures(ctx context.Context, ids []string) err
 }
 
 // GetFeatures is
-func (d *FeaturesRepoImpl) GetFeatures(ctx context.Context, id string) (biz.Feature, error) {
+func (d *FeaturesRepoImpl) GetFeatures(ctx context.Context, id string) (*biz.Feature, error) {
 	// TODO database operations
 
-	return biz.Feature{}, nil
+	return nil, nil
 }
 
 // ListFeatures is

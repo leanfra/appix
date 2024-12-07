@@ -38,10 +38,10 @@ func (d *TagsRepoImpl) DeleteTags(ctx context.Context, ids []string) error {
 }
 
 // GetTags is
-func (d *TagsRepoImpl) GetTags(ctx context.Context, id string) (biz.Tag, error) {
+func (d *TagsRepoImpl) GetTags(ctx context.Context, id string) (*biz.Tag, error) {
 	// TODO database operations
 
-	return biz.Tag{}, nil
+	return nil, nil
 }
 
 // ListTags is
