@@ -55,8 +55,6 @@ func main() {
 		"service.id", id,
 		"service.name", Name,
 		"service.version", Version,
-		"trace.id", tracing.TraceID(),
-		"span.id", tracing.SpanID(),
 	)
 	c := config.New(
 		config.WithSource(
@@ -72,6 +70,13 @@ func main() {
 	var bc conf.Bootstrap
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
+	}
+
+	if bc.Server.Tracer != "" {
+		logger = log.With(logger,
+			"trace.id", tracing.TraceID(),
+			"span.id", tracing.SpanID(),
+		)
 	}
 
 	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
