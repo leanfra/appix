@@ -15,6 +15,8 @@ func NewTagsRepoImpl(data *Data) (biz.TagsRepo, error) {
 		return nil, ErrEmptyDatabase
 	}
 
+	data.db.AutoMigrate(&Tag{})
+
 	return &TagsRepoImpl{
 		data: data,
 	}, nil
@@ -60,15 +62,24 @@ func (d *TagsRepoImpl) DeleteTags(ctx context.Context, ids []int64) error {
 
 // GetTags is
 func (d *TagsRepoImpl) GetTags(ctx context.Context, id int64) (*biz.Tag, error) {
-	// TODO database operations
 
-	return nil, nil
+	tag := &Tag{}
+	r := d.data.db.First(tag, id)
+	if r.Error != nil {
+		return nil, r.Error
+	}
+	return NewBizTag(tag)
 }
 
 // ListTags is
 func (d *TagsRepoImpl) ListTags(ctx context.Context,
 	filter *biz.ListTagsFilter) ([]biz.Tag, error) {
-	// TODO database operations
 
-	return nil, nil
+	tags := []Tag{}
+
+	r := d.data.db.Find(&tags)
+	if r.Error != nil {
+		return nil, r.Error
+	}
+	return NewBizTags(tags)
 }
