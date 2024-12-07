@@ -10,8 +10,8 @@ import (
 type FeaturesRepo interface {
 	CreateFeatures(ctx context.Context, features []Feature) error
 	UpdateFeatures(ctx context.Context, features []Feature) error
-	DeleteFeatures(ctx context.Context, ids []string) error
-	GetFeatures(ctx context.Context, id string) (*Feature, error)
+	DeleteFeatures(ctx context.Context, ids []int64) error
+	GetFeatures(ctx context.Context, id int64) (*Feature, error)
 	ListFeatures(ctx context.Context, filter *ListFeaturesFilter) ([]Feature, error)
 }
 
@@ -53,7 +53,7 @@ func (s *FeaturesUsecase) UpdateFeatures(ctx context.Context, features []Feature
 }
 
 // DeleteFeatures is
-func (s *FeaturesUsecase) DeleteFeatures(ctx context.Context, ids []string) error {
+func (s *FeaturesUsecase) DeleteFeatures(ctx context.Context, ids []int64) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
@@ -61,8 +61,8 @@ func (s *FeaturesUsecase) DeleteFeatures(ctx context.Context, ids []string) erro
 }
 
 // GetFeatures is
-func (s *FeaturesUsecase) GetFeatures(ctx context.Context, id string) (*Feature, error) {
-	if len(id) == 0 {
+func (s *FeaturesUsecase) GetFeatures(ctx context.Context, id int64) (*Feature, error) {
+	if id <= 0 {
 		return nil, fmt.Errorf("EmptyId")
 	}
 	return s.repo.GetFeatures(ctx, id)

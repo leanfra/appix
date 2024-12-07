@@ -12,7 +12,7 @@ import "google/api/annotations.proto";
 
 // gratos::model
 message Tag {
-	string id = 1;
+	int64 id = 1;
 	string key = 2;
 	string value = 3;
 }
@@ -68,7 +68,7 @@ message UpdateTagsReply {
 }
 
 message DeleteTagsRequest {
-	repeated string ids = 1;
+	repeated int64 ids = 1;
 }
 
 message DeleteTagsReply {
@@ -78,7 +78,7 @@ message DeleteTagsReply {
 }
 
 message GetTagsRequest {
-	string id = 1;
+	int64 id = 1;
 }
 
 message GetTagsReply {

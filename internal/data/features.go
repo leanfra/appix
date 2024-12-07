@@ -37,14 +37,14 @@ func (d *FeaturesRepoImpl) UpdateFeatures(ctx context.Context, features []biz.Fe
 }
 
 // DeleteFeatures is
-func (d *FeaturesRepoImpl) DeleteFeatures(ctx context.Context, ids []string) error {
+func (d *FeaturesRepoImpl) DeleteFeatures(ctx context.Context, ids []int64) error {
 	// TODO database operations
 
 	return nil
 }
 
 // GetFeatures is
-func (d *FeaturesRepoImpl) GetFeatures(ctx context.Context, id string) (*biz.Feature, error) {
+func (d *FeaturesRepoImpl) GetFeatures(ctx context.Context, id int64) (*biz.Feature, error) {
 	// TODO database operations
 
 	return nil, nil

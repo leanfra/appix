@@ -10,8 +10,8 @@ import (
 type TagsRepo interface {
 	CreateTags(ctx context.Context, tags []Tag) error
 	UpdateTags(ctx context.Context, tags []Tag) error
-	DeleteTags(ctx context.Context, ids []string) error
-	GetTags(ctx context.Context, id string) (*Tag, error)
+	DeleteTags(ctx context.Context, ids []int64) error
+	GetTags(ctx context.Context, id int64) (*Tag, error)
 	ListTags(ctx context.Context, filter *ListTagsFilter) ([]Tag, error)
 }
 
@@ -56,7 +56,7 @@ func (s *TagsUsecase) UpdateTags(ctx context.Context, tags []Tag) error {
 }
 
 // DeleteTags is
-func (s *TagsUsecase) DeleteTags(ctx context.Context, ids []string) error {
+func (s *TagsUsecase) DeleteTags(ctx context.Context, ids []int64) error {
 
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
@@ -65,8 +65,8 @@ func (s *TagsUsecase) DeleteTags(ctx context.Context, ids []string) error {
 }
 
 // GetTags is
-func (s *TagsUsecase) GetTags(ctx context.Context, id string) (*Tag, error) {
-	if len(id) == 0 {
+func (s *TagsUsecase) GetTags(ctx context.Context, id int64) (*Tag, error) {
+	if id <= 0 {
 		return nil, fmt.Errorf("EmptyId")
 	}
 	return s.repo.GetTags(ctx, id)

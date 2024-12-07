@@ -10,7 +10,7 @@ import "google/api/annotations.proto";
 
 // gratos::model
 message Feature {
-	string id = 1;
+	int64 id = 1;
 	string Name = 2;
 	string value = 3;
 }
@@ -68,7 +68,7 @@ message UpdateFeaturesReply {
 }
 
 message DeleteFeaturesRequest {
-	repeated string ids = 1;
+	repeated int64 ids = 1;
 }
 message DeleteFeaturesReply {
 	string message = 1;
@@ -77,7 +77,7 @@ message DeleteFeaturesReply {
 }
 
 message GetFeaturesRequest {
-	string id = 1;
+	int64 id = 1;
 }
 message GetFeaturesReply {
 	string message = 1;
