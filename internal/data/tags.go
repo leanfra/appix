@@ -3,6 +3,8 @@ package data
 import (
 	"appix/internal/biz"
 	"context"
+
+	"gorm.io/gorm"
 )
 
 type TagsRepoImpl struct {
@@ -77,7 +79,22 @@ func (d *TagsRepoImpl) ListTags(ctx context.Context,
 
 	tags := []Tag{}
 
-	r := d.data.db.Find(&tags)
+	var r *gorm.DB
+	query := d.data.db
+	if filter != nil {
+		var offset int
+		if filter.Page > 0 && filter.PageSize > 0 {
+			offset = int((filter.Page - 1) * filter.PageSize)
+		}
+
+		for _, pair := range filter.Filters {
+			query = query.Where("key =? AND value =?", pair.Key, pair.Value)
+		}
+		r = query.Offset(offset).Limit(int(filter.PageSize)).Find(&tags)
+	} else {
+		r = query.Find(&tags)
+	}
+
 	if r.Error != nil {
 		return nil, r.Error
 	}
