@@ -3,10 +3,8 @@ package data
 import (
 	"appix/internal/biz"
 	"context"
-
 	//  TODO: modify project name
 	// biz "appix/internal/biz"
-	"fmt"
 )
 
 type FeaturesRepoImpl struct {
@@ -16,7 +14,7 @@ type FeaturesRepoImpl struct {
 func NewFeaturesRepoImpl(data *Data) (biz.FeaturesRepo, error) {
 
 	if data == nil {
-		return nil, fmt.Errorf("data config not found")
+		return nil, ErrEmptyDatabase
 	}
 
 	return &FeaturesRepoImpl{

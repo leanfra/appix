@@ -74,8 +74,10 @@ func (s *TagsUsecase) GetTags(ctx context.Context, id string) (*Tag, error) {
 
 // ListTags is
 func (s *TagsUsecase) ListTags(ctx context.Context, filter *ListTagsFilter) ([]Tag, error) {
-	if err := filter.Validate(); err != nil {
-		return nil, err
+	if filter != nil {
+		if err := filter.Validate(); err != nil {
+			return nil, err
+		}
 	}
 	return s.repo.ListTags(ctx, filter)
 }

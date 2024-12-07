@@ -6,16 +6,20 @@ import (
 
 	pb "appix/api/appix/v1"
 	biz "appix/internal/biz"
+
+	"github.com/go-kratos/kratos/v2/log"
 )
 
 type TagsService struct {
 	pb.UnimplementedTagsServer
 	usecase *biz.TagsUsecase
+	log     *log.Helper
 }
 
-func NewTagsService(uc *biz.TagsUsecase) *TagsService {
+func NewTagsService(uc *biz.TagsUsecase, logger log.Logger) *TagsService {
 	return &TagsService{
 		usecase: uc,
+		log:     log.NewHelper(logger),
 	}
 }
 
@@ -141,6 +145,8 @@ func (s *TagsService) ListTags(ctx context.Context, req *pb.ListTagsRequest) (*p
 			filter.Filters[i].Value = f.Value
 		}
 	}
+
+	s.log.Infow("function", "listTags", "filter", filter)
 
 	tags, err := s.usecase.ListTags(ctx, filter)
 

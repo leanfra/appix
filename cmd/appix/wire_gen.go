@@ -37,14 +37,14 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 		return nil, nil, err
 	}
 	tagsUsecase := biz.NewTagsUsecase(tagsRepo, logger)
-	tagsService := service.NewTagsService(tagsUsecase)
+	tagsService := service.NewTagsService(tagsUsecase, logger)
 	featuresRepo, err := data.NewFeaturesRepoImpl(dataData)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	featuresUsecase := biz.NewFeaturesUsecase(featuresRepo, logger)
-	featuresService := service.NewFeaturesService(featuresUsecase)
+	featuresService := service.NewFeaturesService(featuresUsecase, logger)
 	grpcServer := server.NewGRPCServer(confServer, greeterService, tagsService, featuresService, logger)
 	httpServer := server.NewHTTPServer(confServer, greeterService, tagsService, featuresService, logger)
 	app := newApp(logger, grpcServer, httpServer)

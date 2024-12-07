@@ -11,6 +11,10 @@ type TagsRepoImpl struct {
 
 func NewTagsRepoImpl(data *Data) (biz.TagsRepo, error) {
 
+	if data == nil {
+		return nil, ErrEmptyDatabase
+	}
+
 	return &TagsRepoImpl{
 		data: data,
 	}, nil

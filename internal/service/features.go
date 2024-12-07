@@ -6,16 +6,20 @@ import (
 
 	pb "appix/api/appix/v1"
 	biz "appix/internal/biz"
+
+	"github.com/go-kratos/kratos/v2/log"
 )
 
 type FeaturesService struct {
 	pb.UnimplementedFeaturesServer
 	usecase *biz.FeaturesUsecase
+	log     *log.Helper
 }
 
-func NewFeaturesService(uc *biz.FeaturesUsecase) *FeaturesService {
+func NewFeaturesService(uc *biz.FeaturesUsecase, logger log.Logger) *FeaturesService {
 	return &FeaturesService{
 		usecase: uc,
+		log:     log.NewHelper(logger),
 	}
 }
 

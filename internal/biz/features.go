@@ -72,8 +72,10 @@ func (s *FeaturesUsecase) GetFeatures(ctx context.Context, id string) (*Feature,
 func (s *FeaturesUsecase) ListFeatures(ctx context.Context,
 	filter *ListFeaturesFilter) ([]Feature, error) {
 
-	if err := filter.Validate(); err != nil {
-		return nil, err
+	if filter != nil {
+		if err := filter.Validate(); err != nil {
+			return nil, err
+		}
 	}
 	return s.repo.ListFeatures(ctx, filter)
 }
