@@ -12,11 +12,11 @@ import (
 
 type TeamsService struct {
 	pb.UnimplementedTeamsServer
-	usecase biz.TeamsUsecase
+	usecase *biz.TeamsUsecase
 	log     *log.Helper
 }
 
-func NewTeamsService(uc biz.TeamsUsecase, logger log.Logger) *TeamsService {
+func NewTeamsService(uc *biz.TeamsUsecase, logger log.Logger) *TeamsService {
 	return &TeamsService{
 		usecase: uc,
 		log:     log.NewHelper(logger),

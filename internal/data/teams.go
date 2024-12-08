@@ -5,8 +5,6 @@ import (
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"
-	//  TODO: modify project name
-	// biz "appix/internal/biz"
 )
 
 type TeamsRepoImpl struct {
@@ -14,7 +12,7 @@ type TeamsRepoImpl struct {
 	log  *log.Helper
 }
 
-func NewTeamsRepoImpl(data *Data, logger log.Logger) (*TeamsRepoImpl, error) {
+func NewTeamsRepoImpl(data *Data, logger log.Logger) (biz.TeamsRepo, error) {
 
 	if err := validateData(data); err != nil {
 		return nil, err
@@ -32,7 +30,6 @@ func NewTeamsRepoImpl(data *Data, logger log.Logger) (*TeamsRepoImpl, error) {
 
 // CreateTeams is
 func (d *TeamsRepoImpl) CreateTeams(ctx context.Context, teams []biz.Team) error {
-	// TODO database operations
 	db_teams, err := NewTeams(teams)
 	if err != nil {
 		return err
@@ -47,7 +44,6 @@ func (d *TeamsRepoImpl) CreateTeams(ctx context.Context, teams []biz.Team) error
 
 // UpdateTeams is
 func (d *TeamsRepoImpl) UpdateTeams(ctx context.Context, teams []biz.Team) error {
-	// TODO database operations
 	db_teams, err := NewTeams(teams)
 	if err != nil {
 		return err
@@ -62,7 +58,6 @@ func (d *TeamsRepoImpl) UpdateTeams(ctx context.Context, teams []biz.Team) error
 
 // DeleteTeams is
 func (d *TeamsRepoImpl) DeleteTeams(ctx context.Context, ids []int64) error {
-	// TODO database operations
 	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Team{})
 	if r.Error != nil {
 		return r.Error
@@ -73,7 +68,6 @@ func (d *TeamsRepoImpl) DeleteTeams(ctx context.Context, ids []int64) error {
 
 // GetTeams is
 func (d *TeamsRepoImpl) GetTeams(ctx context.Context, id int64) (*biz.Team, error) {
-	// TODO database operations
 	team := &Team{}
 	r := d.data.db.WithContext(ctx).First(team, id)
 	if r.Error != nil {
@@ -87,7 +81,6 @@ func (d *TeamsRepoImpl) GetTeams(ctx context.Context, id int64) (*biz.Team, erro
 func (d *TeamsRepoImpl) ListTeams(ctx context.Context,
 	filter *biz.ListTeamsFilter) ([]biz.Team, error) {
 
-	// TODO database operations
 	db_teams := []Team{}
 	query := d.data.db.WithContext(ctx)
 	if filter != nil {
@@ -100,7 +93,7 @@ func (d *TeamsRepoImpl) ListTeams(ctx context.Context,
 		orConditions := make([]interface{}, len(filter.Filters))
 		for i, pair := range filter.Filters {
 
-			andConditions := map[string]interface{}{}
+			andConditions := map[string]string{}
 			if pair.Code != "" {
 				andConditions["code"] = pair.Code
 			}

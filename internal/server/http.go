@@ -16,6 +16,7 @@ func NewHTTPServer(c *conf.Server,
 	greeter *service.GreeterService,
 	tags *service.TagsService,
 	features *service.FeaturesService,
+	teams *service.TeamsService,
 	logger log.Logger) *http.Server {
 
 	var opts = []http.ServerOption{
@@ -36,5 +37,6 @@ func NewHTTPServer(c *conf.Server,
 	v1.RegisterGreeterHTTPServer(srv, greeter)
 	appv1.RegisterTagsHTTPServer(srv, tags)
 	appv1.RegisterFeaturesHTTPServer(srv, features)
+	appv1.RegisterTeamsHTTPServer(srv, teams)
 	return srv
 }
