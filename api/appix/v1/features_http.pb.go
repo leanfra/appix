@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.8.2
 // - protoc             v3.12.4
-// source: api/appix/v1/features.proto
+// source: appix/v1/features.proto
 
 package v1
 
@@ -35,11 +35,11 @@ type FeaturesHTTPServer interface {
 
 func RegisterFeaturesHTTPServer(s *http.Server, srv FeaturesHTTPServer) {
 	r := s.Route("/")
-	r.POST("/v1/features/create", _Features_CreateFeatures0_HTTP_Handler(srv))
-	r.POST("/v1/features/update", _Features_UpdateFeatures0_HTTP_Handler(srv))
-	r.POST("/v1/features/delete", _Features_DeleteFeatures0_HTTP_Handler(srv))
-	r.GET("/v1/features/{id}", _Features_GetFeatures0_HTTP_Handler(srv))
-	r.POST("/v1/features/list", _Features_ListFeatures0_HTTP_Handler(srv))
+	r.POST("/api/v1/features/create", _Features_CreateFeatures0_HTTP_Handler(srv))
+	r.POST("/api/v1/features/update", _Features_UpdateFeatures0_HTTP_Handler(srv))
+	r.POST("/api/v1/features/delete", _Features_DeleteFeatures0_HTTP_Handler(srv))
+	r.GET("/api/v1/features/{id}", _Features_GetFeatures0_HTTP_Handler(srv))
+	r.POST("/api/v1/features/list", _Features_ListFeatures0_HTTP_Handler(srv))
 }
 
 func _Features_CreateFeatures0_HTTP_Handler(srv FeaturesHTTPServer) func(ctx http.Context) error {
@@ -170,7 +170,7 @@ func NewFeaturesHTTPClient(client *http.Client) FeaturesHTTPClient {
 
 func (c *FeaturesHTTPClientImpl) CreateFeatures(ctx context.Context, in *CreateFeaturesRequest, opts ...http.CallOption) (*CreateFeaturesReply, error) {
 	var out CreateFeaturesReply
-	pattern := "/v1/features/create"
+	pattern := "/api/v1/features/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationFeaturesCreateFeatures))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -183,7 +183,7 @@ func (c *FeaturesHTTPClientImpl) CreateFeatures(ctx context.Context, in *CreateF
 
 func (c *FeaturesHTTPClientImpl) DeleteFeatures(ctx context.Context, in *DeleteFeaturesRequest, opts ...http.CallOption) (*DeleteFeaturesReply, error) {
 	var out DeleteFeaturesReply
-	pattern := "/v1/features/delete"
+	pattern := "/api/v1/features/delete"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationFeaturesDeleteFeatures))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -196,7 +196,7 @@ func (c *FeaturesHTTPClientImpl) DeleteFeatures(ctx context.Context, in *DeleteF
 
 func (c *FeaturesHTTPClientImpl) GetFeatures(ctx context.Context, in *GetFeaturesRequest, opts ...http.CallOption) (*GetFeaturesReply, error) {
 	var out GetFeaturesReply
-	pattern := "/v1/features/{id}"
+	pattern := "/api/v1/features/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationFeaturesGetFeatures))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -209,7 +209,7 @@ func (c *FeaturesHTTPClientImpl) GetFeatures(ctx context.Context, in *GetFeature
 
 func (c *FeaturesHTTPClientImpl) ListFeatures(ctx context.Context, in *ListFeaturesRequest, opts ...http.CallOption) (*ListFeaturesReply, error) {
 	var out ListFeaturesReply
-	pattern := "/v1/features/list"
+	pattern := "/api/v1/features/list"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationFeaturesListFeatures))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -222,7 +222,7 @@ func (c *FeaturesHTTPClientImpl) ListFeatures(ctx context.Context, in *ListFeatu
 
 func (c *FeaturesHTTPClientImpl) UpdateFeatures(ctx context.Context, in *UpdateFeaturesRequest, opts ...http.CallOption) (*UpdateFeaturesReply, error) {
 	var out UpdateFeaturesReply
-	pattern := "/v1/features/update"
+	pattern := "/api/v1/features/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationFeaturesUpdateFeatures))
 	opts = append(opts, http.PathTemplate(pattern))

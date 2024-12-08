@@ -20,30 +20,30 @@ message Tag {
 service Tags {
 	rpc CreateTags (CreateTagsRequest) returns (CreateTagsReply){
 		option (google.api.http) = {
-			post: "/v1/tags/create"
+			post: "/api/v1/tags/create"
 			body: "*"
 		};
 	};
 	rpc UpdateTags (UpdateTagsRequest) returns (UpdateTagsReply){
 		option (google.api.http) = {
-			post: "/v1/tags/update"
+			post: "/api/v1/tags/update"
 			body: "*"
 		};
 	};
 	rpc DeleteTags (DeleteTagsRequest) returns (DeleteTagsReply){
 		option (google.api.http) = {
-			post: "/v1/tags/delete"
+			post: "/api/v1/tags/delete"
 			body: "*"
 		};
 	};
 	rpc GetTags (GetTagsRequest) returns (GetTagsReply){
 		option (google.api.http) = {
-			get: "/v1/tags/{id}"
+			get: "/api/v1/tags/{id}"
 		};
 	};
 	rpc ListTags (ListTagsRequest) returns (ListTagsReply){
 		option (google.api.http) = {
-			post: "/v1/tags/list"
+			post: "/api/v1/tags/list"
 			body: "*"
 		};
 	};

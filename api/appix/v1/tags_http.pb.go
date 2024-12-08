@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.8.2
 // - protoc             v3.12.4
-// source: api/appix/v1/tags.proto
+// source: appix/v1/tags.proto
 
 package v1
 
@@ -35,11 +35,11 @@ type TagsHTTPServer interface {
 
 func RegisterTagsHTTPServer(s *http.Server, srv TagsHTTPServer) {
 	r := s.Route("/")
-	r.POST("/v1/tags/create", _Tags_CreateTags0_HTTP_Handler(srv))
-	r.POST("/v1/tags/update", _Tags_UpdateTags0_HTTP_Handler(srv))
-	r.POST("/v1/tags/delete", _Tags_DeleteTags0_HTTP_Handler(srv))
-	r.GET("/v1/tags/{id}", _Tags_GetTags0_HTTP_Handler(srv))
-	r.POST("/v1/tags/list", _Tags_ListTags0_HTTP_Handler(srv))
+	r.POST("/api/v1/tags/create", _Tags_CreateTags0_HTTP_Handler(srv))
+	r.POST("/api/v1/tags/update", _Tags_UpdateTags0_HTTP_Handler(srv))
+	r.POST("/api/v1/tags/delete", _Tags_DeleteTags0_HTTP_Handler(srv))
+	r.GET("/api/v1/tags/{id}", _Tags_GetTags0_HTTP_Handler(srv))
+	r.POST("/api/v1/tags/list", _Tags_ListTags0_HTTP_Handler(srv))
 }
 
 func _Tags_CreateTags0_HTTP_Handler(srv TagsHTTPServer) func(ctx http.Context) error {
@@ -170,7 +170,7 @@ func NewTagsHTTPClient(client *http.Client) TagsHTTPClient {
 
 func (c *TagsHTTPClientImpl) CreateTags(ctx context.Context, in *CreateTagsRequest, opts ...http.CallOption) (*CreateTagsReply, error) {
 	var out CreateTagsReply
-	pattern := "/v1/tags/create"
+	pattern := "/api/v1/tags/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTagsCreateTags))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -183,7 +183,7 @@ func (c *TagsHTTPClientImpl) CreateTags(ctx context.Context, in *CreateTagsReque
 
 func (c *TagsHTTPClientImpl) DeleteTags(ctx context.Context, in *DeleteTagsRequest, opts ...http.CallOption) (*DeleteTagsReply, error) {
 	var out DeleteTagsReply
-	pattern := "/v1/tags/delete"
+	pattern := "/api/v1/tags/delete"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTagsDeleteTags))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -196,7 +196,7 @@ func (c *TagsHTTPClientImpl) DeleteTags(ctx context.Context, in *DeleteTagsReque
 
 func (c *TagsHTTPClientImpl) GetTags(ctx context.Context, in *GetTagsRequest, opts ...http.CallOption) (*GetTagsReply, error) {
 	var out GetTagsReply
-	pattern := "/v1/tags/{id}"
+	pattern := "/api/v1/tags/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationTagsGetTags))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -209,7 +209,7 @@ func (c *TagsHTTPClientImpl) GetTags(ctx context.Context, in *GetTagsRequest, op
 
 func (c *TagsHTTPClientImpl) ListTags(ctx context.Context, in *ListTagsRequest, opts ...http.CallOption) (*ListTagsReply, error) {
 	var out ListTagsReply
-	pattern := "/v1/tags/list"
+	pattern := "/api/v1/tags/list"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTagsListTags))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -222,7 +222,7 @@ func (c *TagsHTTPClientImpl) ListTags(ctx context.Context, in *ListTagsRequest, 
 
 func (c *TagsHTTPClientImpl) UpdateTags(ctx context.Context, in *UpdateTagsRequest, opts ...http.CallOption) (*UpdateTagsReply, error) {
 	var out UpdateTagsReply
-	pattern := "/v1/tags/update"
+	pattern := "/api/v1/tags/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTagsUpdateTags))
 	opts = append(opts, http.PathTemplate(pattern))
