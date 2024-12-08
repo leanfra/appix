@@ -19,13 +19,13 @@ func NewTag(t biz.Tag) (*Tag, error) {
 }
 
 func NewTags(ts []biz.Tag) ([]*Tag, error) {
-	var tags []*Tag
-	for _, t := range ts {
+	var tags = make([]*Tag, len(ts))
+	for i, t := range ts {
 		nt, err := NewTag(t)
 		if err != nil {
 			return nil, err
 		}
-		tags = append(tags, nt)
+		tags[i] = nt
 	}
 	return tags, nil
 }
@@ -39,13 +39,13 @@ func NewBizTag(t *Tag) (*biz.Tag, error) {
 }
 
 func NewBizTags(tags []Tag) ([]biz.Tag, error) {
-	var biz_tags []biz.Tag
-	for _, t := range tags {
-		biz_tags = append(biz_tags, biz.Tag{
+	var biz_tags = make([]biz.Tag, len(tags))
+	for i, t := range tags {
+		biz_tags[i] = biz.Tag{
 			Id:    int64(t.ID),
 			Key:   t.Key,
 			Value: t.Value,
-		})
+		}
 	}
 	return biz_tags, nil
 }

@@ -31,14 +31,14 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	greeterRepo := data.NewGreeterRepo(dataData, logger)
 	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
 	greeterService := service.NewGreeterService(greeterUsecase)
-	tagsRepo, err := data.NewTagsRepoImpl(dataData)
+	tagsRepo, err := data.NewTagsRepoImpl(dataData, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	tagsUsecase := biz.NewTagsUsecase(tagsRepo, logger)
 	tagsService := service.NewTagsService(tagsUsecase, logger)
-	featuresRepo, err := data.NewFeaturesRepoImpl(dataData)
+	featuresRepo, err := data.NewFeaturesRepoImpl(dataData, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

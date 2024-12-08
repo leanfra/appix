@@ -60,3 +60,20 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 
 var ErrUnsupportedDatabaseDriver = errors.New("unsupportedDatabaseDriver")
 var ErrEmptyDatabase = errors.New("emptyDatabaseSource")
+var ErrNoRowsAffected = errors.New("noRowsAffected")
+
+func validateData(data *Data) error {
+	if data == nil || data.db == nil {
+		return ErrEmptyDatabase
+	}
+	return nil
+}
+
+func initTable(db *gorm.DB, model interface{}, table string) error {
+	m := db.Migrator()
+
+	if !m.HasTable(table) {
+		return db.AutoMigrate(model)
+	}
+	return nil
+}

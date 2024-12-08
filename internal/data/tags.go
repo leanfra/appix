@@ -4,23 +4,28 @@ import (
 	"appix/internal/biz"
 	"context"
 
+	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 )
 
 type TagsRepoImpl struct {
 	data *Data
+	log  *log.Helper
 }
 
-func NewTagsRepoImpl(data *Data) (biz.TagsRepo, error) {
+func NewTagsRepoImpl(data *Data, logger log.Logger) (biz.TagsRepo, error) {
 
-	if data == nil {
-		return nil, ErrEmptyDatabase
+	if err := validateData(data); err != nil {
+		return nil, err
 	}
 
-	data.db.AutoMigrate(&Tag{})
+	if err := initTable(data.db, &Tag{}, "tag"); err != nil {
+		return nil, err
+	}
 
 	return &TagsRepoImpl{
 		data: data,
+		log:  log.NewHelper(logger),
 	}, nil
 }
 
@@ -31,7 +36,7 @@ func (d *TagsRepoImpl) CreateTags(ctx context.Context, tags []biz.Tag) error {
 	if err != nil {
 		return err
 	}
-	r := d.data.db.Create(db_tags)
+	r := d.data.db.WithContext(ctx).Create(db_tags)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -44,7 +49,7 @@ func (d *TagsRepoImpl) UpdateTags(ctx context.Context, tags []biz.Tag) error {
 	if err != nil {
 		return err
 	}
-	r := d.data.db.Save(db_tags)
+	r := d.data.db.WithContext(ctx).Save(db_tags)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -55,7 +60,7 @@ func (d *TagsRepoImpl) UpdateTags(ctx context.Context, tags []biz.Tag) error {
 // DeleteTags is
 func (d *TagsRepoImpl) DeleteTags(ctx context.Context, ids []int64) error {
 
-	r := d.data.db.Where("id in (?)", ids).Delete(&Tag{})
+	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Tag{})
 	if r.Error != nil {
 		return r.Error
 	}
@@ -66,7 +71,7 @@ func (d *TagsRepoImpl) DeleteTags(ctx context.Context, ids []int64) error {
 func (d *TagsRepoImpl) GetTags(ctx context.Context, id int64) (*biz.Tag, error) {
 
 	tag := &Tag{}
-	r := d.data.db.First(tag, id)
+	r := d.data.db.WithContext(ctx).First(tag, id)
 	if r.Error != nil {
 		return nil, r.Error
 	}
@@ -80,20 +85,19 @@ func (d *TagsRepoImpl) ListTags(ctx context.Context,
 	tags := []Tag{}
 
 	var r *gorm.DB
-	query := d.data.db
+	query := d.data.db.WithContext(ctx)
 	if filter != nil {
 		var offset int
 		if filter.Page > 0 && filter.PageSize > 0 {
 			offset = int((filter.Page - 1) * filter.PageSize)
+			query = query.Offset(offset).Limit(int(filter.PageSize))
 		}
 
 		for _, pair := range filter.Filters {
 			query = query.Where("key =? AND value =?", pair.Key, pair.Value)
 		}
-		r = query.Offset(offset).Limit(int(filter.PageSize)).Find(&tags)
-	} else {
-		r = query.Find(&tags)
 	}
+	r = query.Find(&tags)
 
 	if r.Error != nil {
 		return nil, r.Error
