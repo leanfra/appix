@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: Teams API
     version: 0.0.1
 paths:
-    /api/v1/features/create:
+    /api/v1/teams/create:
         post:
             tags:
-                - Features
-            operationId: Features_CreateFeatures
+                - Teams
+            operationId: Teams_CreateTeams
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateFeaturesRequest'
+                            $ref: '#/components/schemas/CreateTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -23,17 +23,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateFeaturesReply'
-    /api/v1/features/delete:
+                                $ref: '#/components/schemas/CreateTeamsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /api/v1/teams/delete:
         post:
             tags:
-                - Features
-            operationId: Features_DeleteFeatures
+                - Teams
+            operationId: Teams_DeleteTeams
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteFeaturesRequest'
+                            $ref: '#/components/schemas/DeleteTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -41,17 +47,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteFeaturesReply'
-    /api/v1/features/list:
+                                $ref: '#/components/schemas/DeleteTeamsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /api/v1/teams/list:
         post:
             tags:
-                - Features
-            operationId: Features_ListFeatures
+                - Teams
+            operationId: Teams_ListTeams
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListFeaturesRequest'
+                            $ref: '#/components/schemas/ListTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -59,17 +71,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListFeaturesReply'
-    /api/v1/features/update:
+                                $ref: '#/components/schemas/ListTeamsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /api/v1/teams/update:
         post:
             tags:
-                - Features
-            operationId: Features_UpdateFeatures
+                - Teams
+            operationId: Teams_UpdateTeams
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateFeaturesRequest'
+                            $ref: '#/components/schemas/UpdateTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -77,12 +95,18 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateFeaturesReply'
-    /api/v1/features/{id}:
+                                $ref: '#/components/schemas/UpdateTeamsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /api/v1/teams/{id}:
         get:
             tags:
-                - Features
-            operationId: Features_GetFeatures
+                - Teams
+            operationId: Teams_GetTeams
             parameters:
                 - name: id
                   in: path
@@ -95,119 +119,16 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetFeaturesReply'
-    /api/v1/tags/create:
-        post:
-            tags:
-                - Tags
-            operationId: Tags_CreateTags
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateTagsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
+                                $ref: '#/components/schemas/GetTeamsReply'
+                default:
+                    description: Default error response
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateTagsReply'
-    /api/v1/tags/delete:
-        post:
-            tags:
-                - Tags
-            operationId: Tags_DeleteTags
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteTagsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteTagsReply'
-    /api/v1/tags/list:
-        post:
-            tags:
-                - Tags
-            operationId: Tags_ListTags
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListTagsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListTagsReply'
-    /api/v1/tags/update:
-        post:
-            tags:
-                - Tags
-            operationId: Tags_UpdateTags
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateTagsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateTagsReply'
-    /api/v1/tags/{id}:
-        get:
-            tags:
-                - Tags
-            operationId: Tags_GetTags
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetTagsReply'
-    /helloworld/{name}:
-        get:
-            tags:
-                - Greeter
-            description: Sends a greeting
-            operationId: Greeter_SayHello
-            parameters:
-                - name: name
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+                                $ref: '#/components/schemas/Status'
 components:
     schemas:
-        api.appix.v1.CreateFeaturesReply:
+        CreateTeamsReply:
             type: object
             properties:
                 message:
@@ -216,14 +137,14 @@ components:
                     type: string
                 action:
                     type: string
-        api.appix.v1.CreateFeaturesRequest:
+        CreateTeamsRequest:
             type: object
             properties:
-                features:
+                teams:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.CreateTagsReply:
+                        $ref: '#/components/schemas/Team'
+        DeleteTeamsReply:
             type: object
             properties:
                 message:
@@ -232,30 +153,14 @@ components:
                     type: string
                 action:
                     type: string
-        api.appix.v1.CreateTagsRequest:
-            type: object
-            properties:
-                tags:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.DeleteFeaturesReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: string
-                action:
-                    type: string
-        api.appix.v1.DeleteFeaturesRequest:
+        DeleteTeamsRequest:
             type: object
             properties:
                 ids:
                     type: array
                     items:
                         type: string
-        api.appix.v1.DeleteTagsReply:
+        GetTeamsReply:
             type: object
             properties:
                 message:
@@ -264,32 +169,87 @@ components:
                     type: string
                 action:
                     type: string
-        api.appix.v1.DeleteTagsRequest:
+                team:
+                    $ref: '#/components/schemas/Team'
+        GoogleProtobufAny:
             type: object
             properties:
-                ids:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListTeamsFilter:
+            type: object
+            properties:
+                page:
+                    type: string
+                pageSize:
+                    type: string
+                filters:
                     type: array
                     items:
-                        type: string
-        api.appix.v1.Feature:
+                        $ref: '#/components/schemas/TeamFilter'
+            description: gratos::model
+        ListTeamsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: string
+                action:
+                    type: string
+                teams:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Team'
+        ListTeamsRequest:
+            type: object
+            properties:
+                filter:
+                    $ref: '#/components/schemas/ListTeamsFilter'
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        Team:
             type: object
             properties:
                 id:
                     type: string
-                Name:
+                name:
                     type: string
-                value:
+                code:
+                    type: string
+                description:
+                    type: string
+                leader:
                     type: string
             description: gratos::model
-        api.appix.v1.FeatureFilter:
+        TeamFilter:
             type: object
             properties:
                 name:
                     type: string
-                value:
+                code:
+                    type: string
+                leader:
                     type: string
             description: gratos::model
-        api.appix.v1.GetFeaturesReply:
+        UpdateTeamsReply:
             type: object
             properties:
                 message:
@@ -298,137 +258,12 @@ components:
                     type: string
                 action:
                     type: string
-                feature:
-                    $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.GetTagsReply:
+        UpdateTeamsRequest:
             type: object
             properties:
-                message:
-                    type: string
-                code:
-                    type: string
-                action:
-                    type: string
-                tag:
-                    $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.ListFeaturesFilter:
-            type: object
-            properties:
-                page:
-                    type: string
-                pageSize:
-                    type: string
-                filters:
+                teams:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.FeatureFilter'
-            description: gratos::model
-        api.appix.v1.ListFeaturesReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: string
-                action:
-                    type: string
-                features:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.ListFeaturesRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListFeaturesFilter'
-        api.appix.v1.ListTagsFilter:
-            type: object
-            properties:
-                page:
-                    type: string
-                pageSize:
-                    type: string
-                filters:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.TagFilter'
-            description: gratos::model
-        api.appix.v1.ListTagsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: string
-                action:
-                    type: string
-                tags:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.ListTagsRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListTagsFilter'
-        api.appix.v1.Tag:
-            type: object
-            properties:
-                id:
-                    type: string
-                key:
-                    type: string
-                value:
-                    type: string
-            description: gratos::model
-        api.appix.v1.TagFilter:
-            type: object
-            properties:
-                key:
-                    type: string
-                value:
-                    type: string
-            description: gratos::model
-        api.appix.v1.UpdateFeaturesReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: string
-                action:
-                    type: string
-        api.appix.v1.UpdateFeaturesRequest:
-            type: object
-            properties:
-                features:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.UpdateTagsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: string
-                action:
-                    type: string
-        api.appix.v1.UpdateTagsRequest:
-            type: object
-            properties:
-                tags:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Tag'
-        helloworld.v1.HelloReply:
-            type: object
-            properties:
-                message:
-                    type: string
-            description: The response message containing the greetings
+                        $ref: '#/components/schemas/Team'
 tags:
-    - name: Features
-    - name: Greeter
-      description: The greeting service definition.
-    - name: Tags
+    - name: Teams

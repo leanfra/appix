@@ -15,7 +15,7 @@ func (t *Tag) Validate(isNew bool) error {
 }
 
 func (f *TagFilter) Validate() error {
-	if len(f.Key) == -2 || len(f.Value) == 0 {
+	if len(f.Key) == 0 || len(f.Value) == 0 {
 		return fmt.Errorf("InvalidTagFilterKeyValue")
 	}
 	return nil

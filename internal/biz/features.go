@@ -27,7 +27,7 @@ func NewFeaturesUsecase(repo FeaturesRepo, logger log.Logger) *FeaturesUsecase {
 	}
 }
 
-func (s *FeaturesUsecase) validateFeatures(isNew bool, features []Feature) error {
+func (s *FeaturesUsecase) validate(isNew bool, features []Feature) error {
 	for _, f := range features {
 		if err := f.Validate(isNew); err != nil {
 			return err
@@ -38,7 +38,7 @@ func (s *FeaturesUsecase) validateFeatures(isNew bool, features []Feature) error
 
 // CreateFeatures is
 func (s *FeaturesUsecase) CreateFeatures(ctx context.Context, features []Feature) error {
-	if err := s.validateFeatures(true, features); err != nil {
+	if err := s.validate(true, features); err != nil {
 		return err
 	}
 	return s.repo.CreateFeatures(ctx, features)
@@ -46,7 +46,7 @@ func (s *FeaturesUsecase) CreateFeatures(ctx context.Context, features []Feature
 
 // UpdateFeatures is
 func (s *FeaturesUsecase) UpdateFeatures(ctx context.Context, features []Feature) error {
-	if err := s.validateFeatures(false, features); err != nil {
+	if err := s.validate(false, features); err != nil {
 		return err
 	}
 	return s.repo.UpdateFeatures(ctx, features)

@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 
 	pb "appix/api/appix/v1"
 	biz "appix/internal/biz"
@@ -28,7 +27,7 @@ func NewTagsService(uc *biz.TagsUsecase, logger log.Logger) *TagsService {
 func (s *TagsService) CreateTags(ctx context.Context, req *pb.CreateTagsRequest) (*pb.CreateTagsReply, error) {
 
 	if req == nil {
-		return nil, errors.New("req is nil")
+		return nil, ErrRequestNil
 	}
 
 	tags := make([]biz.Tag, len(req.Tags))
@@ -56,7 +55,7 @@ func (s *TagsService) CreateTags(ctx context.Context, req *pb.CreateTagsRequest)
 
 func (s *TagsService) UpdateTags(ctx context.Context, req *pb.UpdateTagsRequest) (*pb.UpdateTagsReply, error) {
 	if req == nil {
-		return nil, errors.New("req is nil")
+		return nil, ErrRequestNil
 	}
 
 	tags := make([]biz.Tag, len(req.Tags))
@@ -84,7 +83,7 @@ func (s *TagsService) UpdateTags(ctx context.Context, req *pb.UpdateTagsRequest)
 
 func (s *TagsService) DeleteTags(ctx context.Context, req *pb.DeleteTagsRequest) (*pb.DeleteTagsReply, error) {
 	if req == nil {
-		return nil, errors.New("req is nil")
+		return nil, ErrRequestNil
 	}
 
 	err := s.usecase.DeleteTags(ctx, req.Ids)
@@ -105,7 +104,7 @@ func (s *TagsService) DeleteTags(ctx context.Context, req *pb.DeleteTagsRequest)
 
 func (s *TagsService) GetTags(ctx context.Context, req *pb.GetTagsRequest) (*pb.GetTagsReply, error) {
 	if req == nil {
-		return nil, errors.New("req is nil")
+		return nil, ErrRequestNil
 	}
 
 	tag, err := s.usecase.GetTags(ctx, req.Id)
@@ -130,7 +129,7 @@ func (s *TagsService) GetTags(ctx context.Context, req *pb.GetTagsRequest) (*pb.
 
 func (s *TagsService) ListTags(ctx context.Context, req *pb.ListTagsRequest) (*pb.ListTagsReply, error) {
 	if req == nil {
-		return nil, errors.New("req is nil")
+		return nil, ErrRequestNil
 	}
 	var filter *biz.ListTagsFilter
 	if req.Filter != nil {

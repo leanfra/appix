@@ -27,7 +27,7 @@ func NewTagsUsecase(repo TagsRepo, logger log.Logger) *TagsUsecase {
 	}
 }
 
-func (s *TagsUsecase) validateTags(isNew bool, tags []Tag) error {
+func (s *TagsUsecase) validate(isNew bool, tags []Tag) error {
 	for _, t := range tags {
 		if err := t.Validate(isNew); err != nil {
 			return err
@@ -39,7 +39,7 @@ func (s *TagsUsecase) validateTags(isNew bool, tags []Tag) error {
 // CreateTags is
 func (s *TagsUsecase) CreateTags(ctx context.Context, tags []Tag) error {
 	// validate tags
-	if err := s.validateTags(true, tags); err != nil {
+	if err := s.validate(true, tags); err != nil {
 		return err
 	}
 
@@ -49,7 +49,7 @@ func (s *TagsUsecase) CreateTags(ctx context.Context, tags []Tag) error {
 // UpdateTags is
 func (s *TagsUsecase) UpdateTags(ctx context.Context, tags []Tag) error {
 
-	if err := s.validateTags(false, tags); err != nil {
+	if err := s.validate(false, tags); err != nil {
 		return err
 	}
 	return s.repo.UpdateTags(ctx, tags)

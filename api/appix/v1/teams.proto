@@ -6,25 +6,110 @@ option go_package = "appix/api/appix/v1;v1";
 option java_multiple_files = true;
 option java_package = "api.appix.v1";
 
+import "google/api/annotations.proto";
+
 service Teams {
-	rpc CreateTeams (CreateTeamsRequest) returns (CreateTeamsReply);
-	rpc UpdateTeams (UpdateTeamsRequest) returns (UpdateTeamsReply);
-	rpc DeleteTeams (DeleteTeamsRequest) returns (DeleteTeamsReply);
-	rpc GetTeams (GetTeamsRequest) returns (GetTeamsReply);
-	rpc ListTeams (ListTeamsRequest) returns (ListTeamsReply);
+	rpc CreateTeams (CreateTeamsRequest) returns (CreateTeamsReply){
+		option (google.api.http) = {
+			post: "/api/v1/teams/create"
+			body: "*"
+		};
+	};
+	rpc UpdateTeams (UpdateTeamsRequest) returns (UpdateTeamsReply){
+		option (google.api.http) = {
+			post: "/api/v1/teams/update"
+			body: "*"
+		};
+	};
+	rpc DeleteTeams (DeleteTeamsRequest) returns (DeleteTeamsReply){
+		option (google.api.http) = {
+			post: "/api/v1/teams/delete"
+			body: "*"
+		};
+	};
+	rpc GetTeams (GetTeamsRequest) returns (GetTeamsReply){
+		option (google.api.http) = {
+			get: "/api/v1/teams/{id}"
+		};
+	};
+	rpc ListTeams (ListTeamsRequest) returns (ListTeamsReply){
+		option (google.api.http) = {
+			post: "/api/v1/teams/list"
+			body: "*"
+		};
+	};
 }
 
-message CreateTeamsRequest {}
-message CreateTeamsReply {}
+// gratos::model
+message Team {
+	int64 id = 1;
+	string name = 2;
+	string code = 3;
+	string description = 4;
+	string leader = 5;
+}
 
-message UpdateTeamsRequest {}
-message UpdateTeamsReply {}
+message CreateTeamsRequest {
+	repeated Team teams = 1;
+}
 
-message DeleteTeamsRequest {}
-message DeleteTeamsReply {}
+message CreateTeamsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
 
-message GetTeamsRequest {}
-message GetTeamsReply {}
+message UpdateTeamsRequest {
+	repeated Team teams = 1;
+}
 
-message ListTeamsRequest {}
-message ListTeamsReply {}
+message UpdateTeamsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
+
+message DeleteTeamsRequest {
+	repeated int64 ids = 1;
+}
+
+message DeleteTeamsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
+
+message GetTeamsRequest {
+	int64 id = 1;
+}
+message GetTeamsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+	Team team = 4;
+}
+
+// gratos::model
+message TeamFilter {
+	string name = 1;
+	string code = 2;
+	string leader = 3;
+}
+
+// gratos::model
+message ListTeamsFilter {
+	int64 page = 1;
+	int64 page_size = 2;
+	repeated TeamFilter filters = 3;
+}
+
+message ListTeamsRequest {
+	ListTeamsFilter filter = 1;
+}
+
+message ListTeamsReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+	repeated Team teams = 4;
+}
