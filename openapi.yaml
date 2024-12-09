@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: Teams API
+    title: Products API
     version: 0.0.1
 paths:
-    /api/v1/teams/create:
+    /api/v1/products:
         post:
             tags:
-                - Teams
-            operationId: Teams_CreateTeams
+                - Products
+            operationId: Products_ListProducts
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateTeamsRequest'
+                            $ref: '#/components/schemas/ListProductsRequest'
                 required: true
             responses:
                 "200":
@@ -23,23 +23,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateTeamsReply'
+                                $ref: '#/components/schemas/ListProductsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/teams/delete:
+    /api/v1/products/create:
         post:
             tags:
-                - Teams
-            operationId: Teams_DeleteTeams
+                - Products
+            operationId: Products_CreateProducts
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/DeleteTeamsRequest'
+                            $ref: '#/components/schemas/CreateProductsRequest'
                 required: true
             responses:
                 "200":
@@ -47,23 +47,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/DeleteTeamsReply'
+                                $ref: '#/components/schemas/CreateProductsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/teams/list:
+    /api/v1/products/delete:
         post:
             tags:
-                - Teams
-            operationId: Teams_ListTeams
+                - Products
+            operationId: Products_DeleteProducts
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/ListTeamsRequest'
+                            $ref: '#/components/schemas/DeleteProductsRequest'
                 required: true
             responses:
                 "200":
@@ -71,23 +71,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ListTeamsReply'
+                                $ref: '#/components/schemas/DeleteProductsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/teams/update:
+    /api/v1/products/update:
         post:
             tags:
-                - Teams
-            operationId: Teams_UpdateTeams
+                - Products
+            operationId: Products_UpdateProducts
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UpdateTeamsRequest'
+                            $ref: '#/components/schemas/UpdateProductsRequest'
                 required: true
             responses:
                 "200":
@@ -95,18 +95,18 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateTeamsReply'
+                                $ref: '#/components/schemas/UpdateProductsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/teams/{id}:
+    /api/v1/products/{id}:
         get:
             tags:
-                - Teams
-            operationId: Teams_GetTeams
+                - Products
+            operationId: Products_GetProducts
             parameters:
                 - name: id
                   in: path
@@ -119,7 +119,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetTeamsReply'
+                                $ref: '#/components/schemas/GetProductsReply'
                 default:
                     description: Default error response
                     content:
@@ -128,7 +128,7 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateTeamsReply:
+        CreateProductsReply:
             type: object
             properties:
                 message:
@@ -137,14 +137,14 @@ components:
                     type: string
                 action:
                     type: string
-        CreateTeamsRequest:
+        CreateProductsRequest:
             type: object
             properties:
-                teams:
+                products:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Team'
-        DeleteTeamsReply:
+                        $ref: '#/components/schemas/Product'
+        DeleteProductsReply:
             type: object
             properties:
                 message:
@@ -153,14 +153,14 @@ components:
                     type: string
                 action:
                     type: string
-        DeleteTeamsRequest:
+        DeleteProductsRequest:
             type: object
             properties:
                 ids:
                     type: array
                     items:
                         type: string
-        GetTeamsReply:
+        GetProductsReply:
             type: object
             properties:
                 message:
@@ -169,8 +169,8 @@ components:
                     type: string
                 action:
                     type: string
-                team:
-                    $ref: '#/components/schemas/Team'
+                product:
+                    $ref: '#/components/schemas/Product'
         GoogleProtobufAny:
             type: object
             properties:
@@ -179,7 +179,7 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        ListTeamsFilter:
+        ListProductsFilter:
             type: object
             properties:
                 page:
@@ -189,9 +189,9 @@ components:
                 filters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/TeamFilter'
+                        $ref: '#/components/schemas/ProductFilter'
             description: gratos::model
-        ListTeamsReply:
+        ListProductsReply:
             type: object
             properties:
                 message:
@@ -200,15 +200,35 @@ components:
                     type: string
                 action:
                     type: string
-                teams:
+                products:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Team'
-        ListTeamsRequest:
+                        $ref: '#/components/schemas/Product'
+        ListProductsRequest:
             type: object
             properties:
                 filter:
-                    $ref: '#/components/schemas/ListTeamsFilter'
+                    $ref: '#/components/schemas/ListProductsFilter'
+        Product:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                code:
+                    type: string
+                description:
+                    type: string
+            description: gratos::model
+        ProductFilter:
+            type: object
+            properties:
+                name:
+                    type: string
+                code:
+                    type: string
+            description: gratos::model
         Status:
             type: object
             properties:
@@ -225,31 +245,7 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        Team:
-            type: object
-            properties:
-                id:
-                    type: string
-                name:
-                    type: string
-                code:
-                    type: string
-                description:
-                    type: string
-                leader:
-                    type: string
-            description: gratos::model
-        TeamFilter:
-            type: object
-            properties:
-                name:
-                    type: string
-                code:
-                    type: string
-                leader:
-                    type: string
-            description: gratos::model
-        UpdateTeamsReply:
+        UpdateProductsReply:
             type: object
             properties:
                 message:
@@ -258,12 +254,12 @@ components:
                     type: string
                 action:
                     type: string
-        UpdateTeamsRequest:
+        UpdateProductsRequest:
             type: object
             properties:
-                teams:
+                products:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Team'
+                        $ref: '#/components/schemas/Product'
 tags:
-    - name: Teams
+    - name: Products

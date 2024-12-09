@@ -74,7 +74,7 @@ func (d *TeamsRepoImpl) GetTeams(ctx context.Context, id int64) (*biz.Team, erro
 		return nil, r.Error
 	}
 
-	return nil, nil
+	return NewBizTeam(team)
 }
 
 // ListTeams is
@@ -112,5 +112,5 @@ func (d *TeamsRepoImpl) ListTeams(ctx context.Context,
 		return nil, r.Error
 	}
 
-	return nil, nil
+	return NewBizTeams(db_teams)
 }

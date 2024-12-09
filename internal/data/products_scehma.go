@@ -4,56 +4,52 @@ import (
 	"appix/internal/biz"
 )
 
-type Team struct {
+type Product struct {
 	ID          uint   `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_name,unique"`
 	Code        string `gorm:"type:varchar(255);index:idx_code,unique"`
-	Leader      string `gorm:"type:varchar(255);index:idx_leader"`
 	Description string `gorm:"type:varchar(255);"`
 }
 
-func NewTeam(t biz.Team) (*Team, error) {
-	return &Team{
+func NewProduct(t biz.Product) (*Product, error) {
+	return &Product{
 		ID:          uint(t.Id),
 		Name:        t.Name,
 		Code:        t.Code,
-		Leader:      t.Leader,
 		Description: t.Description,
 	}, nil
 }
 
-func NewTeams(ts []biz.Team) ([]*Team, error) {
-	var teams = make([]*Team, len(ts))
+func NewProducts(ts []biz.Product) ([]*Product, error) {
+	var products = make([]*Product, len(ts))
 	for i, t := range ts {
-		nt, err := NewTeam(t)
+		nt, err := NewProduct(t)
 		if err != nil {
 			return nil, err
 		}
-		teams[i] = nt
+		products[i] = nt
 	}
-	return teams, nil
+	return products, nil
 }
 
-func NewBizTeam(t *Team) (*biz.Team, error) {
-	return &biz.Team{
+func NewBizProduct(t *Product) (*biz.Product, error) {
+	return &biz.Product{
 		Id:          int64(t.ID),
 		Code:        t.Code,
 		Description: t.Description,
-		Leader:      t.Leader,
 		Name:        t.Name,
 	}, nil
 }
 
-func NewBizTeams(teams []Team) ([]biz.Team, error) {
-	var biz_teams = make([]biz.Team, len(teams))
-	for i, t := range teams {
-		biz_teams[i] = biz.Team{
+func NewBizProducts(ps []Product) ([]biz.Product, error) {
+	var biz_ps = make([]biz.Product, len(ps))
+	for i, t := range ps {
+		biz_ps[i] = biz.Product{
 			Id:          int64(t.ID),
 			Code:        t.Code,
 			Description: t.Description,
-			Leader:      t.Leader,
 			Name:        t.Name,
 		}
 	}
-	return biz_teams, nil
+	return biz_ps, nil
 }

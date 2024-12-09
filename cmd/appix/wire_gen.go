@@ -52,8 +52,15 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	}
 	teamsUsecase := biz.NewTeamsUsecase(teamsRepo, logger)
 	teamsService := service.NewTeamsService(teamsUsecase, logger)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, tagsService, featuresService, teamsService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, tagsService, featuresService, teamsService, logger)
+	productsRepo, err := data.NewProductsRepoImpl(dataData, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	productsUsecase := biz.NewProductsUsecase(productsRepo, logger)
+	productsService := service.NewProductsService(productsUsecase, logger)
+	grpcServer := server.NewGRPCServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, logger)
+	httpServer := server.NewHTTPServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()
