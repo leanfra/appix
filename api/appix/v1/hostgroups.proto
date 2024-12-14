@@ -6,12 +6,35 @@ option go_package = "appix/api/appix/v1;v1";
 option java_multiple_files = true;
 option java_package = "api.appix.v1";
 
+import "google/api/annotations.proto";
+
+import "api/appix/v1/clusters.proto";
+import "api/appix/v1/datacenters.proto";
+import "api/appix/v1/envs.proto";
+import "api/appix/v1/products.proto";
+import "api/appix/v1/teams.proto";
+import "api/appix/v1/features.proto";
+import "api/appix/v1/tags.proto";
+
+
 service Hostgroups {
 	rpc CreateHostgroups (CreateHostgroupsRequest) returns (CreateHostgroupsReply);
 	rpc UpdateHostgroups (UpdateHostgroupsRequest) returns (UpdateHostgroupsReply);
 	rpc DeleteHostgroups (DeleteHostgroupsRequest) returns (DeleteHostgroupsReply);
 	rpc GetHostgroups (GetHostgroupsRequest) returns (GetHostgroupsReply);
 	rpc ListHostgroups (ListHostgroupsRequest) returns (ListHostgroupsReply);
+}
+
+message Hostgroup {
+	int64 id = 1;
+	string name = 2;
+	string description = 3;
+	Cluster cluster = 4;
+	Env env = 6;
+	Product product = 7;
+	repeated Team teams = 8;
+	repeated Feature features = 9;
+	repeated Tag tags = 10;
 }
 
 message CreateHostgroupsRequest {}

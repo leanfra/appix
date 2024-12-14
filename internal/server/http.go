@@ -20,6 +20,7 @@ func NewHTTPServer(c *conf.Server,
 	products *service.ProductsService,
 	envs *service.EnvsService,
 	clusters *service.ClustersService,
+	datacenters *service.DatacentersService,
 	logger log.Logger) *http.Server {
 
 	var opts = []http.ServerOption{
@@ -44,5 +45,6 @@ func NewHTTPServer(c *conf.Server,
 	appv1.RegisterProductsHTTPServer(srv, products)
 	appv1.RegisterEnvsHTTPServer(srv, envs)
 	appv1.RegisterClustersHTTPServer(srv, clusters)
+	appv1.RegisterDatacentersHTTPServer(srv, datacenters)
 	return srv
 }

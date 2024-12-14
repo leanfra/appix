@@ -6,25 +6,102 @@ option go_package = "appix/api/appix/v1;v1";
 option java_multiple_files = true;
 option java_package = "api.appix.v1";
 
+import "google/api/annotations.proto";
+
 service Datacenters {
-	rpc CreateDatacenters (CreateDatacentersRequest) returns (CreateDatacentersReply);
-	rpc UpdateDatacenters (UpdateDatacentersRequest) returns (UpdateDatacentersReply);
-	rpc DeleteDatacenters (DeleteDatacentersRequest) returns (DeleteDatacentersReply);
-	rpc GetDatacenters (GetDatacentersRequest) returns (GetDatacentersReply);
-	rpc ListDatacenters (ListDatacentersRequest) returns (ListDatacentersReply);
+	rpc CreateDatacenters (CreateDatacentersRequest) returns (CreateDatacentersReply) {
+		option (google.api.http) = {
+			post: "/api/v1/datacenters/create"
+			body: "*"
+		};
+	};
+	rpc UpdateDatacenters (UpdateDatacentersRequest) returns (UpdateDatacentersReply){
+		option (google.api.http) = {
+			post: "/api/v1/datacenters/update"
+			body: "*"
+		};
+	};
+	rpc DeleteDatacenters (DeleteDatacentersRequest) returns (DeleteDatacentersReply){
+		option (google.api.http) = {
+			post: "/api/v1/datacenters/delete"
+			body: "*"
+		};
+	};
+	rpc GetDatacenters (GetDatacentersRequest) returns (GetDatacentersReply){
+		option (google.api.http) = {
+			get: "/api/v1/datacenters/{id}"
+		};
+	};
+	rpc ListDatacenters (ListDatacentersRequest) returns (ListDatacentersReply){
+		option (google.api.http) = {
+			post: "/api/v1/datacenters/list"
+			body: "*"
+		};
+	};
 }
 
-message CreateDatacentersRequest {}
-message CreateDatacentersReply {}
+//gratos::model
+message Datacenter {
+	int64 id = 1;
+	string name = 2;
+	string description = 3;
+}
 
-message UpdateDatacentersRequest {}
-message UpdateDatacentersReply {}
+message CreateDatacentersRequest {
+	repeated Datacenter datacenters = 1;
+}
+message CreateDatacentersReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
 
-message DeleteDatacentersRequest {}
-message DeleteDatacentersReply {}
+message UpdateDatacentersRequest {
+	repeated Datacenter datacenters = 1;
+}
+message UpdateDatacentersReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
 
-message GetDatacentersRequest {}
-message GetDatacentersReply {}
+message DeleteDatacentersRequest {
+	repeated int64 ids = 1;
+}
+message DeleteDatacentersReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+}
 
-message ListDatacentersRequest {}
-message ListDatacentersReply {}
+message GetDatacentersRequest {
+	int64 id = 1;
+}
+message GetDatacentersReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+	Datacenter datacenter = 4;
+}
+
+// gratos::model
+message DatacenterFilter {
+	string name = 1;
+}
+
+// gratos::model
+message ListDatacentersFilter {
+	int64 page = 1;
+	int64 page_size = 2;
+	repeated DatacenterFilter filters = 3;
+}
+
+message ListDatacentersRequest {
+	ListDatacentersFilter filter = 1;
+}
+message ListDatacentersReply {
+	string message = 1;
+	int64 code = 2;
+	string action = 3;
+	repeated Datacenter datacenters = 4;
+}

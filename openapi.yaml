@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: Clusters API
+    title: Datacenters API
     version: 0.0.1
 paths:
-    /api/v1/clusters/create:
+    /api/v1/datacenters/create:
         post:
             tags:
-                - Clusters
-            operationId: Clusters_CreateClusters
+                - Datacenters
+            operationId: Datacenters_CreateDatacenters
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateClustersRequest'
+                            $ref: '#/components/schemas/CreateDatacentersRequest'
                 required: true
             responses:
                 "200":
@@ -23,23 +23,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateClustersReply'
+                                $ref: '#/components/schemas/CreateDatacentersReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/clusters/delete:
+    /api/v1/datacenters/delete:
         post:
             tags:
-                - Clusters
-            operationId: Clusters_DeleteClusters
+                - Datacenters
+            operationId: Datacenters_DeleteDatacenters
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/DeleteClustersRequest'
+                            $ref: '#/components/schemas/DeleteDatacentersRequest'
                 required: true
             responses:
                 "200":
@@ -47,23 +47,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/DeleteClustersReply'
+                                $ref: '#/components/schemas/DeleteDatacentersReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/clusters/list:
+    /api/v1/datacenters/list:
         post:
             tags:
-                - Clusters
-            operationId: Clusters_ListClusters
+                - Datacenters
+            operationId: Datacenters_ListDatacenters
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/ListClustersRequest'
+                            $ref: '#/components/schemas/ListDatacentersRequest'
                 required: true
             responses:
                 "200":
@@ -71,23 +71,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ListClustersReply'
+                                $ref: '#/components/schemas/ListDatacentersReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/clusters/update:
+    /api/v1/datacenters/update:
         post:
             tags:
-                - Clusters
-            operationId: Clusters_UpdateClusters
+                - Datacenters
+            operationId: Datacenters_UpdateDatacenters
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UpdateClustersRequest'
+                            $ref: '#/components/schemas/UpdateDatacentersRequest'
                 required: true
             responses:
                 "200":
@@ -95,18 +95,18 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateClustersReply'
+                                $ref: '#/components/schemas/UpdateDatacentersReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/clusters/{id}:
+    /api/v1/datacenters/{id}:
         get:
             tags:
-                - Clusters
-            operationId: Clusters_GetClusters
+                - Datacenters
+            operationId: Datacenters_GetDatacenters
             parameters:
                 - name: id
                   in: path
@@ -119,7 +119,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetClustersReply'
+                                $ref: '#/components/schemas/GetDatacentersReply'
                 default:
                     description: Default error response
                     content:
@@ -128,7 +128,23 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        Cluster:
+        CreateDatacentersReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: string
+                action:
+                    type: string
+        CreateDatacentersRequest:
+            type: object
+            properties:
+                datacenters:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Datacenter'
+        Datacenter:
             type: object
             properties:
                 id:
@@ -138,13 +154,13 @@ components:
                 description:
                     type: string
             description: gratos::model
-        ClusterFilter:
+        DatacenterFilter:
             type: object
             properties:
                 name:
                     type: string
             description: gratos::model
-        CreateClustersReply:
+        DeleteDatacentersReply:
             type: object
             properties:
                 message:
@@ -153,30 +169,14 @@ components:
                     type: string
                 action:
                     type: string
-        CreateClustersRequest:
-            type: object
-            properties:
-                clusters:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Cluster'
-        DeleteClustersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: string
-                action:
-                    type: string
-        DeleteClustersRequest:
+        DeleteDatacentersRequest:
             type: object
             properties:
                 ids:
                     type: array
                     items:
                         type: string
-        GetClustersReply:
+        GetDatacentersReply:
             type: object
             properties:
                 message:
@@ -185,8 +185,8 @@ components:
                     type: string
                 action:
                     type: string
-                cluster:
-                    $ref: '#/components/schemas/Cluster'
+                datacenter:
+                    $ref: '#/components/schemas/Datacenter'
         GoogleProtobufAny:
             type: object
             properties:
@@ -195,7 +195,7 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        ListClustersFilter:
+        ListDatacentersFilter:
             type: object
             properties:
                 page:
@@ -205,9 +205,9 @@ components:
                 filters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/ClusterFilter'
+                        $ref: '#/components/schemas/DatacenterFilter'
             description: gratos::model
-        ListClustersReply:
+        ListDatacentersReply:
             type: object
             properties:
                 message:
@@ -216,15 +216,15 @@ components:
                     type: string
                 action:
                     type: string
-                clusters:
+                datacenters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Cluster'
-        ListClustersRequest:
+                        $ref: '#/components/schemas/Datacenter'
+        ListDatacentersRequest:
             type: object
             properties:
                 filter:
-                    $ref: '#/components/schemas/ListClustersFilter'
+                    $ref: '#/components/schemas/ListDatacentersFilter'
         Status:
             type: object
             properties:
@@ -241,7 +241,7 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        UpdateClustersReply:
+        UpdateDatacentersReply:
             type: object
             properties:
                 message:
@@ -250,12 +250,12 @@ components:
                     type: string
                 action:
                     type: string
-        UpdateClustersRequest:
+        UpdateDatacentersRequest:
             type: object
             properties:
-                clusters:
+                datacenters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Cluster'
+                        $ref: '#/components/schemas/Datacenter'
 tags:
-    - name: Clusters
+    - name: Datacenters

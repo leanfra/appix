@@ -162,8 +162,9 @@ func (s *ClustersService) ListClusters(ctx context.Context, req *pb.ListClusters
 		reply.Clusters = make([]*pb.Cluster, len(cs))
 		for i, c := range cs {
 			reply.Clusters[i] = &pb.Cluster{
-				Id:   c.Id,
-				Name: c.Name,
+				Id:          c.Id,
+				Name:        c.Name,
+				Description: c.Description,
 			}
 		}
 		return reply, nil
