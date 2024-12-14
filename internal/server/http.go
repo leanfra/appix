@@ -19,6 +19,7 @@ func NewHTTPServer(c *conf.Server,
 	teams *service.TeamsService,
 	products *service.ProductsService,
 	envs *service.EnvsService,
+	clusters *service.ClustersService,
 	logger log.Logger) *http.Server {
 
 	var opts = []http.ServerOption{
@@ -42,5 +43,6 @@ func NewHTTPServer(c *conf.Server,
 	appv1.RegisterTeamsHTTPServer(srv, teams)
 	appv1.RegisterProductsHTTPServer(srv, products)
 	appv1.RegisterEnvsHTTPServer(srv, envs)
+	appv1.RegisterClustersHTTPServer(srv, clusters)
 	return srv
 }

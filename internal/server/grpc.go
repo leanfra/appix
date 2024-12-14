@@ -19,6 +19,7 @@ func NewGRPCServer(c *conf.Server,
 	teams *service.TeamsService,
 	products *service.ProductsService,
 	envs *service.EnvsService,
+	clusters *service.ClustersService,
 	logger log.Logger) *grpc.Server {
 
 	var opts = []grpc.ServerOption{
@@ -42,5 +43,6 @@ func NewGRPCServer(c *conf.Server,
 	apiv1.RegisterTeamsServer(srv, teams)
 	apiv1.RegisterProductsServer(srv, products)
 	apiv1.RegisterEnvsServer(srv, envs)
+	apiv1.RegisterClustersServer(srv, clusters)
 	return srv
 }

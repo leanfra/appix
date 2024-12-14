@@ -20,6 +20,7 @@ var ProviderSet = wire.NewSet(
 	NewTeamsRepoImpl,
 	NewProductsRepoImpl,
 	NewEnvsRepoImpl,
+	NewClustersRepoImpl,
 )
 
 // Data .

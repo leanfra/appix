@@ -48,7 +48,6 @@ func toBizEnvs(envs []*pb.Env) ([]biz.Env, error) {
 }
 
 func (s *EnvsService) CreateEnvs(ctx context.Context, req *pb.CreateEnvsRequest) (*pb.CreateEnvsReply, error) {
-	// TODO: convert req to biz request
 	if req == nil {
 		return nil, fmt.Errorf("req is nil")
 	}

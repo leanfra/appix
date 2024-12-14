@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: Envs API
+    title: Clusters API
     version: 0.0.1
 paths:
-    /api/v1/envs/create:
+    /api/v1/clusters/create:
         post:
             tags:
-                - Envs
-            operationId: Envs_CreateEnvs
+                - Clusters
+            operationId: Clusters_CreateClusters
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateEnvsRequest'
+                            $ref: '#/components/schemas/CreateClustersRequest'
                 required: true
             responses:
                 "200":
@@ -23,23 +23,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateEnvsReply'
+                                $ref: '#/components/schemas/CreateClustersReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/envs/delete:
+    /api/v1/clusters/delete:
         post:
             tags:
-                - Envs
-            operationId: Envs_DeleteEnvs
+                - Clusters
+            operationId: Clusters_DeleteClusters
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/DeleteEnvsRequest'
+                            $ref: '#/components/schemas/DeleteClustersRequest'
                 required: true
             responses:
                 "200":
@@ -47,23 +47,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/DeleteEnvsReply'
+                                $ref: '#/components/schemas/DeleteClustersReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/envs/list:
+    /api/v1/clusters/list:
         post:
             tags:
-                - Envs
-            operationId: Envs_ListEnvs
+                - Clusters
+            operationId: Clusters_ListClusters
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/ListEnvsRequest'
+                            $ref: '#/components/schemas/ListClustersRequest'
                 required: true
             responses:
                 "200":
@@ -71,23 +71,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ListEnvsReply'
+                                $ref: '#/components/schemas/ListClustersReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/envs/update:
+    /api/v1/clusters/update:
         post:
             tags:
-                - Envs
-            operationId: Envs_UpdateEnvs
+                - Clusters
+            operationId: Clusters_UpdateClusters
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UpdateEnvsRequest'
+                            $ref: '#/components/schemas/UpdateClustersRequest'
                 required: true
             responses:
                 "200":
@@ -95,18 +95,18 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateEnvsReply'
+                                $ref: '#/components/schemas/UpdateClustersReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/envs/{id}:
+    /api/v1/clusters/{id}:
         get:
             tags:
-                - Envs
-            operationId: Envs_GetEnvs
+                - Clusters
+            operationId: Clusters_GetClusters
             parameters:
                 - name: id
                   in: path
@@ -119,7 +119,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetEnvsReply'
+                                $ref: '#/components/schemas/GetClustersReply'
                 default:
                     description: Default error response
                     content:
@@ -128,39 +128,7 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateEnvsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: string
-                action:
-                    type: string
-        CreateEnvsRequest:
-            type: object
-            properties:
-                envs:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Env'
-        DeleteEnvsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: string
-                action:
-                    type: string
-        DeleteEnvsRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: string
-        Env:
+        Cluster:
             type: object
             properties:
                 id:
@@ -170,13 +138,13 @@ components:
                 description:
                     type: string
             description: gratos::model
-        EnvFilter:
+        ClusterFilter:
             type: object
             properties:
                 name:
                     type: string
             description: gratos::model
-        GetEnvsReply:
+        CreateClustersReply:
             type: object
             properties:
                 message:
@@ -185,8 +153,40 @@ components:
                     type: string
                 action:
                     type: string
-                env:
-                    $ref: '#/components/schemas/Env'
+        CreateClustersRequest:
+            type: object
+            properties:
+                clusters:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Cluster'
+        DeleteClustersReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: string
+                action:
+                    type: string
+        DeleteClustersRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: string
+        GetClustersReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: string
+                action:
+                    type: string
+                cluster:
+                    $ref: '#/components/schemas/Cluster'
         GoogleProtobufAny:
             type: object
             properties:
@@ -195,7 +195,7 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        ListEnvsFilter:
+        ListClustersFilter:
             type: object
             properties:
                 page:
@@ -205,9 +205,9 @@ components:
                 filters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/EnvFilter'
+                        $ref: '#/components/schemas/ClusterFilter'
             description: gratos::model
-        ListEnvsReply:
+        ListClustersReply:
             type: object
             properties:
                 message:
@@ -216,16 +216,15 @@ components:
                     type: string
                 action:
                     type: string
-                envs:
+                clusters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Env'
-        ListEnvsRequest:
+                        $ref: '#/components/schemas/Cluster'
+        ListClustersRequest:
             type: object
             properties:
                 filter:
-                    $ref: '#/components/schemas/ListEnvsFilter'
-            description: ListEnvsRequst has no fields because envs count is not very big
+                    $ref: '#/components/schemas/ListClustersFilter'
         Status:
             type: object
             properties:
@@ -242,7 +241,7 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        UpdateEnvsReply:
+        UpdateClustersReply:
             type: object
             properties:
                 message:
@@ -251,12 +250,12 @@ components:
                     type: string
                 action:
                     type: string
-        UpdateEnvsRequest:
+        UpdateClustersRequest:
             type: object
             properties:
-                envs:
+                clusters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Env'
+                        $ref: '#/components/schemas/Cluster'
 tags:
-    - name: Envs
+    - name: Clusters

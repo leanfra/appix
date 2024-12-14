@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.appix.v1;
+
+option go_package = "appix/api/appix/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.appix.v1";
+
+service Datacenters {
+	rpc CreateDatacenters (CreateDatacentersRequest) returns (CreateDatacentersReply);
+	rpc UpdateDatacenters (UpdateDatacentersRequest) returns (UpdateDatacentersReply);
+	rpc DeleteDatacenters (DeleteDatacentersRequest) returns (DeleteDatacentersReply);
+	rpc GetDatacenters (GetDatacentersRequest) returns (GetDatacentersReply);
+	rpc ListDatacenters (ListDatacentersRequest) returns (ListDatacentersReply);
+}
+
+message CreateDatacentersRequest {}
+message CreateDatacentersReply {}
+
+message UpdateDatacentersRequest {}
+message UpdateDatacentersReply {}
+
+message DeleteDatacentersRequest {}
+message DeleteDatacentersReply {}
+
+message GetDatacentersRequest {}
+message GetDatacentersReply {}
+
+message ListDatacentersRequest {}
+message ListDatacentersReply {}
