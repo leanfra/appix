@@ -19,6 +19,7 @@ var ProviderSet = wire.NewSet(
 	NewTagsRepoImpl,
 	NewTeamsRepoImpl,
 	NewProductsRepoImpl,
+	NewEnvsRepoImpl,
 )
 
 // Data .

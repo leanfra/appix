@@ -9,4 +9,5 @@ var ProviderSet = wire.NewSet(
 	NewFeaturesUsecase,
 	NewTeamsUsecase,
 	NewProductsUsecase,
+	NewEnvsUsecase,
 )
