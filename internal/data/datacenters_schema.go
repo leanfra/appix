@@ -5,20 +5,20 @@ import (
 )
 
 type Datacenter struct {
-	ID          uint   `gorm:"primaryKey;autoIncrement"`
+	ID          uint32 `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_name,unique"`
 	Description string `gorm:"type:varchar(255);"`
 }
 
-func NewDatacenter(t biz.Datacenter) (*Datacenter, error) {
+func NewDatacenter(t *biz.Datacenter) (*Datacenter, error) {
 	return &Datacenter{
-		ID:          uint(t.Id),
+		ID:          t.Id,
 		Name:        t.Name,
 		Description: t.Description,
 	}, nil
 }
 
-func NewDatacenters(es []biz.Datacenter) ([]*Datacenter, error) {
+func NewDatacenters(es []*biz.Datacenter) ([]*Datacenter, error) {
 	var clusters = make([]*Datacenter, len(es))
 	for i, f := range es {
 		nf, err := NewDatacenter(f)
@@ -32,17 +32,17 @@ func NewDatacenters(es []biz.Datacenter) ([]*Datacenter, error) {
 
 func NewBizDatacenter(t *Datacenter) (*biz.Datacenter, error) {
 	return &biz.Datacenter{
-		Id:          int64(t.ID),
+		Id:          t.ID,
 		Name:        t.Name,
 		Description: t.Description,
 	}, nil
 }
 
-func NewBizDatacenters(es []Datacenter) ([]biz.Datacenter, error) {
-	var biz_clusters = make([]biz.Datacenter, len(es))
+func NewBizDatacenters(es []*Datacenter) ([]*biz.Datacenter, error) {
+	var biz_clusters = make([]*biz.Datacenter, len(es))
 	for i, f := range es {
-		biz_clusters[i] = biz.Datacenter{
-			Id:          int64(f.ID),
+		biz_clusters[i] = &biz.Datacenter{
+			Id:          f.ID,
 			Name:        f.Name,
 			Description: f.Description,
 		}

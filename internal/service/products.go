@@ -24,21 +24,42 @@ func NewProductsService(uc *biz.ProductsUsecase, logger log.Logger) *ProductsSer
 	}
 }
 
+func toBizProduct(p *pb.Product) (*biz.Product, error) {
+	if p == nil {
+		return nil, nil
+	}
+	return &biz.Product{
+		Id:          p.Id,
+		Name:        p.Name,
+		Code:        p.Code,
+		Description: p.Description,
+	}, nil
+}
+
+func toBizProducts(ps []*pb.Product) ([]*biz.Product, error) {
+	if ps == nil {
+		return nil, nil
+	}
+	bizProducts := make([]*biz.Product, len(ps))
+	for i, p := range ps {
+		bizProduct, err := toBizProduct(p)
+		if err != nil {
+			return nil, err
+		}
+		bizProducts[i] = bizProduct
+	}
+	return bizProducts, nil
+}
+
 func (s *ProductsService) CreateProducts(ctx context.Context, req *pb.CreateProductsRequest) (*pb.CreateProductsReply, error) {
 	if req == nil {
 		return nil, ErrRequestNil
 	}
 
-	ps := make([]biz.Product, len(req.Products))
-	for i, p := range req.Products {
-		ps[i] = biz.Product{
-			Code:        p.Code,
-			Description: p.Description,
-			Id:          p.Id,
-			Name:        p.Name,
-		}
+	ps, err := toBizProducts(req.Products)
+	if err == nil {
+		err = s.usecase.CreateProducts(ctx, ps)
 	}
-	err := s.usecase.CreateProducts(ctx, ps)
 	reply := &pb.CreateProductsReply{
 		Action:  "createProducts",
 		Code:    0,
@@ -56,16 +77,11 @@ func (s *ProductsService) UpdateProducts(ctx context.Context, req *pb.UpdateProd
 	if req == nil {
 		return nil, ErrRequestNil
 	}
-	ps := make([]biz.Product, len(req.Products))
-	for i, p := range req.Products {
-		ps[i] = biz.Product{
-			Code:        p.Code,
-			Description: p.Description,
-			Id:          p.Id,
-			Name:        p.Name,
-		}
+	ps, err := toBizProducts(req.Products)
+	if err == nil {
+		err = s.usecase.UpdateProducts(ctx, ps)
 	}
-	err := s.usecase.UpdateProducts(ctx, ps)
+
 	reply := &pb.UpdateProductsReply{
 		Action:  "updateProducts",
 		Code:    0,
@@ -112,12 +128,7 @@ func (s *ProductsService) GetProducts(ctx context.Context, req *pb.GetProductsRe
 		reply.Message = err.Error()
 		return reply, err
 	}
-	reply.Product = &pb.Product{
-		Code:        p.Code,
-		Description: p.Description,
-		Id:          p.Id,
-		Name:        p.Name,
-	}
+	reply.Product = toPbProduct(p)
 	return reply, nil
 }
 func (s *ProductsService) ListProducts(ctx context.Context, req *pb.ListProductsRequest) (*pb.ListProductsReply, error) {
@@ -129,15 +140,11 @@ func (s *ProductsService) ListProducts(ctx context.Context, req *pb.ListProducts
 		filter = &biz.ListProductsFilter{
 			Page:     req.Filter.Page,
 			PageSize: req.Filter.PageSize,
+			Names:    req.Filter.Names,
+			Codes:    req.Filter.Codes,
+			Ids:      req.Filter.Ids,
 		}
 
-		filter.Filters = make([]biz.ProductFilter, len(req.Filter.Filters))
-		for i, f := range req.Filter.Filters {
-			filter.Filters[i] = biz.ProductFilter{
-				Code: f.Code,
-				Name: f.Name,
-			}
-		}
 	}
 
 	ps, err := s.usecase.ListProducts(ctx, filter)
@@ -151,15 +158,32 @@ func (s *ProductsService) ListProducts(ctx context.Context, req *pb.ListProducts
 		reply.Message = err.Error()
 		return reply, err
 	}
-	reply.Products = make([]*pb.Product, len(ps))
-	for i, p := range ps {
-		reply.Products[i] = &pb.Product{
-			Code:        p.Code,
-			Description: p.Description,
-			Id:          p.Id,
-			Name:        p.Name,
-		}
-	}
+	reply.Products = toPbProducts(ps)
 	return reply, nil
 
+}
+
+func toPbProduct(p *biz.Product) *pb.Product {
+	if p == nil {
+		return nil
+	}
+	return &pb.Product{
+		Code:        p.Code,
+		Description: p.Description,
+		Id:          p.Id,
+		Name:        p.Name,
+	}
+}
+
+func toPbProducts(ps []*biz.Product) []*pb.Product {
+	if ps == nil {
+		return nil
+	}
+	reply := []*pb.Product{}
+	for _, p := range ps {
+		if p != nil {
+			reply = append(reply, toPbProduct(p))
+		}
+	}
+	return reply
 }

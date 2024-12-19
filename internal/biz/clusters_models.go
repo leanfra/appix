@@ -1,20 +1,14 @@
 package biz
 
-
-
 type Cluster struct {
-	Id int64
-	Name string
-	Description string 
-}
-
-type ClusterFilter struct {
-	Name string 
+	Id          uint32
+	Name        string
+	Description string
 }
 
 type ListClustersFilter struct {
-	Page int64
-	PageSize int64
-	Filters  []ClusterFilter 
+	Page     uint32
+	PageSize uint32
+	Names    []string
+	Ids      []uint32
 }
-

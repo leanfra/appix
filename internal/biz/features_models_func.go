@@ -1,6 +1,8 @@
 package biz
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func (f *Feature) Validate(isNew bool) error {
 	if len(f.Name) == 0 || len(f.Value) == 0 {
@@ -14,20 +16,22 @@ func (f *Feature) Validate(isNew bool) error {
 	return nil
 }
 
-func (ff *FeatureFilter) Validate() error {
-	if len(ff.Name) == 0 || len(ff.Value) == 0 {
-		return fmt.Errorf("InvalidFeatureFilterNameValue")
-	}
-	return nil
-}
-
 func (lf *ListFeaturesFilter) Validate() error {
-	if lf.Page < 0 || lf.PageSize < 0 {
-		return fmt.Errorf("InvalidPageSize")
+	if lf == nil {
+		return nil
 	}
-	for _, f := range lf.Filters {
-		if err := f.Validate(); err != nil {
-			return err
+	if len(lf.Ids) > MaxFilterValues ||
+		len(lf.Names) > MaxFilterValues ||
+		len(lf.Kvs) > MaxFilterValues {
+
+		return ErrFilterValuesExceedMax
+	}
+
+	if len(lf.Kvs) > 0 {
+		for _, kv := range lf.Kvs {
+			if e := filterKvValidate(kv); e != nil {
+				return e
+			}
 		}
 	}
 	return nil

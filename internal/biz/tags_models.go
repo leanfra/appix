@@ -1,18 +1,15 @@
 package biz
 
 type Tag struct {
-	Id    int64
-	Key   string
-	Value string
-}
-
-type TagFilter struct {
+	Id    uint32
 	Key   string
 	Value string
 }
 
 type ListTagsFilter struct {
-	Page     int64
-	PageSize int64
-	Filters  []TagFilter
+	Page     uint32
+	PageSize uint32
+	Keys     []string
+	Kvs      []string
+	Ids      []uint32
 }

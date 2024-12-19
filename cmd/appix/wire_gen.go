@@ -73,8 +73,22 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	}
 	clustersUsecase := biz.NewClustersUsecase(clustersRepo, logger)
 	clustersService := service.NewClustersService(clustersUsecase, logger)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, logger)
+	datacentersRepo, err := data.NewDatacentersRepoImpl(dataData, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	datacentersUsecase := biz.NewDatacentersUsecase(datacentersRepo, logger)
+	datacentersService := service.NewDatacentersService(datacentersUsecase, logger)
+	hostgroupsRepo, err := data.NewHostgroupsRepoImpl(dataData, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, logger)
+	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
+	grpcServer := server.NewGRPCServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, logger)
+	httpServer := server.NewHTTPServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()

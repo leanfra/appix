@@ -31,7 +31,7 @@ func NewClustersRepoImpl(data *Data, logger log.Logger) (biz.ClustersRepo, error
 }
 
 // CreateClusters is
-func (d *ClustersRepoImpl) CreateClusters(ctx context.Context, cs []biz.Cluster) error {
+func (d *ClustersRepoImpl) CreateClusters(ctx context.Context, cs []*biz.Cluster) error {
 
 	db_cs, err := NewClusters(cs)
 	if err != nil {
@@ -45,7 +45,7 @@ func (d *ClustersRepoImpl) CreateClusters(ctx context.Context, cs []biz.Cluster)
 }
 
 // UpdateClusters is
-func (d *ClustersRepoImpl) UpdateClusters(ctx context.Context, cs []biz.Cluster) error {
+func (d *ClustersRepoImpl) UpdateClusters(ctx context.Context, cs []*biz.Cluster) error {
 
 	db_cs, err := NewClusters(cs)
 	if err != nil {
@@ -59,7 +59,7 @@ func (d *ClustersRepoImpl) UpdateClusters(ctx context.Context, cs []biz.Cluster)
 }
 
 // DeleteClusters is
-func (d *ClustersRepoImpl) DeleteClusters(ctx context.Context, ids []int64) error {
+func (d *ClustersRepoImpl) DeleteClusters(ctx context.Context, ids []uint32) error {
 
 	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Cluster{})
 	if r.Error != nil {
@@ -69,7 +69,7 @@ func (d *ClustersRepoImpl) DeleteClusters(ctx context.Context, ids []int64) erro
 }
 
 // GetClusters is
-func (d *ClustersRepoImpl) GetClusters(ctx context.Context, id int64) (*biz.Cluster, error) {
+func (d *ClustersRepoImpl) GetClusters(ctx context.Context, id uint32) (*biz.Cluster, error) {
 
 	cs := &Cluster{}
 	r := d.data.db.WithContext(ctx).Where("id = ?", id).First(cs)
@@ -89,8 +89,12 @@ func (d *ClustersRepoImpl) ListClusters(ctx context.Context, filter *biz.ListClu
 			offset = int((filter.Page - 1) * filter.PageSize)
 			query = query.Offset(offset).Limit(int(filter.PageSize))
 		}
-		for _, pair := range filter.Filters {
-			query = query.Where("name =?", pair.Name)
+		if len(filter.Ids) > 0 {
+			query = query.Where("id in (?)", filter.Ids)
+		}
+		if len(filter.Names) > 0 {
+			nameConditions := buildOrLike("name", len(filter.Names))
+			query = query.Where(nameConditions, filter.Names)
 		}
 	}
 	r := query.Find(&cs)

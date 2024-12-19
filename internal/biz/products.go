@@ -8,11 +8,11 @@ import (
 )
 
 type ProductsRepo interface {
-	CreateProducts(ctx context.Context, ps []Product) error
-	UpdateProducts(ctx context.Context, ps []Product) error
-	DeleteProducts(ctx context.Context, ids []int64) error
-	GetProducts(ctx context.Context, id int64) (*Product, error)
-	ListProducts(ctx context.Context, filter *ListProductsFilter) ([]Product, error)
+	CreateProducts(ctx context.Context, ps []*Product) error
+	UpdateProducts(ctx context.Context, ps []*Product) error
+	DeleteProducts(ctx context.Context, ids []uint32) error
+	GetProducts(ctx context.Context, id uint32) (*Product, error)
+	ListProducts(ctx context.Context, filter *ListProductsFilter) ([]*Product, error)
 }
 
 type ProductsUsecase struct {
@@ -27,7 +27,7 @@ func NewProductsUsecase(repo ProductsRepo, logger log.Logger) *ProductsUsecase {
 	}
 }
 
-func (s *ProductsUsecase) validate(isNew bool, ps []Product) error {
+func (s *ProductsUsecase) validate(isNew bool, ps []*Product) error {
 	for _, p := range ps {
 		if err := p.Validate(isNew); err != nil {
 			return err
@@ -37,7 +37,7 @@ func (s *ProductsUsecase) validate(isNew bool, ps []Product) error {
 }
 
 // CreateProducts is
-func (s *ProductsUsecase) CreateProducts(ctx context.Context, ps []Product) error {
+func (s *ProductsUsecase) CreateProducts(ctx context.Context, ps []*Product) error {
 	if err := s.validate(true, ps); err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (s *ProductsUsecase) CreateProducts(ctx context.Context, ps []Product) erro
 }
 
 // UpdateProducts is
-func (s *ProductsUsecase) UpdateProducts(ctx context.Context, ps []Product) error {
+func (s *ProductsUsecase) UpdateProducts(ctx context.Context, ps []*Product) error {
 	if err := s.validate(false, ps); err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (s *ProductsUsecase) UpdateProducts(ctx context.Context, ps []Product) erro
 }
 
 // DeleteProducts is
-func (s *ProductsUsecase) DeleteProducts(ctx context.Context, ids []int64) error {
+func (s *ProductsUsecase) DeleteProducts(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
@@ -61,7 +61,7 @@ func (s *ProductsUsecase) DeleteProducts(ctx context.Context, ids []int64) error
 }
 
 // GetProducts is
-func (s *ProductsUsecase) GetProducts(ctx context.Context, id int64) (*Product, error) {
+func (s *ProductsUsecase) GetProducts(ctx context.Context, id uint32) (*Product, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("EmptyId")
 	}
@@ -69,7 +69,7 @@ func (s *ProductsUsecase) GetProducts(ctx context.Context, id int64) (*Product, 
 }
 
 // ListProducts is
-func (s *ProductsUsecase) ListProducts(ctx context.Context, filter *ListProductsFilter) ([]Product, error) {
+func (s *ProductsUsecase) ListProducts(ctx context.Context, filter *ListProductsFilter) ([]*Product, error) {
 	if filter != nil {
 		if err := filter.Validate(); err != nil {
 			return nil, err

@@ -5,20 +5,23 @@ import (
 )
 
 type Cluster struct {
-	ID          uint   `gorm:"primaryKey;autoIncrement"`
+	ID          uint32 `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_name,unique"`
 	Description string `gorm:"type:varchar(255);"`
 }
 
-func NewCluster(t biz.Cluster) (*Cluster, error) {
+func NewCluster(t *biz.Cluster) (*Cluster, error) {
+	if t == nil {
+		return nil, nil
+	}
 	return &Cluster{
-		ID:          uint(t.Id),
+		ID:          t.Id,
 		Name:        t.Name,
 		Description: t.Description,
 	}, nil
 }
 
-func NewClusters(es []biz.Cluster) ([]*Cluster, error) {
+func NewClusters(es []*biz.Cluster) ([]*Cluster, error) {
 	var clusters = make([]*Cluster, len(es))
 	for i, f := range es {
 		nf, err := NewCluster(f)
@@ -32,7 +35,7 @@ func NewClusters(es []biz.Cluster) ([]*Cluster, error) {
 
 func NewBizCluster(t *Cluster) (*biz.Cluster, error) {
 	return &biz.Cluster{
-		Id:          int64(t.ID),
+		Id:          t.ID,
 		Name:        t.Name,
 		Description: t.Description,
 	}, nil
@@ -42,7 +45,7 @@ func NewBizClusters(es []Cluster) ([]biz.Cluster, error) {
 	var biz_clusters = make([]biz.Cluster, len(es))
 	for i, f := range es {
 		biz_clusters[i] = biz.Cluster{
-			Id:          int64(f.ID),
+			Id:          f.ID,
 			Name:        f.Name,
 			Description: f.Description,
 		}

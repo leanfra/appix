@@ -23,22 +23,38 @@ func NewTeamsService(uc *biz.TeamsUsecase, logger log.Logger) *TeamsService {
 	}
 }
 
+func toBizTeam(t *pb.Team) (*biz.Team, error) {
+	return &biz.Team{
+		Id:          t.Id,
+		Code:        t.Code,
+		Description: t.Description,
+		Leader:      t.Leader,
+		Name:        t.Name,
+	}, nil
+}
+
+func toBizTeams(ts []*pb.Team) ([]*biz.Team, error) {
+	var biz_teams = make([]*biz.Team, len(ts))
+	for i, t := range ts {
+		biz_team, err := toBizTeam(t)
+		if err != nil {
+			return nil, err
+		}
+		biz_teams[i] = biz_team
+	}
+	return biz_teams, nil
+}
+
 func (s *TeamsService) CreateTeams(ctx context.Context, req *pb.CreateTeamsRequest) (*pb.CreateTeamsReply, error) {
 
 	if req == nil {
 		return nil, ErrRequestNil
 	}
 
-	ts := make([]biz.Team, len(req.Teams))
-	for i, t := range req.Teams {
-		ts[i] = biz.Team{
-			Code:        t.Code,
-			Description: t.Description,
-			Leader:      t.Leader,
-			Name:        t.Name,
-		}
+	ts, err := toBizTeams(req.Teams)
+	if err == nil {
+		err = s.usecase.CreateTeams(ctx, ts)
 	}
-	err := s.usecase.CreateTeams(ctx, ts)
 
 	reply := &pb.CreateTeamsReply{
 		Action:  "CreateTeams",
@@ -58,17 +74,10 @@ func (s *TeamsService) UpdateTeams(ctx context.Context, req *pb.UpdateTeamsReque
 	if req == nil {
 		return nil, ErrRequestNil
 	}
-	ts := make([]biz.Team, len(req.Teams))
-	for i, t := range req.Teams {
-		ts[i] = biz.Team{
-			Id:          t.Id,
-			Code:        t.Code,
-			Description: t.Description,
-			Leader:      t.Leader,
-			Name:        t.Name,
-		}
+	ts, err := toBizTeams(req.Teams)
+	if err == nil {
+		err = s.usecase.UpdateTeams(ctx, ts)
 	}
-	err := s.usecase.UpdateTeams(ctx, ts)
 	reply := &pb.UpdateTeamsReply{
 		Action:  "UpdateTeams",
 		Code:    0,
@@ -111,13 +120,7 @@ func (s *TeamsService) GetTeams(ctx context.Context, req *pb.GetTeamsRequest) (*
 		Message: "success",
 	}
 	if err == nil {
-		reply.Team = &pb.Team{
-			Id:          t.Id,
-			Code:        t.Code,
-			Description: t.Description,
-			Leader:      t.Leader,
-			Name:        t.Name,
-		}
+		reply.Team = toPbTeam(t)
 		return reply, nil
 	}
 	reply.Code = 1
@@ -134,16 +137,12 @@ func (s *TeamsService) ListTeams(ctx context.Context, req *pb.ListTeamsRequest) 
 		filter = &biz.ListTeamsFilter{
 			Page:     req.Filter.Page,
 			PageSize: req.Filter.PageSize,
+			Ids:      req.Filter.Ids,
+			Codes:    req.Filter.Codes,
+			Names:    req.Filter.Names,
+			Leaders:  req.Filter.Leaders,
 		}
 
-		filter.Filters = make([]biz.TeamFilter, len(req.Filter.Filters))
-		for i, f := range req.Filter.Filters {
-			filter.Filters[i] = biz.TeamFilter{
-				Code:   f.Code,
-				Name:   f.Name,
-				Leader: f.Leader,
-			}
-		}
 	}
 
 	ts, err := s.usecase.ListTeams(ctx, filter)
@@ -153,19 +152,39 @@ func (s *TeamsService) ListTeams(ctx context.Context, req *pb.ListTeamsRequest) 
 		Message: "success",
 	}
 	if err == nil {
-		reply.Teams = make([]*pb.Team, len(ts))
-		for i, t := range ts {
-			reply.Teams[i] = &pb.Team{
-				Id:          t.Id,
-				Code:        t.Code,
-				Description: t.Description,
-				Leader:      t.Leader,
-				Name:        t.Name,
-			}
-		}
+		reply.Teams = toPbTeams(ts)
 		return reply, nil
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
 	return reply, err
+}
+
+func toPbTeam(t *biz.Team) *pb.Team {
+	if t == nil {
+		return nil
+	}
+	return &pb.Team{
+		Id:          t.Id,
+		Code:        t.Code,
+		Description: t.Description,
+		Leader:      t.Leader,
+		Name:        t.Name,
+	}
+}
+
+func toPbTeams(ts []*biz.Team) []*pb.Team {
+	var res []*pb.Team
+	for _, t := range ts {
+		if t != nil {
+			res = append(res, &pb.Team{
+				Id:          t.Id,
+				Code:        t.Code,
+				Description: t.Description,
+				Leader:      t.Leader,
+				Name:        t.Name,
+			})
+		}
+	}
+	return res
 }

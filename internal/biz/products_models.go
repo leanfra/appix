@@ -1,19 +1,16 @@
 package biz
 
-
 type Product struct {
-	Id int64
-	Name string
-	Code string
-	Description string 
-}
-type ProductFilter struct {
-	Name string
-	Code string 
-}
-type ListProductsFilter struct {
-	Page int64
-	PageSize int64
-	Filters  []ProductFilter 
+	Id          uint32
+	Name        string
+	Code        string
+	Description string
 }
 
+type ListProductsFilter struct {
+	Page     uint32
+	PageSize uint32
+	Names    []string
+	Codes    []string
+	Ids      []uint32
+}

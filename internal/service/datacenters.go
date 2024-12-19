@@ -25,19 +25,19 @@ func NewDatacentersService(uc *biz.DatacentersUsecase, logger log.Logger) *Datac
 	}
 }
 
-func toBizDatacenter(c *pb.Datacenter) (biz.Datacenter, error) {
+func toBizDatacenter(c *pb.Datacenter) (*biz.Datacenter, error) {
 	if c == nil {
-		return biz.Datacenter{}, fmt.Errorf("invalidDatacenter")
+		return nil, nil
 	}
-	return biz.Datacenter{
+	return &biz.Datacenter{
 		Id:          c.Id,
 		Name:        c.Name,
 		Description: c.Description,
 	}, nil
 }
 
-func toBizDatacenters(cs []*pb.Datacenter) ([]biz.Datacenter, error) {
-	bizClusters := make([]biz.Datacenter, len(cs))
+func toBizDatacenters(cs []*pb.Datacenter) ([]*biz.Datacenter, error) {
+	bizClusters := make([]*biz.Datacenter, len(cs))
 	for i, c := range cs {
 		bizCluster, err := toBizDatacenter(c)
 		if err != nil {
@@ -125,11 +125,7 @@ func (s *DatacentersService) GetDatacenters(ctx context.Context,
 		Message: "success",
 	}
 	if err == nil {
-		reply.Datacenter = &pb.Datacenter{
-			Id:          datacenter.Id,
-			Name:        datacenter.Name,
-			Description: datacenter.Description,
-		}
+		reply.Datacenter = toPbDatacenter(datacenter)
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
@@ -148,10 +144,8 @@ func (s *DatacentersService) ListDatacenters(ctx context.Context,
 		filter = &biz.ListDatacentersFilter{
 			Page:     req.Filter.Page,
 			PageSize: req.Filter.PageSize,
-		}
-		filter.Filters = make([]biz.DatacenterFilter, len(req.Filter.Filters))
-		for i, f := range req.Filter.Filters {
-			filter.Filters[i].Name = f.Name
+			Ids:      req.Filter.Ids,
+			Names:    req.Filter.Names,
 		}
 	}
 
@@ -162,17 +156,34 @@ func (s *DatacentersService) ListDatacenters(ctx context.Context,
 		Message: "success",
 	}
 	if err == nil {
-		reply.Datacenters = make([]*pb.Datacenter, len(datacenters))
-		for i, d := range datacenters {
-			reply.Datacenters[i] = &pb.Datacenter{
-				Id:          d.Id,
-				Name:        d.Name,
-				Description: d.Description,
-			}
-		}
+		reply.Datacenters = toPbDatacenters(datacenters)
 		return reply, nil
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
 	return reply, err
+}
+
+func toPbDatacenter(d *biz.Datacenter) *pb.Datacenter {
+	if d == nil {
+		return nil
+	}
+	return &pb.Datacenter{
+		Id:          d.Id,
+		Name:        d.Name,
+		Description: d.Description,
+	}
+}
+
+func toPbDatacenters(ds []*biz.Datacenter) []*pb.Datacenter {
+	if ds == nil {
+		return nil
+	}
+	var reply []*pb.Datacenter
+	for _, d := range ds {
+		if d != nil {
+			reply = append(reply, toPbDatacenter(d))
+		}
+	}
+	return reply
 }

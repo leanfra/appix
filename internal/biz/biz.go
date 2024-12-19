@@ -1,6 +1,11 @@
 package biz
 
-import "github.com/google/wire"
+import (
+	"errors"
+	"strings"
+
+	"github.com/google/wire"
+)
 
 // ProviderSet is biz providers.
 var ProviderSet = wire.NewSet(
@@ -12,4 +17,19 @@ var ProviderSet = wire.NewSet(
 	NewEnvsUsecase,
 	NewClustersUsecase,
 	NewDatacentersUsecase,
+	NewHostgroupsUsecase,
 )
+
+const MaxFilterValues = 10
+const FilterKVSplit = ":"
+
+var ErrFilterValuesExceedMax = errors.New("filter values exceeded max number")
+var ErrFilterKVInvalid = errors.New("filter KV invalid format")
+
+func filterKvValidate(kvstr string) error {
+	kv := strings.Split(kvstr, FilterKVSplit)
+	if len(kv) != 2 {
+		return ErrFilterKVInvalid
+	}
+	return nil
+}

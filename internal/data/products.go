@@ -31,7 +31,7 @@ func NewProductsRepoImpl(data *Data, logger log.Logger) (biz.ProductsRepo, error
 }
 
 // CreateProducts is
-func (d *ProductsRepoImpl) CreateProducts(ctx context.Context, ps []biz.Product) error {
+func (d *ProductsRepoImpl) CreateProducts(ctx context.Context, ps []*biz.Product) error {
 	db_ps, err := NewProducts(ps)
 	if err != nil {
 		return err
@@ -45,7 +45,7 @@ func (d *ProductsRepoImpl) CreateProducts(ctx context.Context, ps []biz.Product)
 }
 
 // UpdateProducts is
-func (d *ProductsRepoImpl) UpdateProducts(ctx context.Context, ps []biz.Product) error {
+func (d *ProductsRepoImpl) UpdateProducts(ctx context.Context, ps []*biz.Product) error {
 
 	db_ps, err := NewProducts(ps)
 	if err != nil {
@@ -60,7 +60,7 @@ func (d *ProductsRepoImpl) UpdateProducts(ctx context.Context, ps []biz.Product)
 }
 
 // DeleteProducts is
-func (d *ProductsRepoImpl) DeleteProducts(ctx context.Context, ids []int64) error {
+func (d *ProductsRepoImpl) DeleteProducts(ctx context.Context, ids []uint32) error {
 
 	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Product{})
 	if r.Error != nil {
@@ -70,7 +70,7 @@ func (d *ProductsRepoImpl) DeleteProducts(ctx context.Context, ids []int64) erro
 }
 
 // GetProducts is
-func (d *ProductsRepoImpl) GetProducts(ctx context.Context, id int64) (*biz.Product, error) {
+func (d *ProductsRepoImpl) GetProducts(ctx context.Context, id uint32) (*biz.Product, error) {
 
 	product := &Product{}
 	r := d.data.db.WithContext(ctx).Where("id = ?", id).First(product)
@@ -82,9 +82,9 @@ func (d *ProductsRepoImpl) GetProducts(ctx context.Context, id int64) (*biz.Prod
 
 // ListProducts is
 func (d *ProductsRepoImpl) ListProducts(ctx context.Context,
-	filter *biz.ListProductsFilter) ([]biz.Product, error) {
+	filter *biz.ListProductsFilter) ([]*biz.Product, error) {
 
-	db_ps := []Product{}
+	db_ps := []*Product{}
 	query := d.data.db.WithContext(ctx)
 	if filter != nil {
 		var offset int
@@ -92,20 +92,17 @@ func (d *ProductsRepoImpl) ListProducts(ctx context.Context,
 			offset = int((filter.Page - 1) * filter.PageSize)
 			query = query.Offset(offset).Limit(int(filter.PageSize))
 		}
-
-		orConditions := make([]interface{}, len(filter.Filters))
-
-		for i, pair := range filter.Filters {
-			andConditions := map[string]string{}
-			if pair.Code != "" {
-				andConditions["code"] = pair.Code
-			}
-			if pair.Name != "" {
-				andConditions["name"] = pair.Name
-			}
-			orConditions[i] = andConditions
+		if len(filter.Names) > 0 {
+			nameConditions := buildOrLike("name", len(filter.Names))
+			query = query.Where(nameConditions, filter.Names)
 		}
-		query = query.Where(orConditions)
+		if len(filter.Codes) > 0 {
+			codeConditions := buildOrLike("code", len(filter.Codes))
+			query = query.Where(codeConditions, filter.Codes)
+		}
+		if len(filter.Ids) > 0 {
+			query = query.Where("id in (?)", filter.Ids)
+		}
 	}
 	r := query.Find(&db_ps)
 	if r.Error != nil {

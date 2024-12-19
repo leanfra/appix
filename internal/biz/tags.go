@@ -8,10 +8,10 @@ import (
 )
 
 type TagsRepo interface {
-	CreateTags(ctx context.Context, tags []Tag) error
-	UpdateTags(ctx context.Context, tags []Tag) error
-	DeleteTags(ctx context.Context, ids []int64) error
-	GetTags(ctx context.Context, id int64) (*Tag, error)
+	CreateTags(ctx context.Context, tags []*Tag) error
+	UpdateTags(ctx context.Context, tags []*Tag) error
+	DeleteTags(ctx context.Context, ids []uint32) error
+	GetTags(ctx context.Context, id uint32) (*Tag, error)
 	ListTags(ctx context.Context, filter *ListTagsFilter) ([]Tag, error)
 }
 
@@ -27,7 +27,7 @@ func NewTagsUsecase(repo TagsRepo, logger log.Logger) *TagsUsecase {
 	}
 }
 
-func (s *TagsUsecase) validate(isNew bool, tags []Tag) error {
+func (s *TagsUsecase) validate(isNew bool, tags []*Tag) error {
 	for _, t := range tags {
 		if err := t.Validate(isNew); err != nil {
 			return err
@@ -37,7 +37,7 @@ func (s *TagsUsecase) validate(isNew bool, tags []Tag) error {
 }
 
 // CreateTags is
-func (s *TagsUsecase) CreateTags(ctx context.Context, tags []Tag) error {
+func (s *TagsUsecase) CreateTags(ctx context.Context, tags []*Tag) error {
 	// validate tags
 	if err := s.validate(true, tags); err != nil {
 		return err
@@ -47,7 +47,7 @@ func (s *TagsUsecase) CreateTags(ctx context.Context, tags []Tag) error {
 }
 
 // UpdateTags is
-func (s *TagsUsecase) UpdateTags(ctx context.Context, tags []Tag) error {
+func (s *TagsUsecase) UpdateTags(ctx context.Context, tags []*Tag) error {
 
 	if err := s.validate(false, tags); err != nil {
 		return err
@@ -56,7 +56,7 @@ func (s *TagsUsecase) UpdateTags(ctx context.Context, tags []Tag) error {
 }
 
 // DeleteTags is
-func (s *TagsUsecase) DeleteTags(ctx context.Context, ids []int64) error {
+func (s *TagsUsecase) DeleteTags(ctx context.Context, ids []uint32) error {
 
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
@@ -65,7 +65,7 @@ func (s *TagsUsecase) DeleteTags(ctx context.Context, ids []int64) error {
 }
 
 // GetTags is
-func (s *TagsUsecase) GetTags(ctx context.Context, id int64) (*Tag, error) {
+func (s *TagsUsecase) GetTags(ctx context.Context, id uint32) (*Tag, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("EmptyId")
 	}

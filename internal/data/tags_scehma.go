@@ -5,20 +5,23 @@ import (
 )
 
 type Tag struct {
-	ID    uint   `gorm:"primaryKey;autoIncrement"`
+	ID    uint32 `gorm:"primaryKey;autoIncrement"`
 	Key   string `gorm:"type:varchar(255);index:idx_key_value,unique"`
 	Value string `gorm:"type:varchar(255);index:idx_key_value"`
 }
 
-func NewTag(t biz.Tag) (*Tag, error) {
+func NewTag(t *biz.Tag) (*Tag, error) {
+	if t == nil {
+		return nil, nil
+	}
 	return &Tag{
-		ID:    uint(t.Id),
+		ID:    t.Id,
 		Key:   t.Key,
 		Value: t.Value,
 	}, nil
 }
 
-func NewTags(ts []biz.Tag) ([]*Tag, error) {
+func NewTags(ts []*biz.Tag) ([]*Tag, error) {
 	var tags = make([]*Tag, len(ts))
 	for i, t := range ts {
 		nt, err := NewTag(t)
@@ -32,7 +35,7 @@ func NewTags(ts []biz.Tag) ([]*Tag, error) {
 
 func NewBizTag(t *Tag) (*biz.Tag, error) {
 	return &biz.Tag{
-		Id:    int64(t.ID),
+		Id:    t.ID,
 		Key:   t.Key,
 		Value: t.Value,
 	}, nil
@@ -42,7 +45,7 @@ func NewBizTags(tags []Tag) ([]biz.Tag, error) {
 	var biz_tags = make([]biz.Tag, len(tags))
 	for i, t := range tags {
 		biz_tags[i] = biz.Tag{
-			Id:    int64(t.ID),
+			Id:    t.ID,
 			Key:   t.Key,
 			Value: t.Value,
 		}

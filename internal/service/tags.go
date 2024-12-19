@@ -24,20 +24,39 @@ func NewTagsService(uc *biz.TagsUsecase, logger log.Logger) *TagsService {
 
 // TODO if we need process ctx timeout?
 
+func toBizTag(t *pb.Tag) (*biz.Tag, error) {
+	if t == nil {
+		return nil, nil
+	}
+	return &biz.Tag{
+		Id:    t.Id,
+		Key:   t.Key,
+		Value: t.Value,
+	}, nil
+}
+
+func toBizTags(ts []*pb.Tag) ([]*biz.Tag, error) {
+	tags := make([]*biz.Tag, len(ts))
+	for i, t := range ts {
+		biz_tag, err := toBizTag(t)
+		if err != nil {
+			return nil, err
+		}
+		tags[i] = biz_tag
+	}
+	return tags, nil
+}
+
 func (s *TagsService) CreateTags(ctx context.Context, req *pb.CreateTagsRequest) (*pb.CreateTagsReply, error) {
 
 	if req == nil {
 		return nil, ErrRequestNil
 	}
 
-	tags := make([]biz.Tag, len(req.Tags))
-	for i, tag := range req.Tags {
-		tags[i] = biz.Tag{
-			Key:   tag.Key,
-			Value: tag.Value,
-		}
+	tags, err := toBizTags(req.Tags)
+	if err == nil {
+		err = s.usecase.CreateTags(ctx, tags)
 	}
-	err := s.usecase.CreateTags(ctx, tags)
 
 	reply := &pb.CreateTagsReply{
 		Action:  "CreateTags",
@@ -58,14 +77,10 @@ func (s *TagsService) UpdateTags(ctx context.Context, req *pb.UpdateTagsRequest)
 		return nil, ErrRequestNil
 	}
 
-	tags := make([]biz.Tag, len(req.Tags))
-	for i, tag := range req.Tags {
-		tags[i] = biz.Tag{
-			Key:   tag.Key,
-			Value: tag.Value,
-		}
+	tags, err := toBizTags(req.Tags)
+	if err == nil {
+		err = s.usecase.UpdateTags(ctx, tags)
 	}
-	err := s.usecase.UpdateTags(ctx, tags)
 
 	reply := &pb.UpdateTagsReply{
 		Action:  "UpdateTags",
@@ -136,13 +151,11 @@ func (s *TagsService) ListTags(ctx context.Context, req *pb.ListTagsRequest) (*p
 		filter = &biz.ListTagsFilter{
 			PageSize: req.Filter.PageSize,
 			Page:     req.Filter.Page,
+			Ids:      req.Filter.Ids,
+			Keys:     req.Filter.Keys,
+			Kvs:      req.Filter.Kvs,
 		}
 
-		filter.Filters = make([]biz.TagFilter, len(req.Filter.Filters))
-		for i, f := range req.Filter.Filters {
-			filter.Filters[i].Key = f.Key
-			filter.Filters[i].Value = f.Value
-		}
 	}
 
 	s.log.Infow("function", "listTags", "filter", filter)

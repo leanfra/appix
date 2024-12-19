@@ -29,7 +29,7 @@ func NewTeamsRepoImpl(data *Data, logger log.Logger) (biz.TeamsRepo, error) {
 }
 
 // CreateTeams is
-func (d *TeamsRepoImpl) CreateTeams(ctx context.Context, teams []biz.Team) error {
+func (d *TeamsRepoImpl) CreateTeams(ctx context.Context, teams []*biz.Team) error {
 	db_teams, err := NewTeams(teams)
 	if err != nil {
 		return err
@@ -43,7 +43,7 @@ func (d *TeamsRepoImpl) CreateTeams(ctx context.Context, teams []biz.Team) error
 }
 
 // UpdateTeams is
-func (d *TeamsRepoImpl) UpdateTeams(ctx context.Context, teams []biz.Team) error {
+func (d *TeamsRepoImpl) UpdateTeams(ctx context.Context, teams []*biz.Team) error {
 	db_teams, err := NewTeams(teams)
 	if err != nil {
 		return err
@@ -57,7 +57,7 @@ func (d *TeamsRepoImpl) UpdateTeams(ctx context.Context, teams []biz.Team) error
 }
 
 // DeleteTeams is
-func (d *TeamsRepoImpl) DeleteTeams(ctx context.Context, ids []int64) error {
+func (d *TeamsRepoImpl) DeleteTeams(ctx context.Context, ids []uint32) error {
 	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Team{})
 	if r.Error != nil {
 		return r.Error
@@ -67,7 +67,7 @@ func (d *TeamsRepoImpl) DeleteTeams(ctx context.Context, ids []int64) error {
 }
 
 // GetTeams is
-func (d *TeamsRepoImpl) GetTeams(ctx context.Context, id int64) (*biz.Team, error) {
+func (d *TeamsRepoImpl) GetTeams(ctx context.Context, id uint32) (*biz.Team, error) {
 	team := &Team{}
 	r := d.data.db.WithContext(ctx).First(team, id)
 	if r.Error != nil {
@@ -79,9 +79,9 @@ func (d *TeamsRepoImpl) GetTeams(ctx context.Context, id int64) (*biz.Team, erro
 
 // ListTeams is
 func (d *TeamsRepoImpl) ListTeams(ctx context.Context,
-	filter *biz.ListTeamsFilter) ([]biz.Team, error) {
+	filter *biz.ListTeamsFilter) ([]*biz.Team, error) {
 
-	db_teams := []Team{}
+	db_teams := []*Team{}
 	query := d.data.db.WithContext(ctx)
 	if filter != nil {
 		var offset int
@@ -90,22 +90,21 @@ func (d *TeamsRepoImpl) ListTeams(ctx context.Context,
 			query = query.Offset(offset).Limit(int(filter.PageSize))
 		}
 
-		orConditions := make([]interface{}, len(filter.Filters))
-		for i, pair := range filter.Filters {
-
-			andConditions := map[string]string{}
-			if pair.Code != "" {
-				andConditions["code"] = pair.Code
-			}
-			if pair.Leader != "" {
-				andConditions["leader"] = pair.Leader
-			}
-			if pair.Name != "" {
-				andConditions["name"] = pair.Name
-			}
-			orConditions[i] = andConditions
+		if len(filter.Ids) > 0 {
+			query = query.Where("id in (?)", filter.Ids)
 		}
-		query = query.Where(orConditions)
+		if len(filter.Codes) > 0 {
+			codeConditions := buildOrLike("code", len(filter.Codes))
+			query = query.Where(codeConditions, filter.Codes)
+		}
+		if len(filter.Leaders) > 0 {
+			leaderConditions := buildOrLike("leader", len(filter.Leaders))
+			query = query.Where(leaderConditions, filter.Leaders)
+		}
+		if len(filter.Names) > 0 {
+			nameConditions := buildOrLike("name", len(filter.Names))
+			query = query.Where(nameConditions, filter.Names)
+		}
 	}
 	r := query.Find(&db_teams)
 	if r.Error != nil {

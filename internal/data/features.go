@@ -3,6 +3,7 @@ package data
 import (
 	"appix/internal/biz"
 	"context"
+	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
@@ -34,7 +35,7 @@ func NewFeaturesRepoImpl(data *Data, logger log.Logger) (biz.FeaturesRepo, error
 // XXX all data passed in should be validated.
 
 // CreateFeatures is
-func (d *FeaturesRepoImpl) CreateFeatures(ctx context.Context, features []biz.Feature) error {
+func (d *FeaturesRepoImpl) CreateFeatures(ctx context.Context, features []*biz.Feature) error {
 
 	db_ft, err := NewFeatures(features)
 	if err != nil {
@@ -49,7 +50,7 @@ func (d *FeaturesRepoImpl) CreateFeatures(ctx context.Context, features []biz.Fe
 }
 
 // UpdateFeatures is
-func (d *FeaturesRepoImpl) UpdateFeatures(ctx context.Context, features []biz.Feature) error {
+func (d *FeaturesRepoImpl) UpdateFeatures(ctx context.Context, features []*biz.Feature) error {
 
 	db_fts, err := NewFeatures(features)
 	if err != nil {
@@ -64,7 +65,7 @@ func (d *FeaturesRepoImpl) UpdateFeatures(ctx context.Context, features []biz.Fe
 }
 
 // DeleteFeatures is
-func (d *FeaturesRepoImpl) DeleteFeatures(ctx context.Context, ids []int64) error {
+func (d *FeaturesRepoImpl) DeleteFeatures(ctx context.Context, ids []uint32) error {
 
 	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Feature{})
 	if r.Error != nil {
@@ -74,7 +75,7 @@ func (d *FeaturesRepoImpl) DeleteFeatures(ctx context.Context, ids []int64) erro
 }
 
 // GetFeatures is
-func (d *FeaturesRepoImpl) GetFeatures(ctx context.Context, id int64) (*biz.Feature, error) {
+func (d *FeaturesRepoImpl) GetFeatures(ctx context.Context, id uint32) (*biz.Feature, error) {
 
 	feature := &Feature{}
 	r := d.data.db.WithContext(ctx).First(feature, id)
@@ -98,9 +99,21 @@ func (d *FeaturesRepoImpl) ListFeatures(ctx context.Context, filter *biz.ListFea
 			offset = int((filter.Page - 1) * filter.PageSize)
 			query = query.Offset(offset).Limit(int(filter.PageSize))
 		}
-
-		for _, pair := range filter.Filters {
-			query = query.Where("name =? AND value =?", pair.Name, pair.Value)
+		if len(filter.Ids) > 0 {
+			query = query.Where("id in (?)", filter.Ids)
+		}
+		if len(filter.Names) > 0 {
+			nameConditions := buildOrLike("name", len(filter.Names))
+			query = query.Where(nameConditions, filter.Names)
+		}
+		if len(filter.Kvs) > 0 {
+			kvConditions := buildOrKV("key", "value", len(filter.Kvs))
+			kvs := []string{}
+			for _, kv := range filter.Kvs {
+				_kvs := strings.Split(kv, ":")
+				kvs = append(kvs, _kvs...)
+			}
+			query = query.Where(kvConditions, kvs)
 		}
 	}
 	r = query.Find(&features)

@@ -25,19 +25,19 @@ func NewClustersService(uc *biz.ClustersUsecase, logger log.Logger) *ClustersSer
 	}
 }
 
-func toBizCluster(c *pb.Cluster) (biz.Cluster, error) {
+func toBizCluster(c *pb.Cluster) (*biz.Cluster, error) {
 	if c == nil {
-		return biz.Cluster{}, fmt.Errorf("invalidCluster")
+		return nil, nil
 	}
-	return biz.Cluster{
+	return &biz.Cluster{
 		Id:          c.Id,
 		Name:        c.Name,
 		Description: c.Description,
 	}, nil
 }
 
-func toBizClusters(cs []*pb.Cluster) ([]biz.Cluster, error) {
-	bizClusters := make([]biz.Cluster, len(cs))
+func toBizClusters(cs []*pb.Cluster) ([]*biz.Cluster, error) {
+	bizClusters := make([]*biz.Cluster, len(cs))
 	for i, c := range cs {
 		bizCluster, err := toBizCluster(c)
 		if err != nil {
@@ -142,12 +142,8 @@ func (s *ClustersService) ListClusters(ctx context.Context, req *pb.ListClusters
 		filter = &biz.ListClustersFilter{
 			PageSize: req.Filter.PageSize,
 			Page:     req.Filter.Page,
-		}
-		filter.Filters = make([]biz.ClusterFilter, len(req.Filter.Filters))
-		for i, f := range req.Filter.Filters {
-			filter.Filters[i] = biz.ClusterFilter{
-				Name: f.Name,
-			}
+			Ids:      req.Filter.Ids,
+			Names:    req.Filter.Names,
 		}
 	}
 

@@ -30,7 +30,7 @@ func NewTagsRepoImpl(data *Data, logger log.Logger) (biz.TagsRepo, error) {
 }
 
 // CreateTags is
-func (d *TagsRepoImpl) CreateTags(ctx context.Context, tags []biz.Tag) error {
+func (d *TagsRepoImpl) CreateTags(ctx context.Context, tags []*biz.Tag) error {
 
 	db_tags, err := NewTags(tags)
 	if err != nil {
@@ -44,7 +44,7 @@ func (d *TagsRepoImpl) CreateTags(ctx context.Context, tags []biz.Tag) error {
 }
 
 // UpdateTags is
-func (d *TagsRepoImpl) UpdateTags(ctx context.Context, tags []biz.Tag) error {
+func (d *TagsRepoImpl) UpdateTags(ctx context.Context, tags []*biz.Tag) error {
 	db_tags, err := NewTags(tags)
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func (d *TagsRepoImpl) UpdateTags(ctx context.Context, tags []biz.Tag) error {
 }
 
 // DeleteTags is
-func (d *TagsRepoImpl) DeleteTags(ctx context.Context, ids []int64) error {
+func (d *TagsRepoImpl) DeleteTags(ctx context.Context, ids []uint32) error {
 
 	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Tag{})
 	if r.Error != nil {
@@ -68,7 +68,7 @@ func (d *TagsRepoImpl) DeleteTags(ctx context.Context, ids []int64) error {
 }
 
 // GetTags is
-func (d *TagsRepoImpl) GetTags(ctx context.Context, id int64) (*biz.Tag, error) {
+func (d *TagsRepoImpl) GetTags(ctx context.Context, id uint32) (*biz.Tag, error) {
 
 	tag := &Tag{}
 	r := d.data.db.WithContext(ctx).First(tag, id)
@@ -92,9 +92,16 @@ func (d *TagsRepoImpl) ListTags(ctx context.Context,
 			offset = int((filter.Page - 1) * filter.PageSize)
 			query = query.Offset(offset).Limit(int(filter.PageSize))
 		}
-
-		for _, pair := range filter.Filters {
-			query = query.Where("key =? AND value =?", pair.Key, pair.Value)
+		if len(filter.Ids) > 0 {
+			query = query.Where("id in (?)", filter.Ids)
+		}
+		if len(filter.Keys) > 0 {
+			keyConditions := buildOrLike("key", len(filter.Keys))
+			query = query.Where(keyConditions, filter.Keys)
+		}
+		if len(filter.Kvs) > 0 {
+			kvConditions := buildOrKV("key", "value", len(filter.Kvs))
+			query = query.Where(kvConditions, filter.Kvs)
 		}
 	}
 	r = query.Find(&tags)

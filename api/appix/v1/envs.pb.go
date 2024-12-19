@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.35.2
 // 	protoc        v3.12.4
-// source: api/appix/v1/envs.proto
+// source: appix/v1/envs.proto
 
 package v1
 
@@ -27,14 +27,14 @@ type Env struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id          uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name        string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 }
 
 func (x *Env) Reset() {
 	*x = Env{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[0]
+	mi := &file_appix_v1_envs_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +46,7 @@ func (x *Env) String() string {
 func (*Env) ProtoMessage() {}
 
 func (x *Env) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[0]
+	mi := &file_appix_v1_envs_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,10 +59,10 @@ func (x *Env) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Env.ProtoReflect.Descriptor instead.
 func (*Env) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{0}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Env) GetId() int64 {
+func (x *Env) GetId() uint32 {
 	if x != nil {
 		return x.Id
 	}
@@ -93,7 +93,7 @@ type CreateEnvsRequest struct {
 
 func (x *CreateEnvsRequest) Reset() {
 	*x = CreateEnvsRequest{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[1]
+	mi := &file_appix_v1_envs_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -105,7 +105,7 @@ func (x *CreateEnvsRequest) String() string {
 func (*CreateEnvsRequest) ProtoMessage() {}
 
 func (x *CreateEnvsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[1]
+	mi := &file_appix_v1_envs_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -118,7 +118,7 @@ func (x *CreateEnvsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateEnvsRequest.ProtoReflect.Descriptor instead.
 func (*CreateEnvsRequest) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{1}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CreateEnvsRequest) GetEnvs() []*Env {
@@ -134,13 +134,13 @@ type CreateEnvsReply struct {
 	unknownFields protoimpl.UnknownFields
 
 	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	Code    int64  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
+	Code    int32  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
 	Action  string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
 }
 
 func (x *CreateEnvsReply) Reset() {
 	*x = CreateEnvsReply{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[2]
+	mi := &file_appix_v1_envs_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -152,7 +152,7 @@ func (x *CreateEnvsReply) String() string {
 func (*CreateEnvsReply) ProtoMessage() {}
 
 func (x *CreateEnvsReply) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[2]
+	mi := &file_appix_v1_envs_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -165,7 +165,7 @@ func (x *CreateEnvsReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateEnvsReply.ProtoReflect.Descriptor instead.
 func (*CreateEnvsReply) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{2}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CreateEnvsReply) GetMessage() string {
@@ -175,7 +175,7 @@ func (x *CreateEnvsReply) GetMessage() string {
 	return ""
 }
 
-func (x *CreateEnvsReply) GetCode() int64 {
+func (x *CreateEnvsReply) GetCode() int32 {
 	if x != nil {
 		return x.Code
 	}
@@ -199,7 +199,7 @@ type UpdateEnvsRequest struct {
 
 func (x *UpdateEnvsRequest) Reset() {
 	*x = UpdateEnvsRequest{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[3]
+	mi := &file_appix_v1_envs_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -211,7 +211,7 @@ func (x *UpdateEnvsRequest) String() string {
 func (*UpdateEnvsRequest) ProtoMessage() {}
 
 func (x *UpdateEnvsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[3]
+	mi := &file_appix_v1_envs_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -224,7 +224,7 @@ func (x *UpdateEnvsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateEnvsRequest.ProtoReflect.Descriptor instead.
 func (*UpdateEnvsRequest) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{3}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *UpdateEnvsRequest) GetEnvs() []*Env {
@@ -240,13 +240,13 @@ type UpdateEnvsReply struct {
 	unknownFields protoimpl.UnknownFields
 
 	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	Code    int64  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
+	Code    int32  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
 	Action  string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
 }
 
 func (x *UpdateEnvsReply) Reset() {
 	*x = UpdateEnvsReply{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[4]
+	mi := &file_appix_v1_envs_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -258,7 +258,7 @@ func (x *UpdateEnvsReply) String() string {
 func (*UpdateEnvsReply) ProtoMessage() {}
 
 func (x *UpdateEnvsReply) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[4]
+	mi := &file_appix_v1_envs_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -271,7 +271,7 @@ func (x *UpdateEnvsReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateEnvsReply.ProtoReflect.Descriptor instead.
 func (*UpdateEnvsReply) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{4}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UpdateEnvsReply) GetMessage() string {
@@ -281,7 +281,7 @@ func (x *UpdateEnvsReply) GetMessage() string {
 	return ""
 }
 
-func (x *UpdateEnvsReply) GetCode() int64 {
+func (x *UpdateEnvsReply) GetCode() int32 {
 	if x != nil {
 		return x.Code
 	}
@@ -300,12 +300,12 @@ type DeleteEnvsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Ids []int64 `protobuf:"varint,1,rep,packed,name=ids,proto3" json:"ids,omitempty"`
+	Ids []uint32 `protobuf:"varint,1,rep,packed,name=ids,proto3" json:"ids,omitempty"`
 }
 
 func (x *DeleteEnvsRequest) Reset() {
 	*x = DeleteEnvsRequest{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[5]
+	mi := &file_appix_v1_envs_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -317,7 +317,7 @@ func (x *DeleteEnvsRequest) String() string {
 func (*DeleteEnvsRequest) ProtoMessage() {}
 
 func (x *DeleteEnvsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[5]
+	mi := &file_appix_v1_envs_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -330,10 +330,10 @@ func (x *DeleteEnvsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteEnvsRequest.ProtoReflect.Descriptor instead.
 func (*DeleteEnvsRequest) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{5}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *DeleteEnvsRequest) GetIds() []int64 {
+func (x *DeleteEnvsRequest) GetIds() []uint32 {
 	if x != nil {
 		return x.Ids
 	}
@@ -346,13 +346,13 @@ type DeleteEnvsReply struct {
 	unknownFields protoimpl.UnknownFields
 
 	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	Code    int64  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
+	Code    int32  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
 	Action  string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
 }
 
 func (x *DeleteEnvsReply) Reset() {
 	*x = DeleteEnvsReply{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[6]
+	mi := &file_appix_v1_envs_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -364,7 +364,7 @@ func (x *DeleteEnvsReply) String() string {
 func (*DeleteEnvsReply) ProtoMessage() {}
 
 func (x *DeleteEnvsReply) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[6]
+	mi := &file_appix_v1_envs_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -377,7 +377,7 @@ func (x *DeleteEnvsReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteEnvsReply.ProtoReflect.Descriptor instead.
 func (*DeleteEnvsReply) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{6}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *DeleteEnvsReply) GetMessage() string {
@@ -387,7 +387,7 @@ func (x *DeleteEnvsReply) GetMessage() string {
 	return ""
 }
 
-func (x *DeleteEnvsReply) GetCode() int64 {
+func (x *DeleteEnvsReply) GetCode() int32 {
 	if x != nil {
 		return x.Code
 	}
@@ -406,12 +406,12 @@ type GetEnvsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id int64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
 func (x *GetEnvsRequest) Reset() {
 	*x = GetEnvsRequest{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[7]
+	mi := &file_appix_v1_envs_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -423,7 +423,7 @@ func (x *GetEnvsRequest) String() string {
 func (*GetEnvsRequest) ProtoMessage() {}
 
 func (x *GetEnvsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[7]
+	mi := &file_appix_v1_envs_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -436,10 +436,10 @@ func (x *GetEnvsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEnvsRequest.ProtoReflect.Descriptor instead.
 func (*GetEnvsRequest) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{7}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *GetEnvsRequest) GetId() int64 {
+func (x *GetEnvsRequest) GetId() uint32 {
 	if x != nil {
 		return x.Id
 	}
@@ -452,14 +452,14 @@ type GetEnvsReply struct {
 	unknownFields protoimpl.UnknownFields
 
 	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	Code    int64  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
+	Code    int32  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
 	Action  string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
 	Env     *Env   `protobuf:"bytes,4,opt,name=env,proto3" json:"env,omitempty"`
 }
 
 func (x *GetEnvsReply) Reset() {
 	*x = GetEnvsReply{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[8]
+	mi := &file_appix_v1_envs_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -471,7 +471,7 @@ func (x *GetEnvsReply) String() string {
 func (*GetEnvsReply) ProtoMessage() {}
 
 func (x *GetEnvsReply) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[8]
+	mi := &file_appix_v1_envs_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -484,7 +484,7 @@ func (x *GetEnvsReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetEnvsReply.ProtoReflect.Descriptor instead.
 func (*GetEnvsReply) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{8}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetEnvsReply) GetMessage() string {
@@ -494,7 +494,7 @@ func (x *GetEnvsReply) GetMessage() string {
 	return ""
 }
 
-func (x *GetEnvsReply) GetCode() int64 {
+func (x *GetEnvsReply) GetCode() int32 {
 	if x != nil {
 		return x.Code
 	}
@@ -516,65 +516,20 @@ func (x *GetEnvsReply) GetEnv() *Env {
 }
 
 // gratos::model
-type EnvFilter struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-}
-
-func (x *EnvFilter) Reset() {
-	*x = EnvFilter{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[9]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *EnvFilter) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*EnvFilter) ProtoMessage() {}
-
-func (x *EnvFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[9]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use EnvFilter.ProtoReflect.Descriptor instead.
-func (*EnvFilter) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *EnvFilter) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-// gratos::model
 type ListEnvsFilter struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Page     int64        `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
-	PageSize int64        `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	Filters  []*EnvFilter `protobuf:"bytes,3,rep,name=filters,proto3" json:"filters,omitempty"`
+	Page     uint32   `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize uint32   `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	Names    []string `protobuf:"bytes,3,rep,name=names,proto3" json:"names,omitempty"`
+	Ids      []uint32 `protobuf:"varint,4,rep,packed,name=ids,proto3" json:"ids,omitempty"`
 }
 
 func (x *ListEnvsFilter) Reset() {
 	*x = ListEnvsFilter{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[10]
+	mi := &file_appix_v1_envs_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -586,7 +541,7 @@ func (x *ListEnvsFilter) String() string {
 func (*ListEnvsFilter) ProtoMessage() {}
 
 func (x *ListEnvsFilter) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[10]
+	mi := &file_appix_v1_envs_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -599,26 +554,33 @@ func (x *ListEnvsFilter) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListEnvsFilter.ProtoReflect.Descriptor instead.
 func (*ListEnvsFilter) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{10}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *ListEnvsFilter) GetPage() int64 {
+func (x *ListEnvsFilter) GetPage() uint32 {
 	if x != nil {
 		return x.Page
 	}
 	return 0
 }
 
-func (x *ListEnvsFilter) GetPageSize() int64 {
+func (x *ListEnvsFilter) GetPageSize() uint32 {
 	if x != nil {
 		return x.PageSize
 	}
 	return 0
 }
 
-func (x *ListEnvsFilter) GetFilters() []*EnvFilter {
+func (x *ListEnvsFilter) GetNames() []string {
 	if x != nil {
-		return x.Filters
+		return x.Names
+	}
+	return nil
+}
+
+func (x *ListEnvsFilter) GetIds() []uint32 {
+	if x != nil {
+		return x.Ids
 	}
 	return nil
 }
@@ -634,7 +596,7 @@ type ListEnvsRequest struct {
 
 func (x *ListEnvsRequest) Reset() {
 	*x = ListEnvsRequest{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[11]
+	mi := &file_appix_v1_envs_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -646,7 +608,7 @@ func (x *ListEnvsRequest) String() string {
 func (*ListEnvsRequest) ProtoMessage() {}
 
 func (x *ListEnvsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[11]
+	mi := &file_appix_v1_envs_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -659,7 +621,7 @@ func (x *ListEnvsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListEnvsRequest.ProtoReflect.Descriptor instead.
 func (*ListEnvsRequest) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{11}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ListEnvsRequest) GetFilter() *ListEnvsFilter {
@@ -675,14 +637,14 @@ type ListEnvsReply struct {
 	unknownFields protoimpl.UnknownFields
 
 	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	Code    int64  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
+	Code    int32  `protobuf:"varint,2,opt,name=code,proto3" json:"code,omitempty"`
 	Action  string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
 	Envs    []*Env `protobuf:"bytes,4,rep,name=envs,proto3" json:"envs,omitempty"`
 }
 
 func (x *ListEnvsReply) Reset() {
 	*x = ListEnvsReply{}
-	mi := &file_api_appix_v1_envs_proto_msgTypes[12]
+	mi := &file_appix_v1_envs_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -694,7 +656,7 @@ func (x *ListEnvsReply) String() string {
 func (*ListEnvsReply) ProtoMessage() {}
 
 func (x *ListEnvsReply) ProtoReflect() protoreflect.Message {
-	mi := &file_api_appix_v1_envs_proto_msgTypes[12]
+	mi := &file_appix_v1_envs_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -707,7 +669,7 @@ func (x *ListEnvsReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListEnvsReply.ProtoReflect.Descriptor instead.
 func (*ListEnvsReply) Descriptor() ([]byte, []int) {
-	return file_api_appix_v1_envs_proto_rawDescGZIP(), []int{12}
+	return file_appix_v1_envs_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *ListEnvsReply) GetMessage() string {
@@ -717,7 +679,7 @@ func (x *ListEnvsReply) GetMessage() string {
 	return ""
 }
 
-func (x *ListEnvsReply) GetCode() int64 {
+func (x *ListEnvsReply) GetCode() int32 {
 	if x != nil {
 		return x.Code
 	}
@@ -738,64 +700,61 @@ func (x *ListEnvsReply) GetEnvs() []*Env {
 	return nil
 }
 
-var File_api_appix_v1_envs_proto protoreflect.FileDescriptor
+var File_appix_v1_envs_proto protoreflect.FileDescriptor
 
-var file_api_appix_v1_envs_proto_rawDesc = []byte{
-	0x0a, 0x17, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x70, 0x70, 0x69, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x65,
-	0x6e, 0x76, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0c, 0x61, 0x70, 0x69, 0x2e, 0x61,
-	0x70, 0x70, 0x69, 0x78, 0x2e, 0x76, 0x31, 0x1a, 0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f,
-	0x61, 0x70, 0x69, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x4b, 0x0a, 0x03, 0x45, 0x6e, 0x76, 0x12, 0x0e, 0x0a, 0x02,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04,
-	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
-	0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
-	0x6f, 0x6e, 0x22, 0x3a, 0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x76, 0x73,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x25, 0x0a, 0x04, 0x65, 0x6e, 0x76, 0x73, 0x18,
-	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x61, 0x70, 0x70, 0x69,
-	0x78, 0x2e, 0x76, 0x31, 0x2e, 0x45, 0x6e, 0x76, 0x52, 0x04, 0x65, 0x6e, 0x76, 0x73, 0x22, 0x57,
-	0x0a, 0x0f, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x70, 0x6c,
-	0x79, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63,
-	0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12,
-	0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x3a, 0x0a, 0x11, 0x55, 0x70, 0x64, 0x61, 0x74,
-	0x65, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x25, 0x0a, 0x04,
-	0x65, 0x6e, 0x76, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x61, 0x70, 0x69,
-	0x2e, 0x61, 0x70, 0x70, 0x69, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x45, 0x6e, 0x76, 0x52, 0x04, 0x65,
-	0x6e, 0x76, 0x73, 0x22, 0x57, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x76,
-	0x73, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
-	0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04,
-	0x63, 0x6f, 0x64, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x25, 0x0a, 0x11,
-	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x10, 0x0a, 0x03, 0x69, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x03, 0x52, 0x03,
-	0x69, 0x64, 0x73, 0x22, 0x57, 0x0a, 0x0f, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x6e, 0x76,
-	0x73, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
-	0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04,
-	0x63, 0x6f, 0x64, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x20, 0x0a, 0x0e,
-	0x47, 0x65, 0x74, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e,
-	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x22, 0x79,
-	0x0a, 0x0c, 0x47, 0x65, 0x74, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x18,
-	0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x16, 0x0a, 0x06,
-	0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63,
-	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x23, 0x0a, 0x03, 0x65, 0x6e, 0x76, 0x18, 0x04, 0x20, 0x01, 0x28,
+var file_appix_v1_envs_proto_rawDesc = []byte{
+	0x0a, 0x13, 0x61, 0x70, 0x70, 0x69, 0x78, 0x2f, 0x76, 0x31, 0x2f, 0x65, 0x6e, 0x76, 0x73, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0c, 0x61, 0x70, 0x69, 0x2e, 0x61, 0x70, 0x70, 0x69, 0x78,
+	0x2e, 0x76, 0x31, 0x1a, 0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f,
+	0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x22, 0x4b, 0x0a, 0x03, 0x45, 0x6e, 0x76, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b,
+	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x3a,
+	0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x25, 0x0a, 0x04, 0x65, 0x6e, 0x76, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28,
 	0x0b, 0x32, 0x11, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x61, 0x70, 0x70, 0x69, 0x78, 0x2e, 0x76, 0x31,
-	0x2e, 0x45, 0x6e, 0x76, 0x52, 0x03, 0x65, 0x6e, 0x76, 0x22, 0x1f, 0x0a, 0x09, 0x45, 0x6e, 0x76,
-	0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x74, 0x0a, 0x0e, 0x4c, 0x69,
-	0x73, 0x74, 0x45, 0x6e, 0x76, 0x73, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04,
-	0x70, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65,
-	0x12, 0x1b, 0x0a, 0x09, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x03, 0x52, 0x08, 0x70, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x31, 0x0a,
-	0x07, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17,
-	0x2e, 0x61, 0x70, 0x69, 0x2e, 0x61, 0x70, 0x70, 0x69, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x45, 0x6e,
-	0x76, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x52, 0x07, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x73,
+	0x2e, 0x45, 0x6e, 0x76, 0x52, 0x04, 0x65, 0x6e, 0x76, 0x73, 0x22, 0x57, 0x0a, 0x0f, 0x43, 0x72,
+	0x65, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x18, 0x0a,
+	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x22, 0x3a, 0x0a, 0x11, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x76,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x25, 0x0a, 0x04, 0x65, 0x6e, 0x76, 0x73,
+	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x61, 0x70, 0x70,
+	0x69, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x45, 0x6e, 0x76, 0x52, 0x04, 0x65, 0x6e, 0x76, 0x73, 0x22,
+	0x57, 0x0a, 0x0f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x70,
+	0x6c, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04,
+	0x63, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65,
+	0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x25, 0x0a, 0x11, 0x44, 0x65, 0x6c, 0x65,
+	0x74, 0x65, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x10, 0x0a,
+	0x03, 0x69, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0d, 0x52, 0x03, 0x69, 0x64, 0x73, 0x22,
+	0x57, 0x0a, 0x0f, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x70,
+	0x6c, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04,
+	0x63, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65,
+	0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x20, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x45,
+	0x6e, 0x76, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02, 0x69, 0x64, 0x22, 0x79, 0x0a, 0x0c, 0x47, 0x65,
+	0x74, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x23, 0x0a, 0x03, 0x65, 0x6e, 0x76, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e,
+	0x61, 0x70, 0x69, 0x2e, 0x61, 0x70, 0x70, 0x69, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x45, 0x6e, 0x76,
+	0x52, 0x03, 0x65, 0x6e, 0x76, 0x22, 0x69, 0x0a, 0x0e, 0x4c, 0x69, 0x73, 0x74, 0x45, 0x6e, 0x76,
+	0x73, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x70, 0x61, 0x67, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x70,
+	0x61, 0x67, 0x65, 0x5f, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x08,
+	0x70, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6e, 0x61, 0x6d, 0x65,
+	0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x05, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x12, 0x10,
+	0x0a, 0x03, 0x69, 0x64, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0d, 0x52, 0x03, 0x69, 0x64, 0x73,
 	0x22, 0x47, 0x0a, 0x0f, 0x4c, 0x69, 0x73, 0x74, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x71, 0x75,
 	0x65, 0x73, 0x74, 0x12, 0x34, 0x0a, 0x06, 0x66, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x61, 0x70, 0x70, 0x69, 0x78, 0x2e,
@@ -804,7 +763,7 @@ var file_api_appix_v1_envs_proto_rawDesc = []byte{
 	0x74, 0x45, 0x6e, 0x76, 0x73, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65,
 	0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73,
 	0x73, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x03, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69,
+	0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69,
 	0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e,
 	0x12, 0x25, 0x0a, 0x04, 0x65, 0x6e, 0x76, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x11,
 	0x2e, 0x61, 0x70, 0x69, 0x2e, 0x61, 0x70, 0x70, 0x69, 0x78, 0x2e, 0x76, 0x31, 0x2e, 0x45, 0x6e,
@@ -849,19 +808,19 @@ var file_api_appix_v1_envs_proto_rawDesc = []byte{
 }
 
 var (
-	file_api_appix_v1_envs_proto_rawDescOnce sync.Once
-	file_api_appix_v1_envs_proto_rawDescData = file_api_appix_v1_envs_proto_rawDesc
+	file_appix_v1_envs_proto_rawDescOnce sync.Once
+	file_appix_v1_envs_proto_rawDescData = file_appix_v1_envs_proto_rawDesc
 )
 
-func file_api_appix_v1_envs_proto_rawDescGZIP() []byte {
-	file_api_appix_v1_envs_proto_rawDescOnce.Do(func() {
-		file_api_appix_v1_envs_proto_rawDescData = protoimpl.X.CompressGZIP(file_api_appix_v1_envs_proto_rawDescData)
+func file_appix_v1_envs_proto_rawDescGZIP() []byte {
+	file_appix_v1_envs_proto_rawDescOnce.Do(func() {
+		file_appix_v1_envs_proto_rawDescData = protoimpl.X.CompressGZIP(file_appix_v1_envs_proto_rawDescData)
 	})
-	return file_api_appix_v1_envs_proto_rawDescData
+	return file_appix_v1_envs_proto_rawDescData
 }
 
-var file_api_appix_v1_envs_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
-var file_api_appix_v1_envs_proto_goTypes = []any{
+var file_appix_v1_envs_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_appix_v1_envs_proto_goTypes = []any{
 	(*Env)(nil),               // 0: api.appix.v1.Env
 	(*CreateEnvsRequest)(nil), // 1: api.appix.v1.CreateEnvsRequest
 	(*CreateEnvsReply)(nil),   // 2: api.appix.v1.CreateEnvsReply
@@ -871,56 +830,54 @@ var file_api_appix_v1_envs_proto_goTypes = []any{
 	(*DeleteEnvsReply)(nil),   // 6: api.appix.v1.DeleteEnvsReply
 	(*GetEnvsRequest)(nil),    // 7: api.appix.v1.GetEnvsRequest
 	(*GetEnvsReply)(nil),      // 8: api.appix.v1.GetEnvsReply
-	(*EnvFilter)(nil),         // 9: api.appix.v1.EnvFilter
-	(*ListEnvsFilter)(nil),    // 10: api.appix.v1.ListEnvsFilter
-	(*ListEnvsRequest)(nil),   // 11: api.appix.v1.ListEnvsRequest
-	(*ListEnvsReply)(nil),     // 12: api.appix.v1.ListEnvsReply
+	(*ListEnvsFilter)(nil),    // 9: api.appix.v1.ListEnvsFilter
+	(*ListEnvsRequest)(nil),   // 10: api.appix.v1.ListEnvsRequest
+	(*ListEnvsReply)(nil),     // 11: api.appix.v1.ListEnvsReply
 }
-var file_api_appix_v1_envs_proto_depIdxs = []int32{
+var file_appix_v1_envs_proto_depIdxs = []int32{
 	0,  // 0: api.appix.v1.CreateEnvsRequest.envs:type_name -> api.appix.v1.Env
 	0,  // 1: api.appix.v1.UpdateEnvsRequest.envs:type_name -> api.appix.v1.Env
 	0,  // 2: api.appix.v1.GetEnvsReply.env:type_name -> api.appix.v1.Env
-	9,  // 3: api.appix.v1.ListEnvsFilter.filters:type_name -> api.appix.v1.EnvFilter
-	10, // 4: api.appix.v1.ListEnvsRequest.filter:type_name -> api.appix.v1.ListEnvsFilter
-	0,  // 5: api.appix.v1.ListEnvsReply.envs:type_name -> api.appix.v1.Env
-	1,  // 6: api.appix.v1.Envs.CreateEnvs:input_type -> api.appix.v1.CreateEnvsRequest
-	3,  // 7: api.appix.v1.Envs.UpdateEnvs:input_type -> api.appix.v1.UpdateEnvsRequest
-	5,  // 8: api.appix.v1.Envs.DeleteEnvs:input_type -> api.appix.v1.DeleteEnvsRequest
-	7,  // 9: api.appix.v1.Envs.GetEnvs:input_type -> api.appix.v1.GetEnvsRequest
-	11, // 10: api.appix.v1.Envs.ListEnvs:input_type -> api.appix.v1.ListEnvsRequest
-	2,  // 11: api.appix.v1.Envs.CreateEnvs:output_type -> api.appix.v1.CreateEnvsReply
-	4,  // 12: api.appix.v1.Envs.UpdateEnvs:output_type -> api.appix.v1.UpdateEnvsReply
-	6,  // 13: api.appix.v1.Envs.DeleteEnvs:output_type -> api.appix.v1.DeleteEnvsReply
-	8,  // 14: api.appix.v1.Envs.GetEnvs:output_type -> api.appix.v1.GetEnvsReply
-	12, // 15: api.appix.v1.Envs.ListEnvs:output_type -> api.appix.v1.ListEnvsReply
-	11, // [11:16] is the sub-list for method output_type
-	6,  // [6:11] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	9,  // 3: api.appix.v1.ListEnvsRequest.filter:type_name -> api.appix.v1.ListEnvsFilter
+	0,  // 4: api.appix.v1.ListEnvsReply.envs:type_name -> api.appix.v1.Env
+	1,  // 5: api.appix.v1.Envs.CreateEnvs:input_type -> api.appix.v1.CreateEnvsRequest
+	3,  // 6: api.appix.v1.Envs.UpdateEnvs:input_type -> api.appix.v1.UpdateEnvsRequest
+	5,  // 7: api.appix.v1.Envs.DeleteEnvs:input_type -> api.appix.v1.DeleteEnvsRequest
+	7,  // 8: api.appix.v1.Envs.GetEnvs:input_type -> api.appix.v1.GetEnvsRequest
+	10, // 9: api.appix.v1.Envs.ListEnvs:input_type -> api.appix.v1.ListEnvsRequest
+	2,  // 10: api.appix.v1.Envs.CreateEnvs:output_type -> api.appix.v1.CreateEnvsReply
+	4,  // 11: api.appix.v1.Envs.UpdateEnvs:output_type -> api.appix.v1.UpdateEnvsReply
+	6,  // 12: api.appix.v1.Envs.DeleteEnvs:output_type -> api.appix.v1.DeleteEnvsReply
+	8,  // 13: api.appix.v1.Envs.GetEnvs:output_type -> api.appix.v1.GetEnvsReply
+	11, // 14: api.appix.v1.Envs.ListEnvs:output_type -> api.appix.v1.ListEnvsReply
+	10, // [10:15] is the sub-list for method output_type
+	5,  // [5:10] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_api_appix_v1_envs_proto_init() }
-func file_api_appix_v1_envs_proto_init() {
-	if File_api_appix_v1_envs_proto != nil {
+func init() { file_appix_v1_envs_proto_init() }
+func file_appix_v1_envs_proto_init() {
+	if File_appix_v1_envs_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_api_appix_v1_envs_proto_rawDesc,
+			RawDescriptor: file_appix_v1_envs_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_api_appix_v1_envs_proto_goTypes,
-		DependencyIndexes: file_api_appix_v1_envs_proto_depIdxs,
-		MessageInfos:      file_api_appix_v1_envs_proto_msgTypes,
+		GoTypes:           file_appix_v1_envs_proto_goTypes,
+		DependencyIndexes: file_appix_v1_envs_proto_depIdxs,
+		MessageInfos:      file_appix_v1_envs_proto_msgTypes,
 	}.Build()
-	File_api_appix_v1_envs_proto = out.File
-	file_api_appix_v1_envs_proto_rawDesc = nil
-	file_api_appix_v1_envs_proto_goTypes = nil
-	file_api_appix_v1_envs_proto_depIdxs = nil
+	File_appix_v1_envs_proto = out.File
+	file_appix_v1_envs_proto_rawDesc = nil
+	file_appix_v1_envs_proto_goTypes = nil
+	file_appix_v1_envs_proto_depIdxs = nil
 }

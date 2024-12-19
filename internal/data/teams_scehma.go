@@ -5,16 +5,16 @@ import (
 )
 
 type Team struct {
-	ID          uint   `gorm:"primaryKey;autoIncrement"`
+	ID          uint32 `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_name,unique"`
 	Code        string `gorm:"type:varchar(255);index:idx_code,unique"`
 	Leader      string `gorm:"type:varchar(255);index:idx_leader"`
 	Description string `gorm:"type:varchar(255);"`
 }
 
-func NewTeam(t biz.Team) (*Team, error) {
+func NewTeam(t *biz.Team) (*Team, error) {
 	return &Team{
-		ID:          uint(t.Id),
+		ID:          t.Id,
 		Name:        t.Name,
 		Code:        t.Code,
 		Leader:      t.Leader,
@@ -22,7 +22,7 @@ func NewTeam(t biz.Team) (*Team, error) {
 	}, nil
 }
 
-func NewTeams(ts []biz.Team) ([]*Team, error) {
+func NewTeams(ts []*biz.Team) ([]*Team, error) {
 	var teams = make([]*Team, len(ts))
 	for i, t := range ts {
 		nt, err := NewTeam(t)
@@ -36,7 +36,7 @@ func NewTeams(ts []biz.Team) ([]*Team, error) {
 
 func NewBizTeam(t *Team) (*biz.Team, error) {
 	return &biz.Team{
-		Id:          int64(t.ID),
+		Id:          t.ID,
 		Code:        t.Code,
 		Description: t.Description,
 		Leader:      t.Leader,
@@ -44,11 +44,11 @@ func NewBizTeam(t *Team) (*biz.Team, error) {
 	}, nil
 }
 
-func NewBizTeams(teams []Team) ([]biz.Team, error) {
-	var biz_teams = make([]biz.Team, len(teams))
+func NewBizTeams(teams []*Team) ([]*biz.Team, error) {
+	var biz_teams = make([]*biz.Team, len(teams))
 	for i, t := range teams {
-		biz_teams[i] = biz.Team{
-			Id:          int64(t.ID),
+		biz_teams[i] = &biz.Team{
+			Id:          t.ID,
 			Code:        t.Code,
 			Description: t.Description,
 			Leader:      t.Leader,

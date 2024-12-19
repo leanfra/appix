@@ -25,19 +25,19 @@ func NewEnvsService(uc *biz.EnvsUsecase, logger log.Logger) *EnvsService {
 	}
 }
 
-func toBizEnv(env *pb.Env) (biz.Env, error) {
+func toBizEnv(env *pb.Env) (*biz.Env, error) {
 	if env == nil {
-		return biz.Env{}, fmt.Errorf("InvalidEnv")
+		return nil, nil
 	}
-	return biz.Env{
+	return &biz.Env{
 		Description: env.Description,
 		Id:          env.Id,
 		Name:        env.Name,
 	}, nil
 }
 
-func toBizEnvs(envs []*pb.Env) ([]biz.Env, error) {
-	_bizenvs := make([]biz.Env, len(envs))
+func toBizEnvs(envs []*pb.Env) ([]*biz.Env, error) {
+	_bizenvs := make([]*biz.Env, len(envs))
 	var err error
 	for i, e := range envs {
 		if _bizenvs[i], err = toBizEnv(e); err != nil {
@@ -122,11 +122,7 @@ func (s *EnvsService) GetEnvs(ctx context.Context, req *pb.GetEnvsRequest) (*pb.
 		Message: "success",
 	}
 	if err == nil {
-		reply.Env = &pb.Env{
-			Id:          env.Id,
-			Name:        env.Name,
-			Description: env.Description,
-		}
+		reply.Env = toPbEnv(env)
 
 		return reply, nil
 	}
@@ -145,10 +141,8 @@ func (s *EnvsService) ListEnvs(ctx context.Context, req *pb.ListEnvsRequest) (*p
 		filter = &biz.ListEnvsFilter{
 			PageSize: req.Filter.PageSize,
 			Page:     req.Filter.Page,
-		}
-		filter.Filters = make([]biz.EnvFilter, len(req.Filter.Filters))
-		for i, f := range req.Filter.Filters {
-			filter.Filters[i].Name = f.Name
+			Ids:      req.Filter.Ids,
+			Names:    req.Filter.Names,
 		}
 	}
 
@@ -159,17 +153,34 @@ func (s *EnvsService) ListEnvs(ctx context.Context, req *pb.ListEnvsRequest) (*p
 		Message: "success",
 	}
 	if err == nil {
-		reply.Envs = make([]*pb.Env, len(envs))
-		for i, e := range envs {
-			reply.Envs[i] = &pb.Env{
-				Id:          e.Id,
-				Name:        e.Name,
-				Description: e.Description,
-			}
-		}
+		reply.Envs = toPbEnvs(envs)
 		return reply, nil
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
 	return reply, err
+}
+
+func toPbEnv(env *biz.Env) *pb.Env {
+	if env == nil {
+		return nil
+	}
+	return &pb.Env{
+		Id:          env.Id,
+		Name:        env.Name,
+		Description: env.Description,
+	}
+}
+
+func toPbEnvs(envs []*biz.Env) []*pb.Env {
+	if envs == nil {
+		return nil
+	}
+	var res []*pb.Env
+	for _, e := range envs {
+		if e != nil {
+			res = append(res, toPbEnv(e))
+		}
+	}
+	return res
 }

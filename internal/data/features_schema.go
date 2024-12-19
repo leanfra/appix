@@ -5,20 +5,20 @@ import (
 )
 
 type Feature struct {
-	ID    uint   `gorm:"primaryKey;autoIncrement"`
+	ID    uint32 `gorm:"primaryKey;autoIncrement"`
 	Name  string `gorm:"type:varchar(255);index:idx_name_value,unique"`
 	Value string `gorm:"type:varchar(255);index:idx_name_value"`
 }
 
-func NewFeature(t biz.Feature) (*Feature, error) {
+func NewFeature(t *biz.Feature) (*Feature, error) {
 	return &Feature{
-		ID:    uint(t.Id),
+		ID:    t.Id,
 		Name:  t.Name,
 		Value: t.Value,
 	}, nil
 }
 
-func NewFeatures(fs []biz.Feature) ([]*Feature, error) {
+func NewFeatures(fs []*biz.Feature) ([]*Feature, error) {
 	var features = make([]*Feature, len(fs))
 	for i, f := range fs {
 		nf, err := NewFeature(f)
@@ -32,7 +32,7 @@ func NewFeatures(fs []biz.Feature) ([]*Feature, error) {
 
 func NewBizFeature(t *Feature) (*biz.Feature, error) {
 	return &biz.Feature{
-		Id:    int64(t.ID),
+		Id:    t.ID,
 		Name:  t.Name,
 		Value: t.Value,
 	}, nil
@@ -42,7 +42,7 @@ func NewBizFeatures(fs []Feature) ([]biz.Feature, error) {
 	var biz_fts = make([]biz.Feature, len(fs))
 	for i, f := range fs {
 		biz_fts[i] = biz.Feature{
-			Id:    int64(f.ID),
+			Id:    f.ID,
 			Name:  f.Name,
 			Value: f.Value,
 		}

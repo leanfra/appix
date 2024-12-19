@@ -10,7 +10,7 @@ import "google/api/annotations.proto";
 
 // gratos::model
 message Feature {
-	int64 id = 1;
+	uint32 id = 1;
 	string Name = 2;
 	string value = 3;
 }
@@ -53,7 +53,7 @@ message CreateFeaturesRequest {
 
 message CreateFeaturesReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
@@ -63,40 +63,37 @@ message UpdateFeaturesRequest {
 
 message UpdateFeaturesReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message DeleteFeaturesRequest {
-	repeated int64 ids = 1;
+	repeated uint32 ids = 1;
 }
 message DeleteFeaturesReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message GetFeaturesRequest {
-	int64 id = 1;
+	uint32 id = 1;
 }
 message GetFeaturesReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	Feature feature = 4;
 }
 
-// gratos::model
-message FeatureFilter {
-	string name = 1;
-	string value = 2;
-}
 
 // gratos::model
 message ListFeaturesFilter {
-	int64 page = 1;
-	int64 page_size = 2;
-	repeated FeatureFilter filters = 3;
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated uint32 ids = 3;
+	repeated string names = 4;
+	repeated string kvs = 5;
 }
 
 message ListFeaturesRequest {
@@ -105,7 +102,7 @@ message ListFeaturesRequest {
 
 message ListFeaturesReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	repeated Feature features = 4;
 }

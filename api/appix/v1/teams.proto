@@ -42,7 +42,7 @@ service Teams {
 
 // gratos::model
 message Team {
-	int64 id = 1;
+	uint32 id = 1;
 	string name = 2;
 	string code = 3;
 	string description = 4;
@@ -55,7 +55,7 @@ message CreateTeamsRequest {
 
 message CreateTeamsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
@@ -65,42 +65,38 @@ message UpdateTeamsRequest {
 
 message UpdateTeamsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message DeleteTeamsRequest {
-	repeated int64 ids = 1;
+	repeated uint32 ids = 1;
 }
 
 message DeleteTeamsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message GetTeamsRequest {
-	int64 id = 1;
+	uint32 id = 1;
 }
 message GetTeamsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	Team team = 4;
 }
 
 // gratos::model
-message TeamFilter {
-	string name = 1;
-	string code = 2;
-	string leader = 3;
-}
-
-// gratos::model
 message ListTeamsFilter {
-	int64 page = 1;
-	int64 page_size = 2;
-	repeated TeamFilter filters = 3;
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated string names = 3;
+	repeated string codes = 4;
+	repeated string leaders = 5;
+	repeated uint32 ids = 6;
 }
 
 message ListTeamsRequest {
@@ -109,7 +105,7 @@ message ListTeamsRequest {
 
 message ListTeamsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	repeated Team teams = 4;
 }

@@ -42,7 +42,7 @@ service Datacenters {
 
 //gratos::model
 message Datacenter {
-	int64 id = 1;
+	uint32 id = 1;
 	string name = 2;
 	string description = 3;
 }
@@ -52,7 +52,7 @@ message CreateDatacentersRequest {
 }
 message CreateDatacentersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
@@ -61,39 +61,35 @@ message UpdateDatacentersRequest {
 }
 message UpdateDatacentersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message DeleteDatacentersRequest {
-	repeated int64 ids = 1;
+	repeated uint32 ids = 1;
 }
 message DeleteDatacentersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message GetDatacentersRequest {
-	int64 id = 1;
+	uint32 id = 1;
 }
 message GetDatacentersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	Datacenter datacenter = 4;
 }
 
 // gratos::model
-message DatacenterFilter {
-	string name = 1;
-}
-
-// gratos::model
 message ListDatacentersFilter {
-	int64 page = 1;
-	int64 page_size = 2;
-	repeated DatacenterFilter filters = 3;
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated uint32 ids = 3;
+	repeated string names = 4;
 }
 
 message ListDatacentersRequest {
@@ -101,7 +97,7 @@ message ListDatacentersRequest {
 }
 message ListDatacentersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	repeated Datacenter datacenters = 4;
 }

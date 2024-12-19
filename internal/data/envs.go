@@ -29,7 +29,7 @@ func NewEnvsRepoImpl(data *Data, logger log.Logger) (biz.EnvsRepo, error) {
 }
 
 // CreateEnvs is
-func (d *EnvsRepoImpl) CreateEnvs(ctx context.Context, envs []biz.Env) error {
+func (d *EnvsRepoImpl) CreateEnvs(ctx context.Context, envs []*biz.Env) error {
 
 	db_env, err := NewEnvs(envs)
 	if err != nil {
@@ -43,7 +43,7 @@ func (d *EnvsRepoImpl) CreateEnvs(ctx context.Context, envs []biz.Env) error {
 }
 
 // UpdateEnvs is
-func (d *EnvsRepoImpl) UpdateEnvs(ctx context.Context, envs []biz.Env) error {
+func (d *EnvsRepoImpl) UpdateEnvs(ctx context.Context, envs []*biz.Env) error {
 
 	db_envs, err := NewEnvs(envs)
 	if err != nil {
@@ -57,7 +57,7 @@ func (d *EnvsRepoImpl) UpdateEnvs(ctx context.Context, envs []biz.Env) error {
 }
 
 // DeleteEnvs is
-func (d *EnvsRepoImpl) DeleteEnvs(ctx context.Context, ids []int64) error {
+func (d *EnvsRepoImpl) DeleteEnvs(ctx context.Context, ids []uint32) error {
 
 	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Env{})
 	if r.Error != nil {
@@ -67,7 +67,7 @@ func (d *EnvsRepoImpl) DeleteEnvs(ctx context.Context, ids []int64) error {
 }
 
 // GetEnvs is
-func (d *EnvsRepoImpl) GetEnvs(ctx context.Context, id int64) (*biz.Env, error) {
+func (d *EnvsRepoImpl) GetEnvs(ctx context.Context, id uint32) (*biz.Env, error) {
 
 	env := &Env{}
 	r := d.data.db.WithContext(ctx).First(env, id)
@@ -79,9 +79,9 @@ func (d *EnvsRepoImpl) GetEnvs(ctx context.Context, id int64) (*biz.Env, error) 
 }
 
 // ListEnvs is
-func (d *EnvsRepoImpl) ListEnvs(ctx context.Context, filter *biz.ListEnvsFilter) ([]biz.Env, error) {
+func (d *EnvsRepoImpl) ListEnvs(ctx context.Context, filter *biz.ListEnvsFilter) ([]*biz.Env, error) {
 
-	envs := []Env{}
+	envs := []*Env{}
 	query := d.data.db.WithContext(ctx)
 	if filter != nil {
 		var offset int
@@ -89,8 +89,12 @@ func (d *EnvsRepoImpl) ListEnvs(ctx context.Context, filter *biz.ListEnvsFilter)
 			offset = int((filter.Page - 1) * filter.PageSize)
 			query = query.Offset(offset).Limit(int(filter.PageSize))
 		}
-		for _, pair := range filter.Filters {
-			query = query.Where("name =?", pair.Name)
+		if len(filter.Ids) > 0 {
+			query = query.Where("id in (?)", filter.Ids)
+		}
+		if len(filter.Names) > 0 {
+			nameConditions := buildOrLike("name", len(filter.Names))
+			query = query.Where(nameConditions, filter.Names)
 		}
 	}
 	r := query.Find(&envs)

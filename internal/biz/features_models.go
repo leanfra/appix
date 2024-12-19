@@ -1,18 +1,15 @@
 package biz
 
 type Feature struct {
-	Id    int64
-	Name  string
-	Value string
-}
-
-type FeatureFilter struct {
+	Id    uint32
 	Name  string
 	Value string
 }
 
 type ListFeaturesFilter struct {
-	Page     int64
-	PageSize int64
-	Filters  []FeatureFilter
+	Page     uint32
+	PageSize uint32
+	Ids      []uint32
+	Names    []string
+	Kvs      []string
 }

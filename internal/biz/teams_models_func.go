@@ -14,21 +14,15 @@ func (f *Team) Validate(isNew bool) error {
 	return nil
 }
 
-func (ff *TeamFilter) Validate() error {
-	if len(ff.Name) == 0 && len(ff.Code) == 0 && len(ff.Leader) == 0 {
-		return fmt.Errorf("InvalidTeamFilter")
-	}
-	return nil
-}
-
 func (lf *ListTeamsFilter) Validate() error {
-	if lf.Page < 0 || lf.PageSize < 0 {
-		return fmt.Errorf("InvalidPageSize")
+	if lf == nil {
+		return nil
 	}
-	for _, f := range lf.Filters {
-		if err := f.Validate(); err != nil {
-			return err
-		}
+	if len(lf.Codes) > MaxFilterValues ||
+		len(lf.Ids) > MaxFilterValues ||
+		len(lf.Leaders) > MaxFilterValues ||
+		len(lf.Names) > MaxFilterValues {
+		return ErrFilterValuesExceedMax
 	}
 	return nil
 }

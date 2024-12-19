@@ -16,6 +16,7 @@ var ProviderSet = wire.NewSet(
 	NewEnvsService,
 	NewClustersService,
 	NewDatacentersService,
+	NewHostgroupsService,
 )
 
 var ErrRequestNil = errors.New("requestIsNil")

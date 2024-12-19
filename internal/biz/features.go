@@ -8,10 +8,10 @@ import (
 )
 
 type FeaturesRepo interface {
-	CreateFeatures(ctx context.Context, features []Feature) error
-	UpdateFeatures(ctx context.Context, features []Feature) error
-	DeleteFeatures(ctx context.Context, ids []int64) error
-	GetFeatures(ctx context.Context, id int64) (*Feature, error)
+	CreateFeatures(ctx context.Context, features []*Feature) error
+	UpdateFeatures(ctx context.Context, features []*Feature) error
+	DeleteFeatures(ctx context.Context, ids []uint32) error
+	GetFeatures(ctx context.Context, id uint32) (*Feature, error)
 	ListFeatures(ctx context.Context, filter *ListFeaturesFilter) ([]Feature, error)
 }
 
@@ -27,7 +27,7 @@ func NewFeaturesUsecase(repo FeaturesRepo, logger log.Logger) *FeaturesUsecase {
 	}
 }
 
-func (s *FeaturesUsecase) validate(isNew bool, features []Feature) error {
+func (s *FeaturesUsecase) validate(isNew bool, features []*Feature) error {
 	for _, f := range features {
 		if err := f.Validate(isNew); err != nil {
 			return err
@@ -37,7 +37,7 @@ func (s *FeaturesUsecase) validate(isNew bool, features []Feature) error {
 }
 
 // CreateFeatures is
-func (s *FeaturesUsecase) CreateFeatures(ctx context.Context, features []Feature) error {
+func (s *FeaturesUsecase) CreateFeatures(ctx context.Context, features []*Feature) error {
 	if err := s.validate(true, features); err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (s *FeaturesUsecase) CreateFeatures(ctx context.Context, features []Feature
 }
 
 // UpdateFeatures is
-func (s *FeaturesUsecase) UpdateFeatures(ctx context.Context, features []Feature) error {
+func (s *FeaturesUsecase) UpdateFeatures(ctx context.Context, features []*Feature) error {
 	if err := s.validate(false, features); err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (s *FeaturesUsecase) UpdateFeatures(ctx context.Context, features []Feature
 }
 
 // DeleteFeatures is
-func (s *FeaturesUsecase) DeleteFeatures(ctx context.Context, ids []int64) error {
+func (s *FeaturesUsecase) DeleteFeatures(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
@@ -61,7 +61,7 @@ func (s *FeaturesUsecase) DeleteFeatures(ctx context.Context, ids []int64) error
 }
 
 // GetFeatures is
-func (s *FeaturesUsecase) GetFeatures(ctx context.Context, id int64) (*Feature, error) {
+func (s *FeaturesUsecase) GetFeatures(ctx context.Context, id uint32) (*Feature, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("EmptyId")
 	}

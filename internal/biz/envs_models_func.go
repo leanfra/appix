@@ -14,21 +14,12 @@ func (f *Env) Validate(isNew bool) error {
 	return nil
 }
 
-func (ff *EnvFilter) Validate() error {
-	if len(ff.Name) == 0 {
-		return fmt.Errorf("InvalidEnvFilterNameValue")
-	}
-	return nil
-}
-
 func (lf *ListEnvsFilter) Validate() error {
-	if lf.Page < 0 || lf.PageSize < 0 {
-		return fmt.Errorf("InvalidPageSize")
+	if lf == nil {
+		return nil
 	}
-	for _, f := range lf.Filters {
-		if err := f.Validate(); err != nil {
-			return err
-		}
+	if len(lf.Names) > MaxFilterValues || len(lf.Ids) > MaxFilterValues {
+		return ErrFilterValuesExceedMax
 	}
 	return nil
 }

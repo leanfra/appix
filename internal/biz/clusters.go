@@ -8,10 +8,10 @@ import (
 )
 
 type ClustersRepo interface {
-	CreateClusters(ctx context.Context, cs []Cluster) error
-	UpdateClusters(ctx context.Context, cs []Cluster) error
-	DeleteClusters(ctx context.Context, ids []int64) error
-	GetClusters(ctx context.Context, id int64) (*Cluster, error)
+	CreateClusters(ctx context.Context, cs []*Cluster) error
+	UpdateClusters(ctx context.Context, cs []*Cluster) error
+	DeleteClusters(ctx context.Context, ids []uint32) error
+	GetClusters(ctx context.Context, id uint32) (*Cluster, error)
 	ListClusters(ctx context.Context, filter *ListClustersFilter) ([]Cluster, error)
 }
 
@@ -27,7 +27,7 @@ func NewClustersUsecase(repo ClustersRepo, logger log.Logger) *ClustersUsecase {
 	}
 }
 
-func (s *ClustersUsecase) validate(isNew bool, cs []Cluster) error {
+func (s *ClustersUsecase) validate(isNew bool, cs []*Cluster) error {
 	for _, c := range cs {
 		if err := c.Validate(isNew); err != nil {
 			return err
@@ -37,7 +37,7 @@ func (s *ClustersUsecase) validate(isNew bool, cs []Cluster) error {
 }
 
 // CreateClusters is
-func (s *ClustersUsecase) CreateClusters(ctx context.Context, cs []Cluster) error {
+func (s *ClustersUsecase) CreateClusters(ctx context.Context, cs []*Cluster) error {
 	if err := s.validate(true, cs); err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (s *ClustersUsecase) CreateClusters(ctx context.Context, cs []Cluster) erro
 }
 
 // UpdateClusters is
-func (s *ClustersUsecase) UpdateClusters(ctx context.Context, cs []Cluster) error {
+func (s *ClustersUsecase) UpdateClusters(ctx context.Context, cs []*Cluster) error {
 	if err := s.validate(false, cs); err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (s *ClustersUsecase) UpdateClusters(ctx context.Context, cs []Cluster) erro
 }
 
 // DeleteClusters is
-func (s *ClustersUsecase) DeleteClusters(ctx context.Context, ids []int64) error {
+func (s *ClustersUsecase) DeleteClusters(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
@@ -62,7 +62,7 @@ func (s *ClustersUsecase) DeleteClusters(ctx context.Context, ids []int64) error
 }
 
 // GetClusters is
-func (s *ClustersUsecase) GetClusters(ctx context.Context, id int64) (*Cluster, error) {
+func (s *ClustersUsecase) GetClusters(ctx context.Context, id uint32) (*Cluster, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("InvalidId")
 	}

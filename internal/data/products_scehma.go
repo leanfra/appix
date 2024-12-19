@@ -5,22 +5,22 @@ import (
 )
 
 type Product struct {
-	ID          uint   `gorm:"primaryKey;autoIncrement"`
+	ID          uint32 `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_name,unique"`
 	Code        string `gorm:"type:varchar(255);index:idx_code,unique"`
 	Description string `gorm:"type:varchar(255);"`
 }
 
-func NewProduct(t biz.Product) (*Product, error) {
+func NewProduct(t *biz.Product) (*Product, error) {
 	return &Product{
-		ID:          uint(t.Id),
+		ID:          t.Id,
 		Name:        t.Name,
 		Code:        t.Code,
 		Description: t.Description,
 	}, nil
 }
 
-func NewProducts(ts []biz.Product) ([]*Product, error) {
+func NewProducts(ts []*biz.Product) ([]*Product, error) {
 	var products = make([]*Product, len(ts))
 	for i, t := range ts {
 		nt, err := NewProduct(t)
@@ -34,18 +34,18 @@ func NewProducts(ts []biz.Product) ([]*Product, error) {
 
 func NewBizProduct(t *Product) (*biz.Product, error) {
 	return &biz.Product{
-		Id:          int64(t.ID),
+		Id:          t.ID,
 		Code:        t.Code,
 		Description: t.Description,
 		Name:        t.Name,
 	}, nil
 }
 
-func NewBizProducts(ps []Product) ([]biz.Product, error) {
-	var biz_ps = make([]biz.Product, len(ps))
+func NewBizProducts(ps []*Product) ([]*biz.Product, error) {
+	var biz_ps = make([]*biz.Product, len(ps))
 	for i, t := range ps {
-		biz_ps[i] = biz.Product{
-			Id:          int64(t.ID),
+		biz_ps[i] = &biz.Product{
+			Id:          t.ID,
 			Code:        t.Code,
 			Description: t.Description,
 			Name:        t.Name,

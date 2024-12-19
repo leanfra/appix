@@ -8,11 +8,11 @@ import (
 )
 
 type DatacentersRepo interface {
-	CreateDatacenters(ctx context.Context, dcs []Datacenter) error
-	UpdateDatacenters(ctx context.Context, dcs []Datacenter) error
-	DeleteDatacenters(ctx context.Context, ids []int64) error
-	GetDatacenters(ctx context.Context, id int64) (*Datacenter, error)
-	ListDatacenters(ctx context.Context, filter *ListDatacentersFilter) ([]Datacenter, error)
+	CreateDatacenters(ctx context.Context, dcs []*Datacenter) error
+	UpdateDatacenters(ctx context.Context, dcs []*Datacenter) error
+	DeleteDatacenters(ctx context.Context, ids []uint32) error
+	GetDatacenters(ctx context.Context, id uint32) (*Datacenter, error)
+	ListDatacenters(ctx context.Context, filter *ListDatacentersFilter) ([]*Datacenter, error)
 }
 
 type DatacentersUsecase struct {
@@ -27,7 +27,7 @@ func NewDatacentersUsecase(repo DatacentersRepo, logger log.Logger) *Datacenters
 	}
 }
 
-func (s *DatacentersUsecase) validate(isNew bool, dcs []Datacenter) error {
+func (s *DatacentersUsecase) validate(isNew bool, dcs []*Datacenter) error {
 	for _, d := range dcs {
 		if err := d.Validate(isNew); err != nil {
 			return err
@@ -37,7 +37,7 @@ func (s *DatacentersUsecase) validate(isNew bool, dcs []Datacenter) error {
 }
 
 // CreateDatacenters is
-func (s *DatacentersUsecase) CreateDatacenters(ctx context.Context, dcs []Datacenter) error {
+func (s *DatacentersUsecase) CreateDatacenters(ctx context.Context, dcs []*Datacenter) error {
 
 	if err := s.validate(true, dcs); err != nil {
 		return err
@@ -46,7 +46,7 @@ func (s *DatacentersUsecase) CreateDatacenters(ctx context.Context, dcs []Datace
 }
 
 // UpdateDatacenters is
-func (s *DatacentersUsecase) UpdateDatacenters(ctx context.Context, dcs []Datacenter) error {
+func (s *DatacentersUsecase) UpdateDatacenters(ctx context.Context, dcs []*Datacenter) error {
 	if err := s.validate(false, dcs); err != nil {
 		return err
 	}
@@ -54,7 +54,7 @@ func (s *DatacentersUsecase) UpdateDatacenters(ctx context.Context, dcs []Datace
 }
 
 // DeleteDatacenters is
-func (s *DatacentersUsecase) DeleteDatacenters(ctx context.Context, ids []int64) error {
+func (s *DatacentersUsecase) DeleteDatacenters(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
@@ -62,7 +62,7 @@ func (s *DatacentersUsecase) DeleteDatacenters(ctx context.Context, ids []int64)
 }
 
 // GetDatacenters is
-func (s *DatacentersUsecase) GetDatacenters(ctx context.Context, id int64) (*Datacenter, error) {
+func (s *DatacentersUsecase) GetDatacenters(ctx context.Context, id uint32) (*Datacenter, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("InvalidId")
 	}
@@ -71,7 +71,7 @@ func (s *DatacentersUsecase) GetDatacenters(ctx context.Context, id int64) (*Dat
 
 // ListDatacenters is
 func (s *DatacentersUsecase) ListDatacenters(ctx context.Context,
-	filter *ListDatacentersFilter) ([]Datacenter, error) {
+	filter *ListDatacentersFilter) ([]*Datacenter, error) {
 
 	if filter != nil {
 		if err := filter.Validate(); err != nil {

@@ -3,6 +3,8 @@ package data
 import (
 	"appix/internal/conf"
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
@@ -22,6 +24,7 @@ var ProviderSet = wire.NewSet(
 	NewEnvsRepoImpl,
 	NewClustersRepoImpl,
 	NewDatacentersRepoImpl,
+	NewHostgroupsRepoImpl,
 )
 
 // Data .
@@ -67,6 +70,14 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 var ErrUnsupportedDatabaseDriver = errors.New("unsupportedDatabaseDriver")
 var ErrEmptyDatabase = errors.New("emptyDatabaseSource")
 var ErrNoRowsAffected = errors.New("noRowsAffected")
+var ErrMissingRecords = errors.New("missing records")
+var ErrMissingTags = errors.New("missing Tag")
+var ErrMissingTeams = errors.New("missing Team")
+var ErrMissingProducts = errors.New("missing Product")
+var ErrMissingFeatures = errors.New("missing Feature")
+var ErrMissingEnvs = errors.New("missing Env")
+var ErrMissingDatacenters = errors.New("missing Datacenter")
+var ErrMissingClusters = errors.New("missing Cluster")
 
 func validateData(data *Data) error {
 	if data == nil || data.db == nil {
@@ -80,6 +91,76 @@ func initTable(db *gorm.DB, model interface{}, table string) error {
 
 	if !m.HasTable(table) {
 		return db.AutoMigrate(model)
+	}
+	return nil
+}
+
+// buildOrLike build or conditions.
+//
+//	return: "key LIKE ? OR key LIKE ? ..."
+func buildOrLike(key string, count int) string {
+	var builder strings.Builder
+	for i := 0; i < count; i++ {
+		if i > 0 {
+			builder.WriteString(" OR ")
+		}
+		builder.WriteString(fmt.Sprintf("%s LIKE ?", key))
+	}
+	return builder.String()
+}
+
+// buildOrKV build or conditions with key and value.
+//
+//	return: "(k=? AND v=?) OR (k=? AND v=?) ... "
+func buildOrKV(kname string, vname string, count int) string {
+	var builder strings.Builder
+	for i := 0; i < count; i++ {
+		if i > 0 {
+			builder.WriteString(" OR ")
+		}
+		builder.WriteString(fmt.Sprintf("( %s = ? AND  %s = ? )", kname, vname))
+	}
+	return builder.String()
+}
+
+func DedupSliceUint32(s []uint32) []uint32 {
+	if s == nil {
+		return nil
+	}
+	var result []uint32
+	m := make(map[uint32]struct{})
+	for i := 0; i < len(s); i++ {
+		if _, exists := m[s[i]]; !exists {
+			m[s[i]] = struct{}{}
+			result = append(result, s[i])
+
+		}
+	}
+	return result
+}
+
+// DiffUint32 return (s1 - s2)
+func DiffUint32(s1 []uint32, s2 []uint32) []uint32 {
+	result := []uint32{}
+	set2Map := make(map[uint32]bool)
+	for _, v := range s2 {
+		set2Map[v] = true
+	}
+	for _, v := range s1 {
+		if _, ok := set2Map[v]; !ok {
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
+func existsRecords(db *gorm.DB, mod interface{}, ids []uint32) error {
+	var count int64
+	if r := db.Model(mod).Where("id in (?)", ids).Count(&count); r.Error != nil {
+		return r.Error
+	}
+	if count != int64(len(ids)) {
+		return ErrNoRowsAffected
 	}
 	return nil
 }

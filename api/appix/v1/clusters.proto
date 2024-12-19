@@ -42,7 +42,7 @@ service Clusters {
 
 // gratos::model
 message Cluster {
-	int64 id = 1;
+	uint32 id = 1;
 	string name = 2;
 	string description = 3;
 }
@@ -52,7 +52,7 @@ message CreateClustersRequest {
 }
 message CreateClustersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
@@ -61,39 +61,35 @@ message UpdateClustersRequest {
 }
 message UpdateClustersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message DeleteClustersRequest {
-	repeated int64 ids = 1;
+	repeated uint32 ids = 1;
 }
 message DeleteClustersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message GetClustersRequest {
-	int64 id = 1;
+	uint32 id = 1;
 }
 message GetClustersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	Cluster cluster = 4;
 }
 
 // gratos::model
-message ClusterFilter {
-	string name = 1;
-}
-
-// gratos::model
 message ListClustersFilter {
-	int64 page = 1;
-	int64 page_size = 2;
-	repeated ClusterFilter filters = 3;
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated string names = 3;
+	repeated uint32 ids = 4;
 }
 
 message ListClustersRequest {
@@ -101,7 +97,7 @@ message ListClustersRequest {
 }
 message ListClustersReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	repeated Cluster clusters = 4;
 }

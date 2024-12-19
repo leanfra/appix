@@ -32,7 +32,7 @@ func NewDatacentersRepoImpl(data *Data, logger log.Logger) (biz.DatacentersRepo,
 
 // CreateDatacenters is
 func (d *DatacentersRepoImpl) CreateDatacenters(ctx context.Context,
-	dcs []biz.Datacenter) error {
+	dcs []*biz.Datacenter) error {
 
 	db_dcs, err := NewDatacenters(dcs)
 	if err != nil {
@@ -48,7 +48,7 @@ func (d *DatacentersRepoImpl) CreateDatacenters(ctx context.Context,
 
 // UpdateDatacenters is
 func (d *DatacentersRepoImpl) UpdateDatacenters(ctx context.Context,
-	dcs []biz.Datacenter) error {
+	dcs []*biz.Datacenter) error {
 
 	db_cs, err := NewDatacenters(dcs)
 	if err != nil {
@@ -63,7 +63,7 @@ func (d *DatacentersRepoImpl) UpdateDatacenters(ctx context.Context,
 }
 
 // DeleteDatacenters is
-func (d *DatacentersRepoImpl) DeleteDatacenters(ctx context.Context, ids []int64) error {
+func (d *DatacentersRepoImpl) DeleteDatacenters(ctx context.Context, ids []uint32) error {
 
 	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Datacenter{})
 	if r.Error != nil {
@@ -74,7 +74,7 @@ func (d *DatacentersRepoImpl) DeleteDatacenters(ctx context.Context, ids []int64
 }
 
 // GetDatacenters is
-func (d *DatacentersRepoImpl) GetDatacenters(ctx context.Context, id int64) (*biz.Datacenter, error) {
+func (d *DatacentersRepoImpl) GetDatacenters(ctx context.Context, id uint32) (*biz.Datacenter, error) {
 	cs := &Datacenter{}
 	r := d.data.db.WithContext(ctx).Where("id = ?", id).First(cs)
 	if r.Error != nil {
@@ -86,9 +86,9 @@ func (d *DatacentersRepoImpl) GetDatacenters(ctx context.Context, id int64) (*bi
 
 // ListDatacenters is
 func (d *DatacentersRepoImpl) ListDatacenters(ctx context.Context,
-	filter *biz.ListDatacentersFilter) ([]biz.Datacenter, error) {
+	filter *biz.ListDatacentersFilter) ([]*biz.Datacenter, error) {
 
-	dcs := []Datacenter{}
+	dcs := []*Datacenter{}
 	query := d.data.db.WithContext(ctx)
 	if filter != nil {
 		var offset int
@@ -96,8 +96,12 @@ func (d *DatacentersRepoImpl) ListDatacenters(ctx context.Context,
 			offset = int((filter.Page - 1) * filter.PageSize)
 			query = query.Offset(offset).Limit(int(filter.PageSize))
 		}
-		for _, pair := range filter.Filters {
-			query = query.Where("name =?", pair.Name)
+		if len(filter.Ids) > 0 {
+			query = query.Where("id in (?)", filter.Ids)
+		}
+		if len(filter.Names) > 0 {
+			nameConditions := buildOrLike("name", len(filter.Names))
+			query = query.Where(nameConditions, filter.Names)
 		}
 	}
 	r := query.Find(&dcs)

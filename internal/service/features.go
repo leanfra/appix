@@ -23,13 +23,13 @@ func NewFeaturesService(uc *biz.FeaturesUsecase, logger log.Logger) *FeaturesSer
 	}
 }
 
-func toBizFeature(feature *pb.Feature) (biz.Feature, error) {
+func toBizFeature(feature *pb.Feature) (*biz.Feature, error) {
 
 	if feature == nil {
-		return biz.Feature{}, fmt.Errorf("InvalidFeature")
+		return nil, nil
 	}
 
-	return biz.Feature{
+	return &biz.Feature{
 		Id:    feature.Id,
 		Name:  feature.Name,
 		Value: feature.Value,
@@ -37,8 +37,8 @@ func toBizFeature(feature *pb.Feature) (biz.Feature, error) {
 
 }
 
-func toBizFeatures(features []*pb.Feature) ([]biz.Feature, error) {
-	_bizfeatures := make([]biz.Feature, len(features))
+func toBizFeatures(features []*pb.Feature) ([]*biz.Feature, error) {
+	_bizfeatures := make([]*biz.Feature, len(features))
 	var err error
 	for i, f := range features {
 		if _bizfeatures[i], err = toBizFeature(f); err != nil {
@@ -151,13 +151,11 @@ func (s *FeaturesService) ListFeatures(ctx context.Context,
 		filter = &biz.ListFeaturesFilter{
 			PageSize: req.Filter.PageSize,
 			Page:     req.Filter.Page,
+			Ids:      req.Filter.Ids,
+			Names:    req.Filter.Names,
+			Kvs:      req.Filter.Kvs,
 		}
 
-		filter.Filters = make([]biz.FeatureFilter, len(req.Filter.Filters))
-		for i, f := range req.Filter.Filters {
-			filter.Filters[i].Name = f.Name
-			filter.Filters[i].Value = f.Value
-		}
 	}
 
 	features, err := s.usecase.ListFeatures(ctx, filter)

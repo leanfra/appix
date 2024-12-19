@@ -42,7 +42,7 @@ service Envs {
 
 // gratos::model
 message Env {
-	int64 id = 1;
+	uint32 id = 1;
 	string name = 2;
 	string description = 4;
 }
@@ -52,7 +52,7 @@ message CreateEnvsRequest {
 }
 message CreateEnvsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
@@ -62,39 +62,35 @@ message UpdateEnvsRequest {
 
 message UpdateEnvsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message DeleteEnvsRequest {
-	repeated int64 ids = 1;
+	repeated uint32 ids = 1;
 }
 message DeleteEnvsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 }
 
 message GetEnvsRequest {
-	int64 id = 1;
+	uint32 id = 1;
 }
 message GetEnvsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	Env env = 4;
 }
 
 // gratos::model
-message EnvFilter {
-	string name = 1;
-}
-
-// gratos::model
 message ListEnvsFilter {
-	int64 page = 1;
-	int64 page_size = 2;
-	repeated EnvFilter filters = 3;
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated string names = 3;
+	repeated uint32 ids = 4;
 }
 
 // ListEnvsRequst has no fields because envs count is not very big
@@ -104,7 +100,7 @@ message ListEnvsRequest {
 
 message ListEnvsReply {
 	string message = 1;
-	int64 code = 2;
+	int32 code = 2;
 	string action = 3;
 	repeated Env envs = 4;
 }

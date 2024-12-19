@@ -1,21 +1,18 @@
 package biz
 
-
 type Team struct {
-	Id int64
-	Name string
-	Code string
+	Id          uint32
+	Name        string
+	Code        string
 	Description string
-	Leader string 
-}
-type TeamFilter struct {
-	Name string
-	Code string
-	Leader string 
-}
-type ListTeamsFilter struct {
-	Page int64
-	PageSize int64
-	Filters  []TeamFilter 
+	Leader      string
 }
 
+type ListTeamsFilter struct {
+	Page     uint32
+	PageSize uint32
+	Names    []string
+	Codes    []string
+	Leaders  []string
+	Ids      []uint32
+}

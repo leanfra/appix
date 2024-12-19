@@ -14,20 +14,16 @@ func (t *Tag) Validate(isNew bool) error {
 	return nil
 }
 
-func (f *TagFilter) Validate() error {
-	if len(f.Key) == 0 || len(f.Value) == 0 {
-		return fmt.Errorf("InvalidTagFilterKeyValue")
-	}
-	return nil
-}
-
 func (lf *ListTagsFilter) Validate() error {
-	if lf.Page < 0 || lf.PageSize < 0 {
-		return fmt.Errorf("ListTagFilterInvliadPagePagesize")
+	if lf == nil {
+		return nil
 	}
-	for _, f := range lf.Filters {
-		if err := f.Validate(); err != nil {
-			return err
+	if len(lf.Ids) > MaxFilterValues || len(lf.Keys) > MaxFilterValues || len(lf.Kvs) > MaxFilterValues {
+		return ErrFilterValuesExceedMax
+	}
+	for _, kv := range lf.Kvs {
+		if e := filterKvValidate(kv); e != nil {
+			return e
 		}
 	}
 	return nil

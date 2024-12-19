@@ -1,20 +1,14 @@
 package biz
 
-
-
 type Env struct {
-	Id int64
-	Name string
-	Description string 
-}
-
-type EnvFilter struct {
-	Name string 
+	Id          uint32
+	Name        string
+	Description string
 }
 
 type ListEnvsFilter struct {
-	Page int64
-	PageSize int64
-	Filters  []EnvFilter 
+	Page     uint32
+	PageSize uint32
+	Names    []string
+	Ids      []uint32
 }
-

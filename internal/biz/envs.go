@@ -8,11 +8,11 @@ import (
 )
 
 type EnvsRepo interface {
-	CreateEnvs(ctx context.Context, envs []Env) error
-	UpdateEnvs(ctx context.Context, envs []Env) error
-	DeleteEnvs(ctx context.Context, ids []int64) error
-	GetEnvs(ctx context.Context, id int64) (*Env, error)
-	ListEnvs(ctx context.Context, filter *ListEnvsFilter) ([]Env, error)
+	CreateEnvs(ctx context.Context, envs []*Env) error
+	UpdateEnvs(ctx context.Context, envs []*Env) error
+	DeleteEnvs(ctx context.Context, ids []uint32) error
+	GetEnvs(ctx context.Context, id uint32) (*Env, error)
+	ListEnvs(ctx context.Context, filter *ListEnvsFilter) ([]*Env, error)
 }
 
 type EnvsUsecase struct {
@@ -27,7 +27,7 @@ func NewEnvsUsecase(repo EnvsRepo, logger log.Logger) *EnvsUsecase {
 	}
 }
 
-func (s *EnvsUsecase) validate(isNew bool, envs []Env) error {
+func (s *EnvsUsecase) validate(isNew bool, envs []*Env) error {
 	for _, e := range envs {
 		if err := e.Validate(isNew); err != nil {
 			return err
@@ -37,7 +37,7 @@ func (s *EnvsUsecase) validate(isNew bool, envs []Env) error {
 }
 
 // CreateEnvs is
-func (s *EnvsUsecase) CreateEnvs(ctx context.Context, envs []Env) error {
+func (s *EnvsUsecase) CreateEnvs(ctx context.Context, envs []*Env) error {
 	if err := s.validate(true, envs); err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (s *EnvsUsecase) CreateEnvs(ctx context.Context, envs []Env) error {
 }
 
 // UpdateEnvs is
-func (s *EnvsUsecase) UpdateEnvs(ctx context.Context, envs []Env) error {
+func (s *EnvsUsecase) UpdateEnvs(ctx context.Context, envs []*Env) error {
 	if err := s.validate(false, envs); err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (s *EnvsUsecase) UpdateEnvs(ctx context.Context, envs []Env) error {
 }
 
 // DeleteEnvs is
-func (s *EnvsUsecase) DeleteEnvs(ctx context.Context, ids []int64) error {
+func (s *EnvsUsecase) DeleteEnvs(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
@@ -61,7 +61,7 @@ func (s *EnvsUsecase) DeleteEnvs(ctx context.Context, ids []int64) error {
 }
 
 // GetEnvs is
-func (s *EnvsUsecase) GetEnvs(ctx context.Context, id int64) (*Env, error) {
+func (s *EnvsUsecase) GetEnvs(ctx context.Context, id uint32) (*Env, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("InvalidId")
 	}
@@ -69,7 +69,7 @@ func (s *EnvsUsecase) GetEnvs(ctx context.Context, id int64) (*Env, error) {
 }
 
 // ListEnvs is
-func (s *EnvsUsecase) ListEnvs(ctx context.Context, filter *ListEnvsFilter) ([]Env, error) {
+func (s *EnvsUsecase) ListEnvs(ctx context.Context, filter *ListEnvsFilter) ([]*Env, error) {
 
 	if filter != nil {
 		if err := filter.Validate(); err != nil {
