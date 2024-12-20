@@ -100,8 +100,8 @@ func (d *TagsRepoImpl) ListTags(ctx context.Context,
 			query = query.Where(keyConditions, filter.Keys)
 		}
 		if len(filter.Kvs) > 0 {
-			kvConditions := buildOrKV("key", "value", len(filter.Kvs))
-			query = query.Where(kvConditions, filter.Kvs)
+			kvConditions, kvs := buildOrKV("key", "value", filter.Kvs)
+			query = query.Where(kvConditions, kvs)
 		}
 	}
 	r = query.Find(&tags)

@@ -3,7 +3,6 @@ package data
 import (
 	"appix/internal/biz"
 	"context"
-	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
@@ -288,7 +287,11 @@ func (d *HostgroupsRepoImpl) ListHostgroups(ctx context.Context,
 			query = query.Offset(offset).Limit(int(filter.PageSize))
 		}
 		if len(filter.Names) > 0 {
-			query = query.Where("name in (?)", filter.Names)
+			nameConditions := buildOrLike("name", len(filter.Names))
+			query = query.Where(nameConditions, filter.Names)
+		}
+		if len(filter.Ids) > 0 {
+			query = query.Where("id in (?)", filter.Ids)
 		}
 		if len(filter.Clusters) > 0 {
 			query = query.Where(
@@ -336,38 +339,22 @@ func (d *HostgroupsRepoImpl) ListHostgroups(ctx context.Context,
 		}
 
 		if len(filter.Tags) > 0 {
-			sq_tag_res_hg_ids := make([]string, 2*len(filter.Tags))
-			_tag_kvs := make([]interface{}, len(filter.Tags))
-			_sq := "(tag_id = (Select id from tag where key = ? and value = ?))"
-			for _, tag := range filter.Tags {
-				// kv format should be validated on biz
-				_kv := strings.Split(tag, biz.FilterKVSplit)
-				sq_tag_res_hg_ids = append(sq_tag_res_hg_ids, _sq)
-				_tag_kvs = append(_tag_kvs, _kv[0], _kv[1])
-			}
+			kvOr, kvs := buildOrKV("key", "value", filter.Tags)
 			subquery := d.data.db.WithContext(ctx).
 				Table("res_feature").
 				Select("res_id").
 				Where("res_type = ?", hostgroupType).
-				Where(strings.Join(sq_tag_res_hg_ids, " OR "), _tag_kvs...)
+				Where(kvOr, kvs)
 			query = query.Where("id in (?)", subquery)
 		}
 
 		if len(filter.Features) > 0 {
-			sq_feature_res_hg_ids := make([]string, 2*len(filter.Features))
-			_feature_kvs := make([]interface{}, len(filter.Features))
-			_sq := "(feature_id = ( Select id from feature where name = ? and value = ?))"
-			for _, feature := range filter.Features {
-				// kv format should be validated on biz
-				_kv := strings.Split(feature, biz.FilterKVSplit)
-				sq_feature_res_hg_ids = append(sq_feature_res_hg_ids, _sq)
-				_feature_kvs = append(_feature_kvs, _kv[0], _kv[1])
-			}
+			featureOr, kvs := buildOrKV("name", "value", filter.Features)
 			subquery := d.data.db.WithContext(ctx).
 				Table("res_feature").
 				Select("res_id").
 				Where("res_type = ?", hostgroupType).
-				Where(strings.Join(sq_feature_res_hg_ids, " OR "), _feature_kvs...)
+				Where(featureOr, kvs)
 			query = query.Where("idin (?)", subquery)
 		}
 	}

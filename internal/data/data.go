@@ -1,6 +1,7 @@
 package data
 
 import (
+	"appix/internal/biz"
 	"appix/internal/conf"
 	"errors"
 	"fmt"
@@ -25,6 +26,7 @@ var ProviderSet = wire.NewSet(
 	NewClustersRepoImpl,
 	NewDatacentersRepoImpl,
 	NewHostgroupsRepoImpl,
+	NewApplicationsRepoImpl,
 )
 
 // Data .
@@ -112,15 +114,21 @@ func buildOrLike(key string, count int) string {
 // buildOrKV build or conditions with key and value.
 //
 //	return: "(k=? AND v=?) OR (k=? AND v=?) ... "
-func buildOrKV(kname string, vname string, count int) string {
+//	return: [k1, v1, k2, v2, ...]
+func buildOrKV(kname string, vname string, kvstr []string) (string, []string) {
+	var kv []string
 	var builder strings.Builder
-	for i := 0; i < count; i++ {
+	for i := 0; i < len(kvstr); i++ {
 		if i > 0 {
 			builder.WriteString(" OR ")
 		}
-		builder.WriteString(fmt.Sprintf("( %s = ? AND  %s = ? )", kname, vname))
+		_kvs := strings.Split(kvstr[i], biz.FilterKVSplit)
+		if len(_kvs) == 2 {
+			kv = append(kv, _kvs...)
+			builder.WriteString(fmt.Sprintf("( %s = ? AND  %s = ? )", kname, vname))
+		}
 	}
-	return builder.String()
+	return builder.String(), kv
 }
 
 func DedupSliceUint32(s []uint32) []uint32 {

@@ -3,7 +3,6 @@ package data
 import (
 	"appix/internal/biz"
 	"context"
-	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
@@ -107,12 +106,7 @@ func (d *FeaturesRepoImpl) ListFeatures(ctx context.Context, filter *biz.ListFea
 			query = query.Where(nameConditions, filter.Names)
 		}
 		if len(filter.Kvs) > 0 {
-			kvConditions := buildOrKV("key", "value", len(filter.Kvs))
-			kvs := []string{}
-			for _, kv := range filter.Kvs {
-				_kvs := strings.Split(kv, ":")
-				kvs = append(kvs, _kvs...)
-			}
+			kvConditions, kvs := buildOrKV("name", "value", filter.Kvs)
 			query = query.Where(kvConditions, kvs)
 		}
 	}

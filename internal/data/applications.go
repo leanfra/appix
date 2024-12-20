@@ -3,7 +3,6 @@ package data
 import (
 	"appix/internal/biz"
 	"context"
-	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
@@ -263,38 +262,24 @@ func (d *ApplicationsRepoImpl) ListApplications(
 		}
 
 		if len(filter.Tags) > 0 {
-			sq_tag_res_app_ids := make([]string, 2*len(filter.Tags))
-			_tag_kvs := make([]interface{}, len(filter.Tags))
-			_sq := "(tag_id = ( Select id from tag where name = ? and value = ?))"
-			for _, tag := range filter.Tags {
-				// kv format should be validated on biz
-				_kv := strings.Split(tag, biz.FilterKVSplit)
-				sq_tag_res_app_ids = append(sq_tag_res_app_ids, _sq)
-				_tag_kvs = append(_tag_kvs, _kv[0], _kv[1])
-			}
+			tagsOr, kvs := buildOrKV("key", "value", filter.Tags)
+
 			subquery := d.data.db.WithContext(ctx).
 				Table("res_tag").
 				Select("res_id").
 				Where("res_type = ?", applicationType).
-				Where(strings.Join(sq_tag_res_app_ids, " OR "), _tag_kvs...)
+				Where(tagsOr, kvs)
 			query = query.Where("id in (?)", subquery)
 		}
 
 		if len(filter.Features) > 0 {
-			sq_feature_res_app_ids := make([]string, 2*len(filter.Features))
-			_feature_kvs := make([]interface{}, len(filter.Features))
-			_sq := "(feature_id = ( Select id from feature where name = ? and value = ?))"
-			for _, feature := range filter.Features {
-				// kv format should be validatedon biz
-				_kv := strings.Split(feature, biz.FilterKVSplit)
-				sq_feature_res_app_ids = append(sq_feature_res_app_ids, _sq)
-				_feature_kvs = append(_feature_kvs, _kv[0], _kv[1])
-			}
+			featuresOr, kvs := buildOrKV("name", "value", filter.Features)
+
 			subquery := d.data.db.WithContext(ctx).
 				Table("res_feature").
 				Select("res_id").
 				Where("res_type = ?", applicationType).
-				Where(strings.Join(sq_feature_res_app_ids, " OR "), _feature_kvs...)
+				Where(featuresOr, kvs)
 			query = query.Where("id in (?)", subquery)
 		}
 	}

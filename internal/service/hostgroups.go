@@ -148,6 +148,7 @@ func (s *HostgroupsService) ListHostgroups(ctx context.Context, req *pb.ListHost
 			PageSize:    req.Filter.PageSize,
 			Page:        req.Filter.Page,
 			Names:       req.Filter.Names,
+			Ids:         req.Filter.Ids,
 			Clusters:    req.Filter.Clusters,
 			Datacenters: req.Filter.Datacenters,
 			Envs:        req.Filter.Envs,

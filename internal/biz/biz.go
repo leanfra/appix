@@ -18,6 +18,7 @@ var ProviderSet = wire.NewSet(
 	NewClustersUsecase,
 	NewDatacentersUsecase,
 	NewHostgroupsUsecase,
+	NewApplicationsUsecase,
 )
 
 const MaxFilterValues = 10

@@ -18,6 +18,7 @@ type Hostgroup struct {
 type ListHostgroupsFilter struct {
 	Page          uint32
 	PageSize      uint32
+	Ids           []uint32
 	Names         []string
 	Clusters      []string
 	Datacenters   []string
