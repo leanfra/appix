@@ -6,13 +6,13 @@ const applicationType = "application"
 
 type Application struct {
 	Id           uint32 `gorm:"primaryKey;autoIncrement"`
-	Name         string `gorm:"type:varchar(255);index:idx_name_env,unique"`
+	Name         string `gorm:"type:varchar(255);index:idx_app_name_env,unique"`
 	Description  string `gorm:"type:varchar(255);"`
 	Owner        string `gorm:"type:varchar(255);"`
 	IsStateful   bool   `gorm:"type:tinyint(1);"`
 	ClusterId    uint32
 	DatacenterId uint32
-	EnvId        uint32 `gorm:"index:idx_name_env,unique"`
+	EnvId        uint32 `gorm:"index:idx_app_name_env,unique"`
 	ProductId    uint32
 	TeamId       uint32
 }

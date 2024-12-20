@@ -6,7 +6,7 @@ import (
 
 type Datacenter struct {
 	ID          uint32 `gorm:"primaryKey;autoIncrement"`
-	Name        string `gorm:"type:varchar(255);index:idx_name,unique"`
+	Name        string `gorm:"type:varchar(255);index:idx_dc_name,unique"`
 	Description string `gorm:"type:varchar(255);"`
 }
 

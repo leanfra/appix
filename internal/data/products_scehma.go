@@ -6,8 +6,8 @@ import (
 
 type Product struct {
 	ID          uint32 `gorm:"primaryKey;autoIncrement"`
-	Name        string `gorm:"type:varchar(255);index:idx_name,unique"`
-	Code        string `gorm:"type:varchar(255);index:idx_code,unique"`
+	Name        string `gorm:"type:varchar(255);index:idx_product_name,unique"`
+	Code        string `gorm:"type:varchar(255);index:idx_product_code,unique"`
 	Description string `gorm:"type:varchar(255);"`
 }
 

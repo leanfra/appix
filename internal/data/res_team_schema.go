@@ -8,30 +8,30 @@ import (
 
 type ResTeam struct {
 	ID      uint32 `gorm:"primaryKey;autoIncrement"`
-	ResType string `gorm:"index:idx_res_type_res_id_team_id,unique"`
-	ResID   uint32 `gorm:"index:idx_res_type_res_id_team_id,unique"`
-	TeamID  uint32 `gorm:"index:idx_res_type_res_id_team_id,unique"`
+	ResType string `gorm:"index:idx_team_res_type_res_id_team_id,unique"`
+	ResID   uint32 `gorm:"index:idx_team_res_type_res_id_team_id,unique"`
+	TeamID  uint32 `gorm:"index:idx_team_res_type_res_id_team_id,unique"`
 }
 
 type ResTag struct {
 	ID      uint32 `gorm:"primaryKey;autoIncrement"`
-	ResType string `gorm:"index:idx_res_type_res_id_tag_id,unique"`
-	ResID   uint32 `gorm:"index:idx_res_type_res_id_tag_id,unique"`
-	TagID   uint32 `gorm:"index:idx_res_type_res_id_tag_id,unique"`
+	ResType string `gorm:"index:idx_tag_res_type_res_id_tag_id,unique"`
+	ResID   uint32 `gorm:"index:idx_tag_res_type_res_id_tag_id,unique"`
+	TagID   uint32 `gorm:"index:idx_tag_res_type_res_id_tag_id,unique"`
 }
 
 type ResFeature struct {
 	ID        uint32 `gorm:"primaryKey;autoIncrement"`
-	ResType   string `gorm:"index:idx_res_type_res_id_feature_id,unique"`
-	ResID     uint32 `gorm:"index:idx_res_type_res_id_feature_id,unique"`
-	FeatureID uint32 `gorm:"index:idx_res_type_res_id_feature_id,unique"`
+	ResType   string `gorm:"index:idx_feature_res_type_res_id_feature_id,unique"`
+	ResID     uint32 `gorm:"index:idx_feature_res_type_res_id_feature_id,unique"`
+	FeatureID uint32 `gorm:"index:idx_feature_res_type_res_id_feature_id,unique"`
 }
 
 type ResProduct struct {
 	ID        uint32 `gorm:"primaryKey;autoIncrement"`
-	ResType   string `gorm:"index:idx_res_type_res_id_product_id,unique"`
-	ResID     uint32 `gorm:"index:idx_res_type_res_id_product_id,unique"`
-	ProductID uint32 `gorm:"index:idx_res_type_res_id_product_id,unique"`
+	ResType   string `gorm:"index:idx_product_res_type_res_id_product_id,unique"`
+	ResID     uint32 `gorm:"index:idx_product_res_type_res_id_product_id,unique"`
+	ProductID uint32 `gorm:"index:idx_product_res_type_res_id_product_id,unique"`
 }
 
 func listClassIds(tx *gorm.DB,

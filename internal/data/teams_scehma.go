@@ -6,9 +6,9 @@ import (
 
 type Team struct {
 	ID          uint32 `gorm:"primaryKey;autoIncrement"`
-	Name        string `gorm:"type:varchar(255);index:idx_name,unique"`
-	Code        string `gorm:"type:varchar(255);index:idx_code,unique"`
-	Leader      string `gorm:"type:varchar(255);index:idx_leader"`
+	Name        string `gorm:"type:varchar(255);index:idx_team_name,unique"`
+	Code        string `gorm:"type:varchar(255);index:idx_team_code,unique"`
+	Leader      string `gorm:"type:varchar(255);index:idx_team_leader"`
 	Description string `gorm:"type:varchar(255);"`
 }
 

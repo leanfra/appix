@@ -8,7 +8,7 @@ const hostgroupType = "hostgroup"
 
 type Hostgroup struct {
 	Id           uint32 `gorm:"primaryKey;autoIncrement"`
-	Name         string `gorm:"type:varchar(255);index:idx_name,unique"`
+	Name         string `gorm:"type:varchar(255);index:idx_hg_name,unique"`
 	Description  string `gorm:"type:varchar(255);"`
 	ClusterId    uint32
 	DatacenterId uint32

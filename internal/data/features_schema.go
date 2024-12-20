@@ -6,8 +6,8 @@ import (
 
 type Feature struct {
 	ID    uint32 `gorm:"primaryKey;autoIncrement"`
-	Name  string `gorm:"type:varchar(255);index:idx_name_value,unique"`
-	Value string `gorm:"type:varchar(255);index:idx_name_value"`
+	Name  string `gorm:"type:varchar(255);index:idx_feature_name_value,unique"`
+	Value string `gorm:"type:varchar(255);index:idx_feature_name_value"`
 }
 
 func NewFeature(t *biz.Feature) (*Feature, error) {
