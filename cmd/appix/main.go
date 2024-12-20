@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"appix/internal/conf"
@@ -23,14 +24,17 @@ var (
 	Name string
 	// Version is the version of the compiled software.
 	Version string
+	Branch  string
 	// flagconf is the config flag.
-	flagconf string
+	flagconf    string
+	showVersion bool
 
 	id, _ = os.Hostname()
 )
 
 func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.BoolVar(&showVersion, "version", false, "show version")
 }
 
 func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
@@ -49,6 +53,12 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 
 func main() {
 	flag.Parse()
+
+	if showVersion {
+		fmt.Printf("name: %s\nbranch: %s\nversion: %s\n", Name, Branch, Version)
+		os.Exit(0)
+	}
+
 	logger := log.With(log.NewStdLogger(os.Stdout),
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,

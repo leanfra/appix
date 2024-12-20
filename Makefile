@@ -2,6 +2,8 @@ NAME="appix"
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
+BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
+
 
 ifeq ($(GOHOSTOS), windows)
 	#the `find.exe` is different from `find` in bash/shell.
@@ -48,7 +50,7 @@ api:
 .PHONY: build
 # build
 build:
-	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION) -X main.Name=${NAME}" -o ./bin/ ./...
+	mkdir -p bin/ && go build -ldflags "-X main.Branch=${BRANCH}  -X main.Version=$(VERSION) -X main.Name=${NAME}" -o ./bin/ ./...
 
 .PHONY: generate
 # generate
