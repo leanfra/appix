@@ -20,7 +20,7 @@ func NewProductsRepoImpl(data *Data, logger log.Logger) (biz.ProductsRepo, error
 		return nil, err
 	}
 
-	if err := initTable(data.db, &Product{}, "product"); err != nil {
+	if err := initTable(data.db, &Product{}, productTable); err != nil {
 		return nil, err
 	}
 

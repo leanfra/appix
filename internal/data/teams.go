@@ -18,7 +18,7 @@ func NewTeamsRepoImpl(data *Data, logger log.Logger) (biz.TeamsRepo, error) {
 		return nil, err
 	}
 
-	if err := initTable(data.db, &Team{}, "team"); err != nil {
+	if err := initTable(data.db, &Team{}, teamTable); err != nil {
 		return nil, err
 	}
 

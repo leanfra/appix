@@ -6,6 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
+const resTeamTable = "res_teams"
+const resTagTable = "res_tags"
+const resProductTable = "res_products"
+const resFeatureTable = "res_features"
+
 type ResTeam struct {
 	ID      uint32 `gorm:"primaryKey;autoIncrement"`
 	ResType string `gorm:"index:idx_team_res_type_res_id_team_id,unique"`

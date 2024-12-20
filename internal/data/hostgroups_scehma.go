@@ -5,6 +5,7 @@ import (
 )
 
 const hostgroupType = "hostgroup"
+const hostgroupTable = "hostgroups"
 
 type Hostgroup struct {
 	Id           uint32 `gorm:"primaryKey;autoIncrement"`

@@ -4,6 +4,8 @@ import (
 	"appix/internal/biz"
 )
 
+const teamTable = "teams"
+
 type Team struct {
 	ID          uint32 `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_team_name,unique"`

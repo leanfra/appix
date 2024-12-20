@@ -4,6 +4,8 @@ import (
 	"appix/internal/biz"
 )
 
+const featureTable = "features"
+
 type Feature struct {
 	ID    uint32 `gorm:"primaryKey;autoIncrement"`
 	Name  string `gorm:"type:varchar(255);index:idx_feature_name_value,unique"`

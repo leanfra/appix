@@ -4,6 +4,8 @@ import (
 	"appix/internal/biz"
 )
 
+const productTable = "products"
+
 type Product struct {
 	ID          uint32 `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_product_name,unique"`

@@ -19,7 +19,7 @@ func NewTagsRepoImpl(data *Data, logger log.Logger) (biz.TagsRepo, error) {
 		return nil, err
 	}
 
-	if err := initTable(data.db, &Tag{}, "tag"); err != nil {
+	if err := initTable(data.db, &Tag{}, tagTable); err != nil {
 		return nil, err
 	}
 

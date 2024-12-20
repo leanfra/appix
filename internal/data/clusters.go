@@ -20,7 +20,7 @@ func NewClustersRepoImpl(data *Data, logger log.Logger) (biz.ClustersRepo, error
 		return nil, err
 	}
 
-	if err := initTable(data.db, &Cluster{}, "cluster"); err != nil {
+	if err := initTable(data.db, &Cluster{}, clusterTable); err != nil {
 		return nil, err
 	}
 

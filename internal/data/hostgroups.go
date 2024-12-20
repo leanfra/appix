@@ -20,7 +20,19 @@ func NewHostgroupsRepoImpl(data *Data, logger log.Logger) (biz.HostgroupsRepo, e
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &Hostgroup{}, hostgroupType); err != nil {
+	if err := initTable(data.db, &Hostgroup{}, hostgroupTable); err != nil {
+		return nil, err
+	}
+	if err := initTable(data.db, &ResFeature{}, resFeatureTable); err != nil {
+		return nil, err
+	}
+	if err := initTable(data.db, &ResTag{}, resTagTable); err != nil {
+		return nil, err
+	}
+	if err := initTable(data.db, &ResTeam{}, resTeamTable); err != nil {
+		return nil, err
+	}
+	if err := initTable(data.db, &ResProduct{}, resProductTable); err != nil {
 		return nil, err
 	}
 
@@ -320,20 +332,22 @@ func (d *HostgroupsRepoImpl) ListHostgroups(ctx context.Context,
 
 		if len(filter.ShareProducts) > 0 {
 			q_product_ids := d.data.db.WithContext(ctx).
-				Table("product").
+				Model(&Product{}).
 				Select("id").
 				Where("name in (?)", filter.ShareProducts)
 			q_product_res_hg_ids := d.data.db.WithContext(ctx).
-				Table("res_product").
+				Model(&ResProduct{}).
 				Select("res_id").
 				Where("res_type = ? AND product_id in (?)", hostgroupType, q_product_ids)
 			query = query.Where("id in (?)", q_product_res_hg_ids)
 		}
 
 		if len(filter.ShareTeams) > 0 {
-			q_team_ids := d.data.db.WithContext(ctx).Table("team").Select("id").
+			q_team_ids := d.data.db.WithContext(ctx).
+				Model(&Team{}).Select("id").
 				Where("name in (?)", filter.ShareTeams)
-			q_team_res_hg_ids := d.data.db.WithContext(ctx).Table("res_team").Select("res_id").
+			q_team_res_hg_ids := d.data.db.WithContext(ctx).
+				Model(&ResTeam{}).Select("res_id").
 				Where("res_type = ? AND team_id in (?)", hostgroupType, q_team_ids)
 			query = query.Where("id in (?)", q_team_res_hg_ids)
 		}
@@ -341,7 +355,7 @@ func (d *HostgroupsRepoImpl) ListHostgroups(ctx context.Context,
 		if len(filter.Tags) > 0 {
 			kvOr, kvs := buildOrKV("key", "value", filter.Tags)
 			subquery := d.data.db.WithContext(ctx).
-				Table("res_feature").
+				Model(&ResTag{}).
 				Select("res_id").
 				Where("res_type = ?", hostgroupType).
 				Where(kvOr, kvs)
@@ -351,11 +365,11 @@ func (d *HostgroupsRepoImpl) ListHostgroups(ctx context.Context,
 		if len(filter.Features) > 0 {
 			featureOr, kvs := buildOrKV("name", "value", filter.Features)
 			subquery := d.data.db.WithContext(ctx).
-				Table("res_feature").
+				Model(&ResFeature{}).
 				Select("res_id").
 				Where("res_type = ?", hostgroupType).
 				Where(featureOr, kvs)
-			query = query.Where("idin (?)", subquery)
+			query = query.Where("id in (?)", subquery)
 		}
 	}
 

@@ -21,7 +21,7 @@ func NewApplicationsRepoImpl(data *Data, logger log.Logger) (biz.ApplicationsRep
 		return nil, err
 	}
 
-	if err := initTable(data.db, &Application{}, applicationType); err != nil {
+	if err := initTable(data.db, &Application{}, applicationTable); err != nil {
 		return nil, err
 	}
 
@@ -265,7 +265,7 @@ func (d *ApplicationsRepoImpl) ListApplications(
 			tagsOr, kvs := buildOrKV("key", "value", filter.Tags)
 
 			subquery := d.data.db.WithContext(ctx).
-				Table("res_tag").
+				Model(&ResTag{}).
 				Select("res_id").
 				Where("res_type = ?", applicationType).
 				Where(tagsOr, kvs)
@@ -276,7 +276,7 @@ func (d *ApplicationsRepoImpl) ListApplications(
 			featuresOr, kvs := buildOrKV("name", "value", filter.Features)
 
 			subquery := d.data.db.WithContext(ctx).
-				Table("res_feature").
+				Model(&ResFeature{}).
 				Select("res_id").
 				Where("res_type = ?", applicationType).
 				Where(featuresOr, kvs)

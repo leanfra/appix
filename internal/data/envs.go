@@ -19,7 +19,7 @@ func NewEnvsRepoImpl(data *Data, logger log.Logger) (biz.EnvsRepo, error) {
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &Env{}, "env"); err != nil {
+	if err := initTable(data.db, &Env{}, envTable); err != nil {
 		return nil, err
 	}
 	return &EnvsRepoImpl{

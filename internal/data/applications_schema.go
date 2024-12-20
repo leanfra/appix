@@ -3,6 +3,7 @@ package data
 import "appix/internal/biz"
 
 const applicationType = "application"
+const applicationTable = "applications"
 
 type Application struct {
 	Id           uint32 `gorm:"primaryKey;autoIncrement"`

@@ -20,7 +20,7 @@ func NewDatacentersRepoImpl(data *Data, logger log.Logger) (biz.DatacentersRepo,
 		return nil, err
 	}
 
-	if err := initTable(data.db, &Datacenter{}, "datacenter"); err != nil {
+	if err := initTable(data.db, &Datacenter{}, datacenterTable); err != nil {
 		return nil, err
 	}
 

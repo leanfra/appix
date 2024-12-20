@@ -54,7 +54,7 @@ build:
 
 .PHONY: cli
 # build cli
-build:
+cli:
 	mkdir -p bin/ && go build -ldflags "-X main.Branch=${BRANCH}  -X main.Version=$(VERSION) -X main.Name=${NAME}" -o ./bin/ ./cli/...
 
 .PHONY: generate

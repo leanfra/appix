@@ -4,6 +4,8 @@ import (
 	"appix/internal/biz"
 )
 
+const envTable = "envs"
+
 type Env struct {
 	ID          uint32 `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_env_name,unique"`

@@ -21,7 +21,7 @@ func NewFeaturesRepoImpl(data *Data, logger log.Logger) (biz.FeaturesRepo, error
 		return nil, err
 	}
 
-	if err := initTable(data.db, &Feature{}, "feature"); err != nil {
+	if err := initTable(data.db, &Feature{}, featureTable); err != nil {
 		return nil, err
 	}
 

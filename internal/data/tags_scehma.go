@@ -4,6 +4,8 @@ import (
 	"appix/internal/biz"
 )
 
+const tagTable = "tags"
+
 type Tag struct {
 	ID    uint32 `gorm:"primaryKey;autoIncrement"`
 	Key   string `gorm:"type:varchar(255);index:idx_key_value,unique"`

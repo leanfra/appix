@@ -92,8 +92,10 @@ func initTable(db *gorm.DB, model interface{}, table string) error {
 	m := db.Migrator()
 
 	if !m.HasTable(table) {
+		log.Warnf("missing table %s", table)
 		return db.AutoMigrate(model)
 	}
+	log.Infof("exists table %s", table)
 	return nil
 }
 
