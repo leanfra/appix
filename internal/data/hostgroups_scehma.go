@@ -4,8 +4,10 @@ import (
 	"appix/internal/biz"
 )
 
+const hostgroupType = "hostgroup"
+
 type Hostgroup struct {
-	ID           uint32 `gorm:"primaryKey;autoIncrement"`
+	Id           uint32 `gorm:"primaryKey;autoIncrement"`
 	Name         string `gorm:"type:varchar(255);index:idx_name,unique"`
 	Description  string `gorm:"type:varchar(255);"`
 	ClusterId    uint32
@@ -17,7 +19,7 @@ type Hostgroup struct {
 
 func NewHostgroup(t *biz.Hostgroup) (*Hostgroup, error) {
 	return &Hostgroup{
-		ID:           t.Id,
+		Id:           t.Id,
 		Name:         t.Name,
 		Description:  t.Description,
 		ClusterId:    t.ClusterId,
@@ -42,7 +44,7 @@ func NewHostgroups(ts []*biz.Hostgroup) ([]*Hostgroup, error) {
 
 func NewBizHostgroup(t *Hostgroup) (*biz.Hostgroup, error) {
 	return &biz.Hostgroup{
-		Id:           t.ID,
+		Id:           t.Id,
 		Description:  t.Description,
 		Name:         t.Name,
 		ClusterId:    t.ClusterId,

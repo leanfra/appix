@@ -3,6 +3,7 @@ package data
 import (
 	"appix/internal/biz"
 	"context"
+	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
@@ -14,8 +15,6 @@ type HostgroupsRepoImpl struct {
 	data *Data
 	log  *log.Helper
 }
-
-const hostgroupType = "hostgroup"
 
 func NewHostgroupsRepoImpl(data *Data, logger log.Logger) (biz.HostgroupsRepo, error) {
 
@@ -113,25 +112,25 @@ func (d *HostgroupsRepoImpl) CreateHostgroups(ctx context.Context, hgs []*biz.Ho
 		}
 
 		// insert res_teams
-		if e := createClass(tx, &ResTeam{}, hg.ShareTeamsId, hostgroupType, hg.Id); e != nil {
+		if e := createClass(tx, &ResTeam{}, hg.ShareTeamsId, hostgroupType, db_hg.Id); e != nil {
 			tx.Rollback()
 			return e
 		}
 
 		// insert res_tags
-		if e := createClass(tx, &ResTag{}, hg.TagsId, hostgroupType, hg.Id); e != nil {
+		if e := createClass(tx, &ResTag{}, hg.TagsId, hostgroupType, db_hg.Id); e != nil {
 			tx.Rollback()
 			return e
 		}
 
 		// insert res_products
-		if e := createClass(tx, &ResProduct{}, hg.ShareProductsId, hostgroupType, hg.Id); e != nil {
+		if e := createClass(tx, &ResProduct{}, hg.ShareProductsId, hostgroupType, db_hg.Id); e != nil {
 			tx.Rollback()
 			return e
 		}
 
 		// insert res_features
-		if e := createClass(tx, &ResFeature{}, hg.FeaturesId, hostgroupType, hg.Id); e != nil {
+		if e := createClass(tx, &ResFeature{}, hg.FeaturesId, hostgroupType, db_hg.Id); e != nil {
 			tx.Rollback()
 			return e
 		}
@@ -280,7 +279,124 @@ func (d *HostgroupsRepoImpl) GetHostgroups(ctx context.Context, id uint32) (*biz
 func (d *HostgroupsRepoImpl) ListHostgroups(ctx context.Context,
 	filter *biz.ListHostgroupsFilter) ([]*biz.Hostgroup, error) {
 
-	// TODO database operations
+	var hostgroups []*Hostgroup
+	query := d.data.db.WithContext(ctx)
 
-	return nil, nil
+	if filter != nil {
+		if filter.Page > 0 && filter.PageSize > 0 {
+			offset := int((filter.Page - 1) * filter.PageSize)
+			query = query.Offset(offset).Limit(int(filter.PageSize))
+		}
+		if len(filter.Names) > 0 {
+			query = query.Where("name in (?)", filter.Names)
+		}
+		if len(filter.Clusters) > 0 {
+			query = query.Where(
+				"cluster_id in (select id from cluster where name in (?))",
+				filter.Clusters)
+		}
+		if len(filter.Datacenters) > 0 {
+			query = query.Where(
+				"datacenter_id in (select id from datacenter where name in (?))",
+				filter.Datacenters)
+		}
+		if len(filter.Envs) > 0 {
+			query = query.Where("env_id in (select id from env where name in (?))",
+				filter.Envs)
+		}
+		if len(filter.Products) > 0 {
+			query = query.Where(
+				"product_id in (select id from product where name in (?))",
+				filter.Products)
+		}
+		if len(filter.Teams) > 0 {
+			query = query.Where(
+				"team_id in (select id from team where name in (?))",
+				filter.Teams)
+		}
+
+		if len(filter.ShareProducts) > 0 {
+			q_product_ids := d.data.db.WithContext(ctx).
+				Table("product").
+				Select("id").
+				Where("name in (?)", filter.ShareProducts)
+			q_product_res_hg_ids := d.data.db.WithContext(ctx).
+				Table("res_product").
+				Select("res_id").
+				Where("res_type = ? AND product_id in (?)", hostgroupType, q_product_ids)
+			query = query.Where("id in (?)", q_product_res_hg_ids)
+		}
+
+		if len(filter.ShareTeams) > 0 {
+			q_team_ids := d.data.db.WithContext(ctx).Table("team").Select("id").
+				Where("name in (?)", filter.ShareTeams)
+			q_team_res_hg_ids := d.data.db.WithContext(ctx).Table("res_team").Select("res_id").
+				Where("res_type = ? AND team_id in (?)", hostgroupType, q_team_ids)
+			query = query.Where("id in (?)", q_team_res_hg_ids)
+		}
+
+		if len(filter.Tags) > 0 {
+			sq_tag_res_hg_ids := make([]string, 2*len(filter.Tags))
+			_tag_kvs := make([]interface{}, len(filter.Tags))
+			_sq := "(tag_id = (Select id from tag where key = ? and value = ?))"
+			for _, tag := range filter.Tags {
+				// kv format should be validated on biz
+				_kv := strings.Split(tag, biz.FilterKVSplit)
+				sq_tag_res_hg_ids = append(sq_tag_res_hg_ids, _sq)
+				_tag_kvs = append(_tag_kvs, _kv[0], _kv[1])
+			}
+			subquery := d.data.db.WithContext(ctx).
+				Table("res_feature").
+				Select("res_id").
+				Where("res_type = ?", hostgroupType).
+				Where(strings.Join(sq_tag_res_hg_ids, " OR "), _tag_kvs...)
+			query = query.Where("id in (?)", subquery)
+		}
+
+		if len(filter.Features) > 0 {
+			sq_feature_res_hg_ids := make([]string, 2*len(filter.Features))
+			_feature_kvs := make([]interface{}, len(filter.Features))
+			_sq := "(feature_id = ( Select id from feature where name = ? and value = ?))"
+			for _, feature := range filter.Features {
+				// kv format should be validated on biz
+				_kv := strings.Split(feature, biz.FilterKVSplit)
+				sq_feature_res_hg_ids = append(sq_feature_res_hg_ids, _sq)
+				_feature_kvs = append(_feature_kvs, _kv[0], _kv[1])
+			}
+			subquery := d.data.db.WithContext(ctx).
+				Table("res_feature").
+				Select("res_id").
+				Where("res_type = ?", hostgroupType).
+				Where(strings.Join(sq_feature_res_hg_ids, " OR "), _feature_kvs...)
+			query = query.Where("idin (?)", subquery)
+		}
+	}
+
+	r := query.Find(&hostgroups)
+	if r.Error != nil {
+		return nil, r.Error
+	}
+
+	bizHgs := make([]*biz.Hostgroup, len(hostgroups))
+	var e error
+	for i, hg := range hostgroups {
+		bizHgs[i], e = NewBizHostgroup(hg)
+		if e != nil {
+			return nil, e
+		}
+		_features_id, err := listClassIds(
+			d.data.db, &ResFeature{}, "feature_id", hostgroupType, hg.Id)
+		if err != nil {
+			return nil, err
+		}
+		_tags_id, err := listClassIds(
+			d.data.db, &ResTag{}, "tag_id", hostgroupType, hg.Id)
+		if err != nil {
+			return nil, err
+		}
+		bizHgs[i].FeaturesId = _features_id
+		bizHgs[i].TagsId = _tags_id
+	}
+
+	return bizHgs, nil
 }

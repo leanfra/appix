@@ -12,7 +12,7 @@ type ClustersRepo interface {
 	UpdateClusters(ctx context.Context, cs []*Cluster) error
 	DeleteClusters(ctx context.Context, ids []uint32) error
 	GetClusters(ctx context.Context, id uint32) (*Cluster, error)
-	ListClusters(ctx context.Context, filter *ListClustersFilter) ([]Cluster, error)
+	ListClusters(ctx context.Context, filter *ListClustersFilter) ([]*Cluster, error)
 }
 
 type ClustersUsecase struct {
@@ -70,7 +70,9 @@ func (s *ClustersUsecase) GetClusters(ctx context.Context, id uint32) (*Cluster,
 }
 
 // ListClusters is
-func (s *ClustersUsecase) ListClusters(ctx context.Context, filter *ListClustersFilter) ([]Cluster, error) {
+func (s *ClustersUsecase) ListClusters(ctx context.Context,
+	filter *ListClustersFilter) ([]*Cluster, error) {
+
 	if filter != nil {
 		if err := filter.Validate(); err != nil {
 			return nil, err

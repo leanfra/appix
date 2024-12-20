@@ -8,45 +8,45 @@ option java_package = "api.appix.v1";
 
 import "google/api/annotations.proto";
 
-
-
-service Hostgroups {
-	rpc CreateHostgroups (CreateHostgroupsRequest) returns (CreateHostgroupsReply){
+service Applications {
+	rpc CreateApplications (CreateApplicationsRequest) returns (CreateApplicationsReply){
 		option (google.api.http) = {
-			post: "/api/v1/hostgroups/create"
+			post: "/api/v1/applications/create"
 			body: "*"
 		};
 	};
-	rpc UpdateHostgroups (UpdateHostgroupsRequest) returns (UpdateHostgroupsReply){
+	rpc UpdateApplications (UpdateApplicationsRequest) returns (UpdateApplicationsReply){
 		option (google.api.http) = {
-			post: "/api/v1/hostgroups/update"
+			post: "/api/v1/applications/update"
 			body: "*"
 		};
 	};
-	rpc DeleteHostgroups (DeleteHostgroupsRequest) returns (DeleteHostgroupsReply){
+	rpc DeleteApplications (DeleteApplicationsRequest) returns (DeleteApplicationsReply){
 		option (google.api.http) = {
-			post: "/api/v1/hostgroups/delete"
+			post: "/api/v1/applications/delete"
 			body: "*"
 		};
 	};
-	rpc GetHostgroups (GetHostgroupsRequest) returns (GetHostgroupsReply){
+	rpc GetApplications (GetApplicationsRequest) returns (GetApplicationsReply){
 		option (google.api.http) = {
-			get: "/api/v1/hostgroups/{id}"
+			get: "/api/v1/applications/{id}"
 		};
 	};
-	rpc ListHostgroups (ListHostgroupsRequest) returns (ListHostgroupsReply){
+	rpc ListApplications (ListApplicationsRequest) returns (ListApplicationsReply){
 		option (google.api.http) = {
-			post: "/api/v1/hostgroups/list"
+			post: "/api/v1/applications/list"
 			body: "*"
 		};
 	};
 }
 
 // gratos::model
-message Hostgroup {
+message Application {
 	uint32 id = 1;
 	string name = 2;
 	string description = 3;
+	string owner = 11;
+	bool is_stateful = 13;
 	uint32 cluster_id = 4;
 	uint32 datacenter_id = 5;
 	uint32 env_id = 6;
@@ -54,52 +54,50 @@ message Hostgroup {
 	uint32 team_id = 8;
 	repeated uint32 features_id = 9;
 	repeated uint32 tags_id = 10;
-	repeated uint32 share_products_id = 11;
-	repeated uint32 share_teams_id = 12;
 }
 
-message CreateHostgroupsRequest {
-	repeated Hostgroup hostgroups = 1;
+message CreateApplicationsRequest {
+	repeated Application apps = 1;
 }
-message CreateHostgroupsReply {
+message CreateApplicationsReply {
 	string message = 1;
 	int32 code = 2;
 	string action = 3;
 }
 
-message UpdateHostgroupsRequest {
-	repeated Hostgroup hostgroups = 1;
+message UpdateApplicationsRequest {
+	repeated Application apps = 1;
 }
-message UpdateHostgroupsReply {
+message UpdateApplicationsReply {
 	string message = 1;
 	int32 code = 2;
 	string action = 3;
 }
 
-message DeleteHostgroupsRequest {
+message DeleteApplicationsRequest {
 	repeated uint32 ids = 1;
 }
-message DeleteHostgroupsReply {
+message DeleteApplicationsReply {
 	string message = 1;
 	int32 code = 2;
 	string action = 3;
 }
 
-message GetHostgroupsRequest {
+message GetApplicationsRequest {
 	uint32 id = 1;
 }
-message GetHostgroupsReply {
+message GetApplicationsReply {
 	string message = 1;
 	int32 code = 2;
 	string action = 3;
-	Hostgroup hostgroup = 4;
+	Application app = 4;
 }
 
-
 // gratos::model
-message ListHostgroupsFilter {
+message ListApplicationsFilter {
 	uint32 page = 1;
 	uint32 page_size = 2;
+	repeated uint32 ids = 11;
 	repeated string names = 3;
 	repeated string clusters = 4;
 	repeated string datacenters = 5;
@@ -108,16 +106,16 @@ message ListHostgroupsFilter {
 	repeated string teams = 8;
 	repeated string features = 9;
 	repeated string tags = 10;
-	repeated string share_products = 11;
-	repeated string share_teams = 12;
+	string is_stateful = 12;
+
 }
 
-message ListHostgroupsRequest {
-	ListHostgroupsFilter filter = 1;
+message ListApplicationsRequest {
+	ListApplicationsFilter filter = 1;
 }
-message ListHostgroupsReply {
+message ListApplicationsReply {
 	string message = 1;
 	int32 code = 2;
 	string action = 3;
-	repeated Hostgroup hostgroups = 4;
+	repeated Application apps = 4;
 }

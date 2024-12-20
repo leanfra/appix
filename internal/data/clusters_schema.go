@@ -41,14 +41,15 @@ func NewBizCluster(t *Cluster) (*biz.Cluster, error) {
 	}, nil
 }
 
-func NewBizClusters(es []Cluster) ([]biz.Cluster, error) {
-	var biz_clusters = make([]biz.Cluster, len(es))
+func NewBizClusters(es []Cluster) ([]*biz.Cluster, error) {
+	var biz_clusters = make([]*biz.Cluster, len(es))
 	for i, f := range es {
-		biz_clusters[i] = biz.Cluster{
-			Id:          f.ID,
-			Name:        f.Name,
-			Description: f.Description,
+		biz_cluster, err := NewBizCluster(&f)
+		if err != nil {
+			return nil, err
 		}
+
+		biz_clusters[i] = biz_cluster
 	}
 	return biz_clusters, nil
 }

@@ -80,7 +80,7 @@ func (d *ClustersRepoImpl) GetClusters(ctx context.Context, id uint32) (*biz.Clu
 }
 
 // ListClusters is
-func (d *ClustersRepoImpl) ListClusters(ctx context.Context, filter *biz.ListClustersFilter) ([]biz.Cluster, error) {
+func (d *ClustersRepoImpl) ListClusters(ctx context.Context, filter *biz.ListClustersFilter) ([]*biz.Cluster, error) {
 	cs := []Cluster{}
 	query := d.data.db.WithContext(ctx)
 	if filter != nil {

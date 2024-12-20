@@ -31,8 +31,23 @@ func (f *Hostgroup) Validate(isNew bool) error {
 }
 
 func (lf *ListHostgroupsFilter) Validate() error {
-	if lf.Page < 0 || lf.PageSize < 0 {
-		return fmt.Errorf("InvalidPageSize")
+	if lf == nil {
+		return nil
 	}
+
+	if len(lf.Names) > MaxFilterValues ||
+		len(lf.Clusters) > MaxFilterValues ||
+		len(lf.Datacenters) > MaxFilterValues ||
+		len(lf.Envs) > MaxFilterValues ||
+		len(lf.Products) > MaxFilterValues ||
+		len(lf.Teams) > MaxFilterValues ||
+		len(lf.Features) > MaxFilterValues ||
+		len(lf.Tags) > MaxFilterValues ||
+		len(lf.ShareProducts) > MaxFilterValues ||
+		len(lf.ShareTeams) > MaxFilterValues {
+
+		return ErrFilterValuesExceedMax
+	}
+
 	return nil
 }
