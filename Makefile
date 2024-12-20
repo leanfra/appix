@@ -48,9 +48,14 @@ api:
 	       $(API_PROTO_FILES)
 
 .PHONY: build
-# build
+# build server
 build:
-	mkdir -p bin/ && go build -ldflags "-X main.Branch=${BRANCH}  -X main.Version=$(VERSION) -X main.Name=${NAME}" -o ./bin/ ./...
+	mkdir -p bin/ && go build -ldflags "-X main.Branch=${BRANCH}  -X main.Version=$(VERSION) -X main.Name=${NAME}" -o ./bin/ ./cmd/...
+
+.PHONY: cli
+# build cli
+build:
+	mkdir -p bin/ && go build -ldflags "-X main.Branch=${BRANCH}  -X main.Version=$(VERSION) -X main.Name=${NAME}" -o ./bin/ ./cli/...
 
 .PHONY: generate
 # generate
