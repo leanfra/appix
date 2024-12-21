@@ -24,6 +24,16 @@ func (lf *ListProductsFilter) Validate() error {
 
 		return ErrFilterValuesExceedMax
 	}
+	if lf.PageSize == 0 || lf.PageSize > MaxPageSize {
+		return ErrFilterInvalidPagesize
+	}
 
 	return nil
+}
+
+func DefaultProductsFilter() *ListProductsFilter {
+	return &ListProductsFilter{
+		Page:     1,
+		PageSize: DefaultPageSize,
+	}
 }

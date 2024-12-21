@@ -1,6 +1,8 @@
 package biz
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func (m *Application) Validate(isNew bool) error {
 	if len(m.Name) == 0 {
@@ -30,5 +32,17 @@ func (m *ListApplicationsFilter) Validate() error {
 
 		return ErrFilterValuesExceedMax
 	}
+
+	if m.PageSize == 0 || m.PageSize > MaxPageSize {
+		return ErrFilterInvalidPagesize
+	}
 	return nil
+}
+
+func DefaultApplicationFilter() *ListApplicationsFilter {
+	return &ListApplicationsFilter{
+		Page:       1,
+		PageSize:   DefaultPageSize,
+		IsStateful: IsStatefulNone,
+	}
 }

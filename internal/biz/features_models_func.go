@@ -34,5 +34,16 @@ func (lf *ListFeaturesFilter) Validate() error {
 			}
 		}
 	}
+	if lf.PageSize == 0 || lf.PageSize > MaxPageSize {
+		return ErrFilterInvalidPagesize
+	}
+
 	return nil
+}
+
+func DefaultFeaturesFilter() *ListFeaturesFilter {
+	return &ListFeaturesFilter{
+		Page:     1,
+		PageSize: DefaultPageSize,
+	}
 }

@@ -23,10 +23,12 @@ var ProviderSet = wire.NewSet(
 
 const MaxFilterValues = 10
 const DefaultPageSize = 50
+const MaxPageSize = 200
 const FilterKVSplit = ":"
 
 var ErrFilterValuesExceedMax = errors.New("filter values exceeded max number")
 var ErrFilterKVInvalid = errors.New("filter KV invalid format")
+var ErrFilterInvalidPagesize = errors.New("filter invalid page size")
 
 func filterKvValidate(kvstr string) error {
 	kv := strings.Split(kvstr, FilterKVSplit)

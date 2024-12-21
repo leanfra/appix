@@ -135,13 +135,17 @@ func (s *EnvsService) ListEnvs(ctx context.Context, req *pb.ListEnvsRequest) (*p
 		return nil, fmt.Errorf("req is nil")
 	}
 
-	var filter *biz.ListEnvsFilter
+	var filter = biz.DefaultEnvFilter()
 	if req.Filter != nil {
 		filter = &biz.ListEnvsFilter{
-			PageSize: req.Filter.PageSize,
-			Page:     req.Filter.Page,
-			Ids:      req.Filter.Ids,
-			Names:    req.Filter.Names,
+			Ids:   req.Filter.Ids,
+			Names: req.Filter.Names,
+		}
+		if req.Filter.PageSize > 0 {
+			filter.PageSize = req.Filter.PageSize
+		}
+		if req.Filter.Page > 0 {
+			filter.Page = req.Filter.Page
 		}
 	}
 

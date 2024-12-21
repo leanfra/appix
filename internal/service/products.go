@@ -134,16 +134,19 @@ func (s *ProductsService) ListProducts(ctx context.Context, req *pb.ListProducts
 	if req == nil {
 		return nil, ErrRequestNil
 	}
-	var filter *biz.ListProductsFilter
+	var filter = biz.DefaultProductsFilter()
 	if req.Filter != nil {
 		filter = &biz.ListProductsFilter{
-			Page:     req.Filter.Page,
-			PageSize: req.Filter.PageSize,
-			Names:    req.Filter.Names,
-			Codes:    req.Filter.Codes,
-			Ids:      req.Filter.Ids,
+			Names: req.Filter.Names,
+			Codes: req.Filter.Codes,
+			Ids:   req.Filter.Ids,
 		}
-
+		if req.Filter.PageSize > 0 {
+			filter.PageSize = req.Filter.PageSize
+		}
+		if req.Filter.Page > 0 {
+			filter.Page = req.Filter.Page
+		}
 	}
 
 	ps, err := s.usecase.ListProducts(ctx, filter)

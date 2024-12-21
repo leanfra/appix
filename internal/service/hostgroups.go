@@ -141,11 +141,9 @@ func (s *HostgroupsService) ListHostgroups(ctx context.Context, req *pb.ListHost
 	if req == nil {
 		return nil, ErrRequestNil
 	}
-	var filter *biz.ListHostgroupsFilter
+	var filter = biz.DefaultHostgroupFilter()
 	if req.Filter != nil {
 		filter = &biz.ListHostgroupsFilter{
-			PageSize:    req.Filter.PageSize,
-			Page:        req.Filter.Page,
 			Names:       req.Filter.Names,
 			Ids:         req.Filter.Ids,
 			Clusters:    req.Filter.Clusters,
@@ -155,6 +153,12 @@ func (s *HostgroupsService) ListHostgroups(ctx context.Context, req *pb.ListHost
 			Teams:       req.Filter.Teams,
 			Features:    req.Filter.Features,
 			Tags:        req.Filter.Tags,
+		}
+		if req.Filter.PageSize > 0 {
+			filter.PageSize = req.Filter.PageSize
+		}
+		if req.Filter.Page > 0 {
+			filter.Page = req.Filter.Page
 		}
 	}
 	hgs, err := s.usecase.ListHostgroups(ctx, filter)

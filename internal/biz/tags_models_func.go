@@ -26,5 +26,15 @@ func (lf *ListTagsFilter) Validate() error {
 			return e
 		}
 	}
+	if lf.PageSize == 0 || lf.PageSize > MaxPageSize {
+		return ErrFilterInvalidPagesize
+	}
 	return nil
+}
+
+func DefaultTagsFilter() *ListTagsFilter {
+	return &ListTagsFilter{
+		Page:     1,
+		PageSize: DefaultPageSize,
+	}
 }

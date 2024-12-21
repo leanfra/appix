@@ -132,7 +132,7 @@ func (s *TeamsService) ListTeams(ctx context.Context, req *pb.ListTeamsRequest) 
 	if req == nil {
 		return nil, ErrRequestNil
 	}
-	var filter *biz.ListTeamsFilter
+	var filter = biz.DefaultTeamsFilter()
 	if req.Filter != nil {
 		filter = &biz.ListTeamsFilter{
 			Page:     req.Filter.Page,
@@ -142,7 +142,12 @@ func (s *TeamsService) ListTeams(ctx context.Context, req *pb.ListTeamsRequest) 
 			Names:    req.Filter.Names,
 			Leaders:  req.Filter.Leaders,
 		}
-
+		if req.Filter.PageSize > 0 {
+			filter.PageSize = req.Filter.PageSize
+		}
+		if req.Filter.Page > 0 {
+			filter.Page = req.Filter.Page
+		}
 	}
 
 	ts, err := s.usecase.ListTeams(ctx, filter)

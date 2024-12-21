@@ -146,16 +146,19 @@ func (s *TagsService) ListTags(ctx context.Context, req *pb.ListTagsRequest) (*p
 	if req == nil {
 		return nil, ErrRequestNil
 	}
-	var filter *biz.ListTagsFilter
+	var filter = biz.DefaultTagsFilter()
 	if req.Filter != nil {
 		filter = &biz.ListTagsFilter{
-			PageSize: req.Filter.PageSize,
-			Page:     req.Filter.Page,
-			Ids:      req.Filter.Ids,
-			Keys:     req.Filter.Keys,
-			Kvs:      req.Filter.Kvs,
+			Ids:  req.Filter.Ids,
+			Keys: req.Filter.Keys,
+			Kvs:  req.Filter.Kvs,
 		}
-
+		if req.Filter.PageSize > 0 {
+			filter.PageSize = req.Filter.PageSize
+		}
+		if req.Filter.Page > 0 {
+			filter.Page = req.Filter.Page
+		}
 	}
 
 	s.log.Infow("function", "listTags", "filter", filter)

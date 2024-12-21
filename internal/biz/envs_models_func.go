@@ -21,5 +21,15 @@ func (lf *ListEnvsFilter) Validate() error {
 	if len(lf.Names) > MaxFilterValues || len(lf.Ids) > MaxFilterValues {
 		return ErrFilterValuesExceedMax
 	}
+	if lf.PageSize == 0 || lf.PageSize > MaxPageSize {
+		return ErrFilterInvalidPagesize
+	}
 	return nil
+}
+
+func DefaultEnvFilter() *ListEnvsFilter {
+	return &ListEnvsFilter{
+		Page:     1,
+		PageSize: DefaultPageSize,
+	}
 }

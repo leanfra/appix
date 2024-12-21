@@ -49,5 +49,15 @@ func (lf *ListHostgroupsFilter) Validate() error {
 		return ErrFilterValuesExceedMax
 	}
 
+	if lf.PageSize == 0 || lf.PageSize > MaxPageSize {
+		return ErrFilterInvalidPagesize
+	}
 	return nil
+}
+
+func DefaultHostgroupFilter() *ListHostgroupsFilter {
+	return &ListHostgroupsFilter{
+		Page:     1,
+		PageSize: DefaultPageSize,
+	}
 }

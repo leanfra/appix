@@ -146,16 +146,19 @@ func (s *FeaturesService) ListFeatures(ctx context.Context,
 	if req == nil {
 		return nil, fmt.Errorf("req is nil")
 	}
-	var filter *biz.ListFeaturesFilter
+	var filter = biz.DefaultFeaturesFilter()
 	if req.Filter != nil {
 		filter = &biz.ListFeaturesFilter{
-			PageSize: req.Filter.PageSize,
-			Page:     req.Filter.Page,
-			Ids:      req.Filter.Ids,
-			Names:    req.Filter.Names,
-			Kvs:      req.Filter.Kvs,
+			Ids:   req.Filter.Ids,
+			Names: req.Filter.Names,
+			Kvs:   req.Filter.Kvs,
 		}
-
+		if req.Filter.PageSize > 0 {
+			filter.PageSize = req.Filter.PageSize
+		}
+		if req.Filter.Page > 0 {
+			filter.Page = req.Filter.Page
+		}
 	}
 
 	features, err := s.usecase.ListFeatures(ctx, filter)

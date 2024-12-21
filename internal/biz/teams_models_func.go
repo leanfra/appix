@@ -24,5 +24,15 @@ func (lf *ListTeamsFilter) Validate() error {
 		len(lf.Names) > MaxFilterValues {
 		return ErrFilterValuesExceedMax
 	}
+	if lf.PageSize == 0 || lf.PageSize > MaxPageSize {
+		return ErrFilterInvalidPagesize
+	}
 	return nil
+}
+
+func DefaultTeamsFilter() *ListTeamsFilter {
+	return &ListTeamsFilter{
+		Page:     1,
+		PageSize: DefaultPageSize,
+	}
 }

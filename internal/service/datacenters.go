@@ -138,13 +138,17 @@ func (s *DatacentersService) ListDatacenters(ctx context.Context,
 		return nil, fmt.Errorf("req is nil")
 	}
 
-	var filter *biz.ListDatacentersFilter
+	filter := biz.DefaultDatacentersFilter()
 	if req.Filter != nil {
 		filter = &biz.ListDatacentersFilter{
-			Page:     req.Filter.Page,
-			PageSize: req.Filter.PageSize,
-			Ids:      req.Filter.Ids,
-			Names:    req.Filter.Names,
+			Ids:   req.Filter.Ids,
+			Names: req.Filter.Names,
+		}
+		if req.Filter.PageSize > 0 {
+			filter.PageSize = req.Filter.PageSize
+		}
+		if req.Filter.Page > 0 {
+			filter.Page = req.Filter.Page
 		}
 	}
 

@@ -21,5 +21,15 @@ func (lf *ListClustersFilter) Validate() error {
 	if len(lf.Ids) > MaxFilterValues || len(lf.Names) > MaxFilterValues {
 		return ErrFilterValuesExceedMax
 	}
+	if lf.PageSize == 0 || lf.PageSize > MaxPageSize {
+		return ErrFilterInvalidPagesize
+	}
 	return nil
+}
+
+func DefaultClusterFilter() *ListClustersFilter {
+	return &ListClustersFilter{
+		Page:     1,
+		PageSize: DefaultPageSize,
+	}
 }

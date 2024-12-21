@@ -151,11 +151,9 @@ func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.List
 	if req == nil {
 		return nil, fmt.Errorf("req is nil")
 	}
-	var filter *biz.ListApplicationsFilter
+	var filter = biz.DefaultApplicationFilter()
 	if req.Filter != nil {
 		filter = &biz.ListApplicationsFilter{
-			PageSize:    req.Filter.PageSize,
-			Page:        req.Filter.Page,
 			Ids:         req.Filter.Ids,
 			Names:       req.Filter.Names,
 			Clusters:    req.Filter.Clusters,
@@ -166,6 +164,12 @@ func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.List
 			Features:    req.Filter.Features,
 			Tags:        req.Filter.Tags,
 			IsStateful:  req.Filter.IsStateful,
+		}
+		if req.Filter.PageSize > 0 {
+			filter.PageSize = req.Filter.PageSize
+		}
+		if req.Filter.Page > 0 {
+			filter.Page = req.Filter.Page
 		}
 	}
 	apps, err := s.usecase.ListApplications(ctx, filter)
