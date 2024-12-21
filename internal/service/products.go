@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 
-	//  TODO: modify project name
 	biz "appix/internal/biz"
 )
 

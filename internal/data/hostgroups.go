@@ -6,8 +6,6 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
-	//  TODO: modify project name
-	// biz "appix/internal/biz"
 )
 
 type HostgroupsRepoImpl struct {

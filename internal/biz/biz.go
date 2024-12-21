@@ -22,6 +22,7 @@ var ProviderSet = wire.NewSet(
 )
 
 const MaxFilterValues = 10
+const DefaultPageSize = 50
 const FilterKVSplit = ":"
 
 var ErrFilterValuesExceedMax = errors.New("filter values exceeded max number")
