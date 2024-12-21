@@ -230,30 +230,49 @@ func (d *ApplicationsRepoImpl) ListApplications(
 			query = query.Where(nameConditions, filter.Names)
 		}
 		if len(filter.Clusters) > 0 {
+			q_clusterIds := d.data.db.WithContext(ctx).
+				Model(&Cluster{}).
+				Select("id").
+				Where("name in (?)", filter.Clusters)
 			query = query.
-				Where(
-					"cluster_id in (select id from cluster where name in (?))",
-					filter.Clusters)
+				Where("cluster_id in (?)", q_clusterIds)
 		}
 		if len(filter.Datacenters) > 0 {
+			q_dcIds := d.data.db.WithContext(ctx).
+				Model(&Datacenter{}).
+				Select("id").
+				Where("name in (?)", filter.Datacenters)
+
 			query = query.
 				Where(
-					"datacenter_id in (select id from datacenter where name in (?))",
-					filter.Datacenters)
+					"datacenter_id in (?)", q_dcIds)
 		}
 		if len(filter.Envs) > 0 {
-			query = query.Where("env_id in (select id from env where name in (?))",
-				filter.Envs)
+			q_envIds := d.data.db.WithContext(ctx).
+				Model(&Env{}).
+				Select("id").
+				Where("name in (?)", filter.Envs)
+			query = query.Where("env_id in (?)",
+				q_envIds)
 		}
 		if len(filter.Products) > 0 {
+			q_product_ids := d.data.db.WithContext(ctx).
+				Model(&Product{}).
+				Select("id").
+				Where("name in (?)", filter.Products)
 			query = query.Where(
-				"product_id in (select id from product where name in (?))",
-				filter.Products)
+				"product_id in (?)",
+				q_product_ids)
 		}
 		if len(filter.Teams) > 0 {
+			q_team_ids := d.data.db.WithContext(ctx).
+				Model(&Team{}).
+				Select("id").
+				Where("name in (?)", filter.Teams)
+
 			query = query.Where(
-				"team_id in (select id from team where name in (?))",
-				filter.Teams)
+				"team_id in (?)",
+				q_team_ids)
 		}
 		if filter.IsStateful != biz.IsStatefulNone {
 			query = query.Where("is_stateful = ?", filter.IsStateful)

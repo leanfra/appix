@@ -304,28 +304,43 @@ func (d *HostgroupsRepoImpl) ListHostgroups(ctx context.Context,
 			query = query.Where("id in (?)", filter.Ids)
 		}
 		if len(filter.Clusters) > 0 {
-			query = query.Where(
-				"cluster_id in (select id from cluster where name in (?))",
-				filter.Clusters)
+			_q_clusterIds := d.data.db.
+				Model(&Cluster{}).
+				Select("id").
+				Where("name in (?)", filter.Clusters)
+			query = query.Where("cluster_id in (?)", _q_clusterIds)
 		}
 		if len(filter.Datacenters) > 0 {
+			q_dcIds := d.data.db.WithContext(ctx).
+				Model(&Datacenter{}).
+				Select("id").
+				Where("name in (?)", filter.Datacenters)
 			query = query.Where(
-				"datacenter_id in (select id from datacenter where name in (?))",
-				filter.Datacenters)
+				"datacenter_id in (?)", q_dcIds)
 		}
 		if len(filter.Envs) > 0 {
-			query = query.Where("env_id in (select id from env where name in (?))",
-				filter.Envs)
+			q_envIds := d.data.db.WithContext(ctx).
+				Model(&Env{}).
+				Select("id").
+				Where("name in (?)", filter.Envs)
+			query = query.Where("env_id in (?)", q_envIds)
 		}
 		if len(filter.Products) > 0 {
+			q_productIds := d.data.db.WithContext(ctx).
+				Model(&Product{}).
+				Select("id").
+				Where("name in (?)", filter.Products)
 			query = query.Where(
-				"product_id in (select id from product where name in (?))",
-				filter.Products)
+				"product_id in (?)",
+				q_productIds)
 		}
 		if len(filter.Teams) > 0 {
+			q_teamIds := d.data.db.WithContext(ctx).
+				Model(&Team{}).
+				Select("id").
+				Where("name in (?)", filter.Teams)
 			query = query.Where(
-				"team_id in (select id from team where name in (?))",
-				filter.Teams)
+				"team_id in (?)", q_teamIds)
 		}
 
 		if len(filter.ShareProducts) > 0 {
