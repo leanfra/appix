@@ -3,6 +3,7 @@ package sqldb
 import (
 	"appix/internal/data/repo"
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -53,6 +54,10 @@ func (d *EnvsRepoGorm) DeleteEnvs(ctx context.Context, ids []uint32) error {
 	if r.Error != nil {
 		return r.Error
 	}
+	if r.RowsAffected != int64(len(ids)) {
+		return fmt.Errorf("delete failed. rows affected not equal wanted. affected %d. want %d",
+			r.RowsAffected, len(ids))
+	}
 	return nil
 }
 
@@ -86,7 +91,11 @@ func (d *EnvsRepoGorm) ListEnvs(ctx context.Context,
 		}
 		if len(filter.Names) > 0 {
 			nameConditions := buildOrLike("name", len(filter.Names))
-			query = query.Where(nameConditions, filter.Names)
+			params := make([]interface{}, len(filter.Names))
+			for i, name := range filter.Names {
+				params[i] = name
+			}
+			query = query.Where(nameConditions, params...)
 		}
 	}
 	r := query.Find(&envs)
