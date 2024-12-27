@@ -3,6 +3,7 @@ package sqldb
 import (
 	"appix/internal/data/repo"
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
@@ -56,6 +57,9 @@ func (d *TagsRepoGorm) DeleteTags(ctx context.Context, ids []uint32) error {
 	if r.Error != nil {
 		return r.Error
 	}
+	if r.RowsAffected != int64(len(ids)) {
+		return fmt.Errorf("delete not equal expected. want %d. affected %d", len(ids), r.RowsAffected)
+	}
 	return nil
 }
 
@@ -90,11 +94,19 @@ func (d *TagsRepoGorm) ListTags(ctx context.Context,
 		}
 		if len(filter.Keys) > 0 {
 			keyConditions := buildOrLike("key", len(filter.Keys))
-			query = query.Where(keyConditions, filter.Keys)
+			params := make([]interface{}, len(filter.Keys))
+			for i, v := range filter.Keys {
+				params[i] = v
+			}
+			query = query.Where(keyConditions, params...)
 		}
 		if len(filter.Kvs) > 0 {
 			kvConditions, kvs := buildOrKV("key", "value", filter.Kvs)
-			query = query.Where(kvConditions, kvs)
+			params := make([]interface{}, len(kvs))
+			for i, v := range kvs {
+				params[i] = v
+			}
+			query = query.Where(kvConditions, params...)
 		}
 	}
 	r = query.Find(&tags)
