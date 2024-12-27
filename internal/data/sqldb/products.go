@@ -89,8 +89,8 @@ func (d *ProductsRepoGorm) ListProducts(ctx context.Context,
 		}
 		if len(filter.Names) > 0 {
 			nameConditions := buildOrLike("name", len(filter.Names))
-			params := make([]interface{}, len(filter.Codes))
-			for i, v := range filter.Codes {
+			params := make([]interface{}, len(filter.Names))
+			for i, v := range filter.Names {
 				params[i] = v
 			}
 			query = query.Where(nameConditions, params...)
