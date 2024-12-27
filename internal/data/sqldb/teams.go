@@ -3,6 +3,7 @@ package sqldb
 import (
 	"appix/internal/data/repo"
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -48,17 +49,22 @@ func (d *TeamsRepoGorm) UpdateTeams(ctx context.Context, teams []*repo.Team) err
 	return nil
 }
 
-// DeleteTeams is
+// DeleteTeams is delete items by id
+// return error if affected rows not equal to wanted
 func (d *TeamsRepoGorm) DeleteTeams(ctx context.Context, ids []uint32) error {
 	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Team{})
 	if r.Error != nil {
 		return r.Error
+	}
+	if r.RowsAffected != int64(len(ids)) {
+		return fmt.Errorf("delete not equal expected. want %d. affected %d", len(ids), r.RowsAffected)
 	}
 
 	return nil
 }
 
 // GetTeams is
+// notfound return error
 func (d *TeamsRepoGorm) GetTeams(ctx context.Context, id uint32) (*repo.Team, error) {
 	team := &repo.Team{}
 	r := d.data.DB.WithContext(ctx).First(team, id)
@@ -88,15 +94,27 @@ func (d *TeamsRepoGorm) ListTeams(ctx context.Context,
 		}
 		if len(filter.Codes) > 0 {
 			codeConditions := buildOrLike("code", len(filter.Codes))
-			query = query.Where(codeConditions, filter.Codes)
+			params := make([]interface{}, len(filter.Codes))
+			for i, v := range filter.Codes {
+				params[i] = v
+			}
+			query = query.Where(codeConditions, params...)
 		}
 		if len(filter.Leaders) > 0 {
 			leaderConditions := buildOrLike("leader", len(filter.Leaders))
-			query = query.Where(leaderConditions, filter.Leaders)
+			params := make([]interface{}, len(filter.Leaders))
+			for i, v := range filter.Leaders {
+				params[i] = v
+			}
+			query = query.Where(leaderConditions, params...)
 		}
 		if len(filter.Names) > 0 {
 			nameConditions := buildOrLike("name", len(filter.Names))
-			query = query.Where(nameConditions, filter.Names)
+			params := make([]interface{}, len(filter.Names))
+			for i, v := range filter.Names {
+				params[i] = v
+			}
+			query = query.Where(nameConditions, params...)
 		}
 	}
 	r := query.Find(&db_teams)
