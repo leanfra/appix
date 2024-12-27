@@ -3,6 +3,7 @@ package sqldb
 import (
 	"appix/internal/data/repo"
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -56,6 +57,9 @@ func (d *ProductsRepoGorm) DeleteProducts(ctx context.Context, ids []uint32) err
 	if r.Error != nil {
 		return r.Error
 	}
+	if r.RowsAffected != int64(len(ids)) {
+		return fmt.Errorf("delete not equal expected. want %d. affected %d", len(ids), r.RowsAffected)
+	}
 	return nil
 }
 
@@ -85,11 +89,19 @@ func (d *ProductsRepoGorm) ListProducts(ctx context.Context,
 		}
 		if len(filter.Names) > 0 {
 			nameConditions := buildOrLike("name", len(filter.Names))
-			query = query.Where(nameConditions, filter.Names)
+			params := make([]interface{}, len(filter.Codes))
+			for i, v := range filter.Codes {
+				params[i] = v
+			}
+			query = query.Where(nameConditions, params...)
 		}
 		if len(filter.Codes) > 0 {
 			codeConditions := buildOrLike("code", len(filter.Codes))
-			query = query.Where(codeConditions, filter.Codes)
+			params := make([]interface{}, len(filter.Codes))
+			for i, v := range filter.Codes {
+				params[i] = v
+			}
+			query = query.Where(codeConditions, params...)
 		}
 		if len(filter.Ids) > 0 {
 			query = query.Where("id in (?)", filter.Ids)

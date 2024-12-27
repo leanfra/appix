@@ -74,6 +74,7 @@ func testCreateTagsSuccess(t *testing.T) {
 }
 
 func testCreateTagsError(t *testing.T) {
+	createBaseTags(t, nil)
 	tags := []*repo.Tag{
 		{Key: "test", Value: "value"},
 		{Key: "test", Value: "value"},
