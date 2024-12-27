@@ -19,7 +19,7 @@ func NewFeaturesRepoGorm(data *DataGorm, logger log.Logger) (repo.FeaturesRepo, 
 		return nil, err
 	}
 
-	if err := initTable(data.db, &repo.Feature{}, repo.FeatureTable); err != nil {
+	if err := initTable(data.DB, &repo.Feature{}, repo.FeatureTable); err != nil {
 		return nil, err
 	}
 
@@ -34,7 +34,7 @@ func NewFeaturesRepoGorm(data *DataGorm, logger log.Logger) (repo.FeaturesRepo, 
 // CreateFeatures is
 func (d *FeaturesRepoGorm) CreateFeatures(ctx context.Context, features []*repo.Feature) error {
 
-	r := d.data.db.WithContext(ctx).Create(features)
+	r := d.data.DB.WithContext(ctx).Create(features)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -45,7 +45,7 @@ func (d *FeaturesRepoGorm) CreateFeatures(ctx context.Context, features []*repo.
 // UpdateFeatures is
 func (d *FeaturesRepoGorm) UpdateFeatures(ctx context.Context, features []*repo.Feature) error {
 
-	r := d.data.db.WithContext(ctx).Save(features)
+	r := d.data.DB.WithContext(ctx).Save(features)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -56,7 +56,7 @@ func (d *FeaturesRepoGorm) UpdateFeatures(ctx context.Context, features []*repo.
 // DeleteFeatures is
 func (d *FeaturesRepoGorm) DeleteFeatures(ctx context.Context, ids []uint32) error {
 
-	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Feature{})
+	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Feature{})
 	if r.Error != nil {
 		return r.Error
 	}
@@ -67,7 +67,7 @@ func (d *FeaturesRepoGorm) DeleteFeatures(ctx context.Context, ids []uint32) err
 func (d *FeaturesRepoGorm) GetFeatures(ctx context.Context, id uint32) (*repo.Feature, error) {
 
 	feature := &repo.Feature{}
-	r := d.data.db.WithContext(ctx).First(feature, id)
+	r := d.data.DB.WithContext(ctx).First(feature, id)
 	if r.Error != nil {
 		return nil, r.Error
 	}

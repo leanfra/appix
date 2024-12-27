@@ -18,7 +18,7 @@ func NewProductsRepoGorm(data *DataGorm, logger log.Logger) (repo.ProductsRepo, 
 		return nil, err
 	}
 
-	if err := initTable(data.db, &repo.Product{}, repo.ProductTable); err != nil {
+	if err := initTable(data.DB, &repo.Product{}, repo.ProductTable); err != nil {
 		return nil, err
 	}
 
@@ -30,7 +30,7 @@ func NewProductsRepoGorm(data *DataGorm, logger log.Logger) (repo.ProductsRepo, 
 
 // CreateProducts is
 func (d *ProductsRepoGorm) CreateProducts(ctx context.Context, ps []*repo.Product) error {
-	r := d.data.db.WithContext(ctx).Create(ps)
+	r := d.data.DB.WithContext(ctx).Create(ps)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -41,7 +41,7 @@ func (d *ProductsRepoGorm) CreateProducts(ctx context.Context, ps []*repo.Produc
 // UpdateProducts is
 func (d *ProductsRepoGorm) UpdateProducts(ctx context.Context, ps []*repo.Product) error {
 
-	r := d.data.db.WithContext(ctx).Save(ps)
+	r := d.data.DB.WithContext(ctx).Save(ps)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -52,7 +52,7 @@ func (d *ProductsRepoGorm) UpdateProducts(ctx context.Context, ps []*repo.Produc
 // DeleteProducts is
 func (d *ProductsRepoGorm) DeleteProducts(ctx context.Context, ids []uint32) error {
 
-	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Product{})
+	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Product{})
 	if r.Error != nil {
 		return r.Error
 	}
@@ -63,7 +63,7 @@ func (d *ProductsRepoGorm) DeleteProducts(ctx context.Context, ids []uint32) err
 func (d *ProductsRepoGorm) GetProducts(ctx context.Context, id uint32) (*repo.Product, error) {
 
 	product := &repo.Product{}
-	r := d.data.db.WithContext(ctx).Where("id = ?", id).First(product)
+	r := d.data.DB.WithContext(ctx).Where("id = ?", id).First(product)
 	if r.Error != nil {
 		return nil, r.Error
 	}

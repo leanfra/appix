@@ -16,7 +16,7 @@ func NewHostgroupTagsRepoGorm(data *DataGorm, logger log.Logger) (repo.Hostgroup
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &repo.HostgroupTag{}, repo.HostgroupTagTable); err != nil {
+	if err := initTable(data.DB, &repo.HostgroupTag{}, repo.HostgroupTagTable); err != nil {
 		return nil, err
 	}
 	return &HostgroupTagsRepoGorm{
@@ -31,7 +31,7 @@ func (d *HostgroupTagsRepoGorm) CreateHostgroupTags(ctx context.Context,
 	if len(hostgroups) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Create(hostgroups).Error
+	return d.data.DB.WithContext(ctx).Create(hostgroups).Error
 }
 
 func (d *HostgroupTagsRepoGorm) UpdateHostgroupTags(ctx context.Context,
@@ -40,7 +40,7 @@ func (d *HostgroupTagsRepoGorm) UpdateHostgroupTags(ctx context.Context,
 	if len(hostgroups) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Updates(hostgroups).Error
+	return d.data.DB.WithContext(ctx).Updates(hostgroups).Error
 }
 
 func (d *HostgroupTagsRepoGorm) DeleteHostgroupTags(ctx context.Context,
@@ -49,7 +49,7 @@ func (d *HostgroupTagsRepoGorm) DeleteHostgroupTags(ctx context.Context,
 	if len(ids) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Delete(&repo.HostgroupTag{}, ids).Error
+	return d.data.DB.WithContext(ctx).Delete(&repo.HostgroupTag{}, ids).Error
 }
 func (d *HostgroupTagsRepoGorm) ListHostgroupTags(ctx context.Context,
 	tx repo.TX,

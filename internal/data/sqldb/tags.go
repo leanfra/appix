@@ -19,7 +19,7 @@ func NewTagsRepoGorm(data *DataGorm, logger log.Logger) (repo.TagsRepo, error) {
 		return nil, err
 	}
 
-	if err := initTable(data.db, &repo.Tag{}, repo.TagTable); err != nil {
+	if err := initTable(data.DB, &repo.Tag{}, repo.TagTable); err != nil {
 		return nil, err
 	}
 
@@ -32,7 +32,7 @@ func NewTagsRepoGorm(data *DataGorm, logger log.Logger) (repo.TagsRepo, error) {
 // CreateTags is
 func (d *TagsRepoGorm) CreateTags(ctx context.Context, tags []*repo.Tag) error {
 
-	r := d.data.db.WithContext(ctx).Create(tags)
+	r := d.data.DB.WithContext(ctx).Create(tags)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -41,7 +41,7 @@ func (d *TagsRepoGorm) CreateTags(ctx context.Context, tags []*repo.Tag) error {
 
 // UpdateTags is
 func (d *TagsRepoGorm) UpdateTags(ctx context.Context, tags []*repo.Tag) error {
-	r := d.data.db.WithContext(ctx).Save(tags)
+	r := d.data.DB.WithContext(ctx).Save(tags)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -52,7 +52,7 @@ func (d *TagsRepoGorm) UpdateTags(ctx context.Context, tags []*repo.Tag) error {
 // DeleteTags is
 func (d *TagsRepoGorm) DeleteTags(ctx context.Context, ids []uint32) error {
 
-	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Tag{})
+	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Tag{})
 	if r.Error != nil {
 		return r.Error
 	}
@@ -63,7 +63,7 @@ func (d *TagsRepoGorm) DeleteTags(ctx context.Context, ids []uint32) error {
 func (d *TagsRepoGorm) GetTags(ctx context.Context, id uint32) (*repo.Tag, error) {
 
 	tag := &repo.Tag{}
-	r := d.data.db.WithContext(ctx).First(tag, id)
+	r := d.data.DB.WithContext(ctx).First(tag, id)
 	if r.Error != nil {
 		return nil, r.Error
 	}

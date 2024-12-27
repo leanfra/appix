@@ -17,7 +17,7 @@ func NewHostgroupsRepoGorm(data *DataGorm, logger log.Logger) (repo.HostgroupsRe
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &repo.Hostgroup{}, repo.HostgroupTable); err != nil {
+	if err := initTable(data.DB, &repo.Hostgroup{}, repo.HostgroupTable); err != nil {
 		return nil, err
 	}
 	return &HostgroupsRepoGorm{
@@ -68,7 +68,7 @@ func (d *HostgroupsRepoGorm) GetHostgroups(
 	ctx context.Context, id uint32) (*repo.Hostgroup, error) {
 
 	hg := &repo.Hostgroup{}
-	r := d.data.db.WithContext(ctx).Where("id = ?", id).First(hg)
+	r := d.data.DB.WithContext(ctx).Where("id = ?", id).First(hg)
 	if r.Error != nil {
 		return nil, r.Error
 	}

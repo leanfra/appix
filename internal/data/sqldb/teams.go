@@ -18,7 +18,7 @@ func NewTeamsRepoGorm(data *DataGorm, logger log.Logger) (repo.TeamsRepo, error)
 		return nil, err
 	}
 
-	if err := initTable(data.db, &repo.Team{}, repo.TeamTable); err != nil {
+	if err := initTable(data.DB, &repo.Team{}, repo.TeamTable); err != nil {
 		return nil, err
 	}
 
@@ -30,7 +30,7 @@ func NewTeamsRepoGorm(data *DataGorm, logger log.Logger) (repo.TeamsRepo, error)
 
 // CreateTeams is
 func (d *TeamsRepoGorm) CreateTeams(ctx context.Context, teams []*repo.Team) error {
-	r := d.data.db.WithContext(ctx).Create(teams)
+	r := d.data.DB.WithContext(ctx).Create(teams)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -40,7 +40,7 @@ func (d *TeamsRepoGorm) CreateTeams(ctx context.Context, teams []*repo.Team) err
 
 // UpdateTeams is
 func (d *TeamsRepoGorm) UpdateTeams(ctx context.Context, teams []*repo.Team) error {
-	r := d.data.db.WithContext(ctx).Save(teams)
+	r := d.data.DB.WithContext(ctx).Save(teams)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -50,7 +50,7 @@ func (d *TeamsRepoGorm) UpdateTeams(ctx context.Context, teams []*repo.Team) err
 
 // DeleteTeams is
 func (d *TeamsRepoGorm) DeleteTeams(ctx context.Context, ids []uint32) error {
-	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Team{})
+	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Team{})
 	if r.Error != nil {
 		return r.Error
 	}
@@ -61,7 +61,7 @@ func (d *TeamsRepoGorm) DeleteTeams(ctx context.Context, ids []uint32) error {
 // GetTeams is
 func (d *TeamsRepoGorm) GetTeams(ctx context.Context, id uint32) (*repo.Team, error) {
 	team := &repo.Team{}
-	r := d.data.db.WithContext(ctx).First(team, id)
+	r := d.data.DB.WithContext(ctx).First(team, id)
 	if r.Error != nil {
 		return nil, r.Error
 	}

@@ -16,7 +16,7 @@ func NewAppTagsRepoGorm(data *DataGorm, logger log.Logger) (repo.AppTagsRepo, er
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &repo.AppTag{}, repo.AppTagTable); err != nil {
+	if err := initTable(data.DB, &repo.AppTag{}, repo.AppTagTable); err != nil {
 		return nil, err
 	}
 	return &AppTagsRepoGorm{

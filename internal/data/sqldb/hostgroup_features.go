@@ -16,7 +16,7 @@ func NewHostgroupFeaturesRepoGorm(data *DataGorm, logger log.Logger) (repo.Hostg
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &repo.HostgroupFeature{}, repo.HostgroupFeatureTable); err != nil {
+	if err := initTable(data.DB, &repo.HostgroupFeature{}, repo.HostgroupFeatureTable); err != nil {
 		return nil, err
 	}
 	return &HostgroupFeaturesRepoGorm{
@@ -31,7 +31,7 @@ func (d *HostgroupFeaturesRepoGorm) CreateHostgroupFeatures(ctx context.Context,
 	if len(hostgroups) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Create(hostgroups).Error
+	return d.data.DB.WithContext(ctx).Create(hostgroups).Error
 }
 
 func (d *HostgroupFeaturesRepoGorm) UpdateHostgroupFeatures(ctx context.Context,
@@ -40,7 +40,7 @@ func (d *HostgroupFeaturesRepoGorm) UpdateHostgroupFeatures(ctx context.Context,
 	if len(hostgroups) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Updates(hostgroups).Error
+	return d.data.DB.WithContext(ctx).Updates(hostgroups).Error
 }
 
 func (d *HostgroupFeaturesRepoGorm) DeleteHostgroupFeatures(ctx context.Context,
@@ -49,7 +49,7 @@ func (d *HostgroupFeaturesRepoGorm) DeleteHostgroupFeatures(ctx context.Context,
 	if len(ids) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Delete(&repo.HostgroupFeature{}, ids).Error
+	return d.data.DB.WithContext(ctx).Delete(&repo.HostgroupFeature{}, ids).Error
 }
 func (d *HostgroupFeaturesRepoGorm) ListHostgroupFeatures(ctx context.Context,
 	tx repo.TX,

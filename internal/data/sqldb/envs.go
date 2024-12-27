@@ -17,7 +17,7 @@ func NewEnvsRepoGorm(data *DataGorm, logger log.Logger) (repo.EnvsRepo, error) {
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &repo.Env{}, repo.EnvTable); err != nil {
+	if err := initTable(data.DB, &repo.Env{}, repo.EnvTable); err != nil {
 		return nil, err
 	}
 	return &EnvsRepoGorm{
@@ -29,7 +29,7 @@ func NewEnvsRepoGorm(data *DataGorm, logger log.Logger) (repo.EnvsRepo, error) {
 // CreateEnvs is
 func (d *EnvsRepoGorm) CreateEnvs(ctx context.Context, envs []*repo.Env) error {
 
-	r := d.data.db.WithContext(ctx).Create(envs)
+	r := d.data.DB.WithContext(ctx).Create(envs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -39,7 +39,7 @@ func (d *EnvsRepoGorm) CreateEnvs(ctx context.Context, envs []*repo.Env) error {
 // UpdateEnvs is
 func (d *EnvsRepoGorm) UpdateEnvs(ctx context.Context, envs []*repo.Env) error {
 
-	r := d.data.db.WithContext(ctx).Save(envs)
+	r := d.data.DB.WithContext(ctx).Save(envs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -49,7 +49,7 @@ func (d *EnvsRepoGorm) UpdateEnvs(ctx context.Context, envs []*repo.Env) error {
 // DeleteEnvs is
 func (d *EnvsRepoGorm) DeleteEnvs(ctx context.Context, ids []uint32) error {
 
-	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Env{})
+	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Env{})
 	if r.Error != nil {
 		return r.Error
 	}
@@ -60,7 +60,7 @@ func (d *EnvsRepoGorm) DeleteEnvs(ctx context.Context, ids []uint32) error {
 func (d *EnvsRepoGorm) GetEnvs(ctx context.Context, id uint32) (*repo.Env, error) {
 
 	env := &repo.Env{}
-	r := d.data.db.WithContext(ctx).First(env, id)
+	r := d.data.DB.WithContext(ctx).First(env, id)
 	if r.Error != nil {
 		return nil, r.Error
 	}

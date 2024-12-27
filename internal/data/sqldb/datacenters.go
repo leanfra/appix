@@ -18,7 +18,7 @@ func NewDatacentersRepoGorm(data *DataGorm, logger log.Logger) (repo.Datacenters
 		return nil, err
 	}
 
-	if err := initTable(data.db, &repo.Datacenter{}, repo.DatacenterTable); err != nil {
+	if err := initTable(data.DB, &repo.Datacenter{}, repo.DatacenterTable); err != nil {
 		return nil, err
 	}
 
@@ -32,7 +32,7 @@ func NewDatacentersRepoGorm(data *DataGorm, logger log.Logger) (repo.Datacenters
 func (d *DatacentersRepoGorm) CreateDatacenters(ctx context.Context,
 	dcs []*repo.Datacenter) error {
 
-	r := d.data.db.WithContext(ctx).Create(dcs)
+	r := d.data.DB.WithContext(ctx).Create(dcs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -44,7 +44,7 @@ func (d *DatacentersRepoGorm) CreateDatacenters(ctx context.Context,
 func (d *DatacentersRepoGorm) UpdateDatacenters(ctx context.Context,
 	dcs []*repo.Datacenter) error {
 
-	r := d.data.db.WithContext(ctx).Save(dcs)
+	r := d.data.DB.WithContext(ctx).Save(dcs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -55,7 +55,7 @@ func (d *DatacentersRepoGorm) UpdateDatacenters(ctx context.Context,
 // DeleteDatacenters is
 func (d *DatacentersRepoGorm) DeleteDatacenters(ctx context.Context, ids []uint32) error {
 
-	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Datacenter{})
+	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Datacenter{})
 	if r.Error != nil {
 		return r.Error
 	}
@@ -66,7 +66,7 @@ func (d *DatacentersRepoGorm) DeleteDatacenters(ctx context.Context, ids []uint3
 // GetDatacenters is
 func (d *DatacentersRepoGorm) GetDatacenters(ctx context.Context, id uint32) (*repo.Datacenter, error) {
 	cs := &repo.Datacenter{}
-	r := d.data.db.WithContext(ctx).Where("id = ?", id).First(cs)
+	r := d.data.DB.WithContext(ctx).Where("id = ?", id).First(cs)
 	if r.Error != nil {
 		return nil, r.Error
 	}

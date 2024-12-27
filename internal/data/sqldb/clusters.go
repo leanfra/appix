@@ -18,7 +18,7 @@ func NewClustersRepoGorm(data *DataGorm, logger log.Logger) (repo.ClustersRepo, 
 		return nil, err
 	}
 
-	if err := initTable(data.db, &repo.Cluster{}, repo.ClusterTable); err != nil {
+	if err := initTable(data.DB, &repo.Cluster{}, repo.ClusterTable); err != nil {
 		return nil, err
 	}
 
@@ -31,7 +31,7 @@ func NewClustersRepoGorm(data *DataGorm, logger log.Logger) (repo.ClustersRepo, 
 // CreateClusters is
 func (d *ClustersRepoGorm) CreateClusters(ctx context.Context, cs []*repo.Cluster) error {
 
-	r := d.data.db.WithContext(ctx).Create(cs)
+	r := d.data.DB.WithContext(ctx).Create(cs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -41,7 +41,7 @@ func (d *ClustersRepoGorm) CreateClusters(ctx context.Context, cs []*repo.Cluste
 // UpdateClusters is
 func (d *ClustersRepoGorm) UpdateClusters(ctx context.Context, cs []*repo.Cluster) error {
 
-	r := d.data.db.WithContext(ctx).Save(cs)
+	r := d.data.DB.WithContext(ctx).Save(cs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -51,7 +51,7 @@ func (d *ClustersRepoGorm) UpdateClusters(ctx context.Context, cs []*repo.Cluste
 // DeleteClusters is
 func (d *ClustersRepoGorm) DeleteClusters(ctx context.Context, ids []uint32) error {
 
-	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Cluster{})
+	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Cluster{})
 	if r.Error != nil {
 		return r.Error
 	}
@@ -62,7 +62,7 @@ func (d *ClustersRepoGorm) DeleteClusters(ctx context.Context, ids []uint32) err
 func (d *ClustersRepoGorm) GetClusters(ctx context.Context, id uint32) (*repo.Cluster, error) {
 
 	cs := &repo.Cluster{}
-	r := d.data.db.WithContext(ctx).Where("id = ?", id).First(cs)
+	r := d.data.DB.WithContext(ctx).Where("id = ?", id).First(cs)
 	if r.Error != nil {
 		return nil, r.Error
 	}

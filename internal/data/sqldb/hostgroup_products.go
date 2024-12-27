@@ -16,7 +16,7 @@ func NewHostgroupProductsRepoGorm(data *DataGorm, logger log.Logger) (repo.Hostg
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &repo.HostgroupProduct{}, repo.HostgroupProductTable); err != nil {
+	if err := initTable(data.DB, &repo.HostgroupProduct{}, repo.HostgroupProductTable); err != nil {
 		return nil, err
 	}
 	return &HostgroupProductsRepoGorm{
@@ -31,7 +31,7 @@ func (d *HostgroupProductsRepoGorm) CreateHostgroupProducts(ctx context.Context,
 	if len(hostgroups) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Create(hostgroups).Error
+	return d.data.DB.WithContext(ctx).Create(hostgroups).Error
 }
 
 func (d *HostgroupProductsRepoGorm) UpdateHostgroupProducts(ctx context.Context,
@@ -40,7 +40,7 @@ func (d *HostgroupProductsRepoGorm) UpdateHostgroupProducts(ctx context.Context,
 	if len(hostgroups) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Updates(hostgroups).Error
+	return d.data.DB.WithContext(ctx).Updates(hostgroups).Error
 }
 
 func (d *HostgroupProductsRepoGorm) DeleteHostgroupProducts(ctx context.Context,
@@ -49,7 +49,7 @@ func (d *HostgroupProductsRepoGorm) DeleteHostgroupProducts(ctx context.Context,
 	if len(ids) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Delete(&repo.HostgroupProduct{}, ids).Error
+	return d.data.DB.WithContext(ctx).Delete(&repo.HostgroupProduct{}, ids).Error
 }
 func (d *HostgroupProductsRepoGorm) ListHostgroupProducts(ctx context.Context,
 	tx repo.TX,

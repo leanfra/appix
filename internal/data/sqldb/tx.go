@@ -20,7 +20,7 @@ func NewTxManagerGorm(data *DataGorm, logger log.Logger) repo.TxManager {
 }
 
 func (tm *TxManagerGorm) RunInTX(fn func(tx repo.TX) error) error {
-	tx := tm.data.db.Begin()
+	tx := tm.data.DB.Begin()
 	if tx.Error != nil {
 		tm.log.Errorf("failed to begin transaction: %v", tx.Error)
 		return tx.Error

@@ -18,7 +18,7 @@ func NewApplicationsRepoGorm(data *DataGorm, logger log.Logger) (repo.Applicatio
 		return nil, err
 	}
 
-	if err := initTable(data.db, &repo.Application{}, repo.ApplicationTable); err != nil {
+	if err := initTable(data.DB, &repo.Application{}, repo.ApplicationTable); err != nil {
 		return nil, err
 	}
 
@@ -78,7 +78,7 @@ func (d *ApplicationsRepoGorm) GetApplications(
 	ctx context.Context, id uint32) (*repo.Application, error) {
 
 	app := &repo.Application{}
-	r := d.data.db.WithContext(ctx).Where("id = ?", id).First(app)
+	r := d.data.DB.WithContext(ctx).Where("id = ?", id).First(app)
 	if r.Error != nil {
 		return nil, r.Error
 	}

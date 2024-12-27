@@ -15,7 +15,7 @@ import (
 
 // DataGorm .
 type DataGorm struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 // NewDataGorm .
@@ -48,13 +48,13 @@ func NewDataGorm(c *conf.Data, logger log.Logger) (*DataGorm, func(), error) {
 	}
 
 	return &DataGorm{
-		db: _db,
+		DB: _db,
 	}, cleanup, nil
 }
 
 func (d *DataGorm) WithTX(tx repo.TX) *gorm.DB {
 	if tx == nil {
-		return d.db
+		return d.DB
 	}
 	return tx.GetDB().(*gorm.DB)
 }
@@ -74,7 +74,7 @@ var ErrMissingDatacenters = errors.New("missing Datacenter")
 var ErrMissingClusters = errors.New("missing Cluster")
 
 func validateData(data *DataGorm) error {
-	if data == nil || data.db == nil {
+	if data == nil || data.DB == nil {
 		return ErrEmptyDatabase
 	}
 	return nil

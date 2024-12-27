@@ -16,7 +16,7 @@ func NewAppHostgroupsRepoGorm(data *DataGorm, logger log.Logger) (repo.AppHostgr
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &repo.AppHostgroup{}, repo.AppHostgroupTable); err != nil {
+	if err := initTable(data.DB, &repo.AppHostgroup{}, repo.AppHostgroupTable); err != nil {
 		return nil, err
 	}
 	return &AppHostgroupsRepoGorm{
@@ -31,7 +31,7 @@ func (d *AppHostgroupsRepoGorm) CreateAppHostgroups(ctx context.Context,
 	if len(apps) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Create(apps).Error
+	return d.data.DB.WithContext(ctx).Create(apps).Error
 }
 
 func (d *AppHostgroupsRepoGorm) UpdateAppHostgroups(ctx context.Context,
@@ -40,7 +40,7 @@ func (d *AppHostgroupsRepoGorm) UpdateAppHostgroups(ctx context.Context,
 	if len(apps) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Updates(apps).Error
+	return d.data.DB.WithContext(ctx).Updates(apps).Error
 }
 
 func (d *AppHostgroupsRepoGorm) DeleteAppHostgroups(ctx context.Context,
@@ -49,7 +49,7 @@ func (d *AppHostgroupsRepoGorm) DeleteAppHostgroups(ctx context.Context,
 	if len(ids) == 0 {
 		return nil
 	}
-	return d.data.db.WithContext(ctx).Delete(&repo.AppHostgroup{}, ids).Error
+	return d.data.DB.WithContext(ctx).Delete(&repo.AppHostgroup{}, ids).Error
 }
 func (d *AppHostgroupsRepoGorm) ListAppHostgroups(ctx context.Context,
 	tx repo.TX,
