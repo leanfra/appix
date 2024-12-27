@@ -10,6 +10,7 @@ import (
 	"appix/internal/biz"
 	"appix/internal/conf"
 	"appix/internal/data"
+	"appix/internal/data/sqldb"
 	"appix/internal/server"
 	"appix/internal/service"
 	"github.com/go-kratos/kratos/v2"
@@ -24,75 +25,111 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+	dataGorm, cleanup, err := sqldb.NewDataGorm(confData, logger)
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
+	greeterRepo := data.NewGreeterRepo(dataGorm, logger)
 	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
 	greeterService := service.NewGreeterService(greeterUsecase)
-	tagsRepo, err := data.NewTagsRepoImpl(dataData, logger)
+	tagsRepo, err := sqldb.NewTagsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	tagsUsecase := biz.NewTagsUsecase(tagsRepo, logger)
+	txManager := sqldb.NewTxManagerGorm(dataGorm, logger)
+	tagsUsecase := biz.NewTagsUsecase(tagsRepo, logger, txManager)
 	tagsService := service.NewTagsService(tagsUsecase, logger)
-	featuresRepo, err := data.NewFeaturesRepoImpl(dataData, logger)
+	featuresRepo, err := sqldb.NewFeaturesRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	featuresUsecase := biz.NewFeaturesUsecase(featuresRepo, logger)
+	featuresUsecase := biz.NewFeaturesUsecase(featuresRepo, logger, txManager)
 	featuresService := service.NewFeaturesService(featuresUsecase, logger)
-	teamsRepo, err := data.NewTeamsRepoImpl(dataData, logger)
+	teamsRepo, err := sqldb.NewTeamsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	teamsUsecase := biz.NewTeamsUsecase(teamsRepo, logger)
+	hostgroupsRepo, err := sqldb.NewHostgroupsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	teamsUsecase := biz.NewTeamsUsecase(teamsRepo, hostgroupsRepo, logger, txManager)
 	teamsService := service.NewTeamsService(teamsUsecase, logger)
-	productsRepo, err := data.NewProductsRepoImpl(dataData, logger)
+	productsRepo, err := sqldb.NewProductsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	productsUsecase := biz.NewProductsUsecase(productsRepo, logger)
+	productsUsecase := biz.NewProductsUsecase(productsRepo, logger, txManager)
 	productsService := service.NewProductsService(productsUsecase, logger)
-	envsRepo, err := data.NewEnvsRepoImpl(dataData, logger)
+	envsRepo, err := sqldb.NewEnvsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	envsUsecase := biz.NewEnvsUsecase(envsRepo, logger)
+	envsUsecase := biz.NewEnvsUsecase(envsRepo, logger, txManager)
 	envsService := service.NewEnvsService(envsUsecase, logger)
-	clustersRepo, err := data.NewClustersRepoImpl(dataData, logger)
+	clustersRepo, err := sqldb.NewClustersRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	clustersUsecase := biz.NewClustersUsecase(clustersRepo, logger)
+	clustersUsecase := biz.NewClustersUsecase(clustersRepo, logger, txManager)
 	clustersService := service.NewClustersService(clustersUsecase, logger)
-	datacentersRepo, err := data.NewDatacentersRepoImpl(dataData, logger)
+	datacentersRepo, err := sqldb.NewDatacentersRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	datacentersUsecase := biz.NewDatacentersUsecase(datacentersRepo, logger)
+	datacentersUsecase := biz.NewDatacentersUsecase(datacentersRepo, logger, txManager)
 	datacentersService := service.NewDatacentersService(datacentersUsecase, logger)
-	hostgroupsRepo, err := data.NewHostgroupsRepoImpl(dataData, logger)
+	hostgroupTeamsRepo, err := sqldb.NewHostgroupTeamsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, logger)
+	hostgroupProductsRepo, err := sqldb.NewHostgroupProductsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	hostgroupTagsRepo, err := sqldb.NewHostgroupTagsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	hostgroupFeaturesRepo, err := sqldb.NewHostgroupFeaturesRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, hostgroupTeamsRepo, hostgroupProductsRepo, hostgroupTagsRepo, hostgroupFeaturesRepo, clustersRepo, datacentersRepo, envsRepo, featuresRepo, tagsRepo, teamsRepo, productsRepo, logger, txManager)
 	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
-	applicationsRepo, err := data.NewApplicationsRepoImpl(dataData, logger)
+	applicationsRepo, err := sqldb.NewApplicationsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, logger)
+	appTagsRepo, err := sqldb.NewAppTagsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	appFeaturesRepo, err := sqldb.NewAppFeaturesRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	appHostgroupsRepo, err := sqldb.NewAppHostgroupsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, appTagsRepo, appFeaturesRepo, appHostgroupsRepo, clustersRepo, datacentersRepo, productsRepo, teamsRepo, featuresRepo, tagsRepo, hostgroupsRepo, logger, txManager)
 	applicationsService := service.NewApplicationsService(applicationsUsecase, logger)
 	grpcServer := server.NewGRPCServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
 	httpServer := server.NewHTTPServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)

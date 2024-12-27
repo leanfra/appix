@@ -1,29 +1,24 @@
 package biz
 
 import (
+	"appix/internal/data/repo"
 	"context"
 	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
-type EnvsRepo interface {
-	CreateEnvs(ctx context.Context, envs []*Env) error
-	UpdateEnvs(ctx context.Context, envs []*Env) error
-	DeleteEnvs(ctx context.Context, ids []uint32) error
-	GetEnvs(ctx context.Context, id uint32) (*Env, error)
-	ListEnvs(ctx context.Context, filter *ListEnvsFilter) ([]*Env, error)
-}
-
 type EnvsUsecase struct {
-	repo EnvsRepo
+	repo repo.EnvsRepo
 	log  *log.Helper
+	txm  repo.TxManager
 }
 
-func NewEnvsUsecase(repo EnvsRepo, logger log.Logger) *EnvsUsecase {
+func NewEnvsUsecase(repo repo.EnvsRepo, logger log.Logger, txm repo.TxManager) *EnvsUsecase {
 	return &EnvsUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
+		txm:  txm,
 	}
 }
 
@@ -41,7 +36,15 @@ func (s *EnvsUsecase) CreateEnvs(ctx context.Context, envs []*Env) error {
 	if err := s.validate(true, envs); err != nil {
 		return err
 	}
-	return s.repo.CreateEnvs(ctx, envs)
+	_envs, err := NewEnvs(envs)
+	if err != nil {
+		return err
+	}
+	e := s.repo.CreateEnvs(ctx, _envs)
+	if e != nil {
+		return e
+	}
+	return nil
 }
 
 // UpdateEnvs is
@@ -49,7 +52,11 @@ func (s *EnvsUsecase) UpdateEnvs(ctx context.Context, envs []*Env) error {
 	if err := s.validate(false, envs); err != nil {
 		return err
 	}
-	return s.repo.UpdateEnvs(ctx, envs)
+	_envs, e := NewEnvs(envs)
+	if e != nil {
+		return e
+	}
+	return s.repo.UpdateEnvs(ctx, _envs)
 }
 
 // DeleteEnvs is
@@ -65,7 +72,11 @@ func (s *EnvsUsecase) GetEnvs(ctx context.Context, id uint32) (*Env, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("InvalidId")
 	}
-	return s.repo.GetEnvs(ctx, id)
+	_envs, err := s.repo.GetEnvs(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return NewBizEnv(_envs)
 }
 
 // ListEnvs is
@@ -76,5 +87,10 @@ func (s *EnvsUsecase) ListEnvs(ctx context.Context, filter *ListEnvsFilter) ([]*
 			return nil, err
 		}
 	}
-	return s.repo.ListEnvs(ctx, filter)
+
+	_envs, err := s.repo.ListEnvs(ctx, nil, NewEnvsFilter(filter))
+	if err != nil {
+		return nil, err
+	}
+	return NewBizEnvs(_envs)
 }

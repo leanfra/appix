@@ -3,464 +3,9 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: Hostgroups API
     version: 0.0.1
 paths:
-    /api/v1/applications/create:
-        post:
-            tags:
-                - Applications
-            operationId: Applications_CreateApplications
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateApplicationsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateApplicationsReply'
-    /api/v1/applications/delete:
-        post:
-            tags:
-                - Applications
-            operationId: Applications_DeleteApplications
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteApplicationsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteApplicationsReply'
-    /api/v1/applications/list:
-        post:
-            tags:
-                - Applications
-            operationId: Applications_ListApplications
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListApplicationsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListApplicationsReply'
-    /api/v1/applications/update:
-        post:
-            tags:
-                - Applications
-            operationId: Applications_UpdateApplications
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateApplicationsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateApplicationsReply'
-    /api/v1/applications/{id}:
-        get:
-            tags:
-                - Applications
-            operationId: Applications_GetApplications
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetApplicationsReply'
-    /api/v1/clusters/create:
-        post:
-            tags:
-                - Clusters
-            operationId: Clusters_CreateClusters
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateClustersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateClustersReply'
-    /api/v1/clusters/delete:
-        post:
-            tags:
-                - Clusters
-            operationId: Clusters_DeleteClusters
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteClustersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteClustersReply'
-    /api/v1/clusters/list:
-        post:
-            tags:
-                - Clusters
-            operationId: Clusters_ListClusters
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListClustersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListClustersReply'
-    /api/v1/clusters/update:
-        post:
-            tags:
-                - Clusters
-            operationId: Clusters_UpdateClusters
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateClustersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateClustersReply'
-    /api/v1/clusters/{id}:
-        get:
-            tags:
-                - Clusters
-            operationId: Clusters_GetClusters
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetClustersReply'
-    /api/v1/datacenters/create:
-        post:
-            tags:
-                - Datacenters
-            operationId: Datacenters_CreateDatacenters
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateDatacentersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateDatacentersReply'
-    /api/v1/datacenters/delete:
-        post:
-            tags:
-                - Datacenters
-            operationId: Datacenters_DeleteDatacenters
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteDatacentersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteDatacentersReply'
-    /api/v1/datacenters/list:
-        post:
-            tags:
-                - Datacenters
-            operationId: Datacenters_ListDatacenters
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListDatacentersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListDatacentersReply'
-    /api/v1/datacenters/update:
-        post:
-            tags:
-                - Datacenters
-            operationId: Datacenters_UpdateDatacenters
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateDatacentersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateDatacentersReply'
-    /api/v1/datacenters/{id}:
-        get:
-            tags:
-                - Datacenters
-            operationId: Datacenters_GetDatacenters
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetDatacentersReply'
-    /api/v1/envs/create:
-        post:
-            tags:
-                - Envs
-            operationId: Envs_CreateEnvs
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateEnvsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateEnvsReply'
-    /api/v1/envs/delete:
-        post:
-            tags:
-                - Envs
-            operationId: Envs_DeleteEnvs
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteEnvsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteEnvsReply'
-    /api/v1/envs/list:
-        post:
-            tags:
-                - Envs
-            operationId: Envs_ListEnvs
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListEnvsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListEnvsReply'
-    /api/v1/envs/update:
-        post:
-            tags:
-                - Envs
-            operationId: Envs_UpdateEnvs
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateEnvsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateEnvsReply'
-    /api/v1/envs/{id}:
-        get:
-            tags:
-                - Envs
-            operationId: Envs_GetEnvs
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetEnvsReply'
-    /api/v1/features/create:
-        post:
-            tags:
-                - Features
-            operationId: Features_CreateFeatures
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateFeaturesRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateFeaturesReply'
-    /api/v1/features/delete:
-        post:
-            tags:
-                - Features
-            operationId: Features_DeleteFeatures
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteFeaturesRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteFeaturesReply'
-    /api/v1/features/list:
-        post:
-            tags:
-                - Features
-            operationId: Features_ListFeatures
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListFeaturesRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListFeaturesReply'
-    /api/v1/features/update:
-        post:
-            tags:
-                - Features
-            operationId: Features_UpdateFeatures
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateFeaturesRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateFeaturesReply'
-    /api/v1/features/{id}:
-        get:
-            tags:
-                - Features
-            operationId: Features_GetFeatures
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetFeaturesReply'
     /api/v1/hostgroups/create:
         post:
             tags:
@@ -470,7 +15,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateHostgroupsRequest'
+                            $ref: '#/components/schemas/CreateHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -478,7 +23,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateHostgroupsReply'
+                                $ref: '#/components/schemas/CreateHostgroupsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /api/v1/hostgroups/delete:
         post:
             tags:
@@ -488,7 +39,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteHostgroupsRequest'
+                            $ref: '#/components/schemas/DeleteHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -496,7 +47,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteHostgroupsReply'
+                                $ref: '#/components/schemas/DeleteHostgroupsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /api/v1/hostgroups/list:
         post:
             tags:
@@ -506,7 +63,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListHostgroupsRequest'
+                            $ref: '#/components/schemas/ListHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -514,7 +71,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListHostgroupsReply'
+                                $ref: '#/components/schemas/ListHostgroupsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /api/v1/hostgroups/update:
         post:
             tags:
@@ -524,7 +87,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateHostgroupsRequest'
+                            $ref: '#/components/schemas/UpdateHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -532,7 +95,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateHostgroupsReply'
+                                $ref: '#/components/schemas/UpdateHostgroupsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /api/v1/hostgroups/{id}:
         get:
             tags:
@@ -551,353 +120,16 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetHostgroupsReply'
-    /api/v1/products:
-        post:
-            tags:
-                - Products
-            operationId: Products_ListProducts
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListProductsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
+                                $ref: '#/components/schemas/GetHostgroupsReply'
+                default:
+                    description: Default error response
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListProductsReply'
-    /api/v1/products/create:
-        post:
-            tags:
-                - Products
-            operationId: Products_CreateProducts
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateProductsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateProductsReply'
-    /api/v1/products/delete:
-        post:
-            tags:
-                - Products
-            operationId: Products_DeleteProducts
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteProductsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteProductsReply'
-    /api/v1/products/update:
-        post:
-            tags:
-                - Products
-            operationId: Products_UpdateProducts
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateProductsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateProductsReply'
-    /api/v1/products/{id}:
-        get:
-            tags:
-                - Products
-            operationId: Products_GetProducts
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetProductsReply'
-    /api/v1/tags/create:
-        post:
-            tags:
-                - Tags
-            operationId: Tags_CreateTags
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateTagsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateTagsReply'
-    /api/v1/tags/delete:
-        post:
-            tags:
-                - Tags
-            operationId: Tags_DeleteTags
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteTagsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteTagsReply'
-    /api/v1/tags/list:
-        post:
-            tags:
-                - Tags
-            operationId: Tags_ListTags
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListTagsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListTagsReply'
-    /api/v1/tags/update:
-        post:
-            tags:
-                - Tags
-            operationId: Tags_UpdateTags
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateTagsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateTagsReply'
-    /api/v1/tags/{id}:
-        get:
-            tags:
-                - Tags
-            operationId: Tags_GetTags
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetTagsReply'
-    /api/v1/teams/create:
-        post:
-            tags:
-                - Teams
-            operationId: Teams_CreateTeams
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateTeamsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateTeamsReply'
-    /api/v1/teams/delete:
-        post:
-            tags:
-                - Teams
-            operationId: Teams_DeleteTeams
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteTeamsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteTeamsReply'
-    /api/v1/teams/list:
-        post:
-            tags:
-                - Teams
-            operationId: Teams_ListTeams
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListTeamsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListTeamsReply'
-    /api/v1/teams/update:
-        post:
-            tags:
-                - Teams
-            operationId: Teams_UpdateTeams
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateTeamsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateTeamsReply'
-    /api/v1/teams/{id}:
-        get:
-            tags:
-                - Teams
-            operationId: Teams_GetTeams
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: integer
-                    format: uint32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetTeamsReply'
-    /helloworld/{name}:
-        get:
-            tags:
-                - Greeter
-            description: Sends a greeting
-            operationId: Greeter_SayHello
-            parameters:
-                - name: name
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+                                $ref: '#/components/schemas/Status'
 components:
     schemas:
-        api.appix.v1.Application:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                name:
-                    type: string
-                description:
-                    type: string
-                owner:
-                    type: string
-                isStateful:
-                    type: boolean
-                clusterId:
-                    type: integer
-                    format: uint32
-                datacenterId:
-                    type: integer
-                    format: uint32
-                envId:
-                    type: integer
-                    format: uint32
-                productId:
-                    type: integer
-                    format: uint32
-                teamId:
-                    type: integer
-                    format: uint32
-                featuresId:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-                tagsId:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-            description: gratos::model
-        api.appix.v1.Cluster:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                name:
-                    type: string
-                description:
-                    type: string
-            description: gratos::model
-        api.appix.v1.CreateApplicationsReply:
+        CreateHostgroupsReply:
             type: object
             properties:
                 message:
@@ -907,99 +139,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateApplicationsRequest:
-            type: object
-            properties:
-                apps:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Application'
-        api.appix.v1.CreateClustersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.CreateClustersRequest:
-            type: object
-            properties:
-                clusters:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Cluster'
-        api.appix.v1.CreateDatacentersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.CreateDatacentersRequest:
-            type: object
-            properties:
-                datacenters:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Datacenter'
-        api.appix.v1.CreateEnvsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.CreateEnvsRequest:
-            type: object
-            properties:
-                envs:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Env'
-        api.appix.v1.CreateFeaturesReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.CreateFeaturesRequest:
-            type: object
-            properties:
-                features:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.CreateHostgroupsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.CreateHostgroupsRequest:
+        CreateHostgroupsRequest:
             type: object
             properties:
                 hostgroups:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Hostgroup'
-        api.appix.v1.CreateProductsReply:
+                        $ref: '#/components/schemas/Hostgroup'
+        DeleteHostgroupsReply:
             type: object
             properties:
                 message:
@@ -1009,69 +156,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateProductsRequest:
-            type: object
-            properties:
-                products:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Product'
-        api.appix.v1.CreateTagsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.CreateTagsRequest:
-            type: object
-            properties:
-                tags:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.CreateTeamsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.CreateTeamsRequest:
-            type: object
-            properties:
-                teams:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Team'
-        api.appix.v1.Datacenter:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                name:
-                    type: string
-                description:
-                    type: string
-            description: gratos::model
-        api.appix.v1.DeleteApplicationsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.DeleteApplicationsRequest:
+        DeleteHostgroupsRequest:
             type: object
             properties:
                 ids:
@@ -1079,233 +164,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteClustersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.DeleteClustersRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-        api.appix.v1.DeleteDatacentersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.DeleteDatacentersRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-        api.appix.v1.DeleteEnvsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.DeleteEnvsRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-        api.appix.v1.DeleteFeaturesReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.DeleteFeaturesRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-        api.appix.v1.DeleteHostgroupsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.DeleteHostgroupsRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-        api.appix.v1.DeleteProductsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.DeleteProductsRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-        api.appix.v1.DeleteTagsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.DeleteTagsRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-        api.appix.v1.DeleteTeamsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.DeleteTeamsRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-        api.appix.v1.Env:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                name:
-                    type: string
-                description:
-                    type: string
-            description: gratos::model
-        api.appix.v1.Feature:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                Name:
-                    type: string
-                value:
-                    type: string
-            description: gratos::model
-        api.appix.v1.GetApplicationsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                app:
-                    $ref: '#/components/schemas/api.appix.v1.Application'
-        api.appix.v1.GetClustersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                cluster:
-                    $ref: '#/components/schemas/api.appix.v1.Cluster'
-        api.appix.v1.GetDatacentersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                datacenter:
-                    $ref: '#/components/schemas/api.appix.v1.Datacenter'
-        api.appix.v1.GetEnvsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                env:
-                    $ref: '#/components/schemas/api.appix.v1.Env'
-        api.appix.v1.GetFeaturesReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                feature:
-                    $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.GetHostgroupsReply:
+        GetHostgroupsReply:
             type: object
             properties:
                 message:
@@ -1316,44 +175,16 @@ components:
                 action:
                     type: string
                 hostgroup:
-                    $ref: '#/components/schemas/api.appix.v1.Hostgroup'
-        api.appix.v1.GetProductsReply:
+                    $ref: '#/components/schemas/Hostgroup'
+        GoogleProtobufAny:
             type: object
             properties:
-                message:
+                '@type':
                     type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                product:
-                    $ref: '#/components/schemas/api.appix.v1.Product'
-        api.appix.v1.GetTagsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                tag:
-                    $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.GetTeamsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                team:
-                    $ref: '#/components/schemas/api.appix.v1.Team'
-        api.appix.v1.Hostgroup:
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        Hostgroup:
             type: object
             properties:
                 id:
@@ -1399,7 +230,7 @@ components:
                         type: integer
                         format: uint32
             description: gratos::model
-        api.appix.v1.ListApplicationsFilter:
+        ListHostgroupsFilter:
             type: object
             properties:
                 page:
@@ -1417,269 +248,53 @@ components:
                     type: array
                     items:
                         type: string
-                clusters:
+                clustersId:
                     type: array
                     items:
-                        type: string
-                datacenters:
+                        type: integer
+                        format: uint32
+                datacentersId:
                     type: array
                     items:
-                        type: string
-                envs:
+                        type: integer
+                        format: uint32
+                envsId:
                     type: array
                     items:
-                        type: string
-                products:
+                        type: integer
+                        format: uint32
+                productsId:
                     type: array
                     items:
-                        type: string
-                teams:
+                        type: integer
+                        format: uint32
+                teamsId:
                     type: array
                     items:
-                        type: string
-                features:
+                        type: integer
+                        format: uint32
+                featuresId:
                     type: array
                     items:
-                        type: string
-                tags:
+                        type: integer
+                        format: uint32
+                tagsId:
                     type: array
                     items:
-                        type: string
-                isStateful:
-                    type: string
-            description: gratos::model
-        api.appix.v1.ListApplicationsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                apps:
+                        type: integer
+                        format: uint32
+                shareProductsId:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Application'
-        api.appix.v1.ListApplicationsRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListApplicationsFilter'
-        api.appix.v1.ListClustersFilter:
-            type: object
-            properties:
-                page:
-                    type: integer
-                    format: uint32
-                pageSize:
-                    type: integer
-                    format: uint32
-                names:
-                    type: array
-                    items:
-                        type: string
-                ids:
+                        type: integer
+                        format: uint32
+                shareTeamsId:
                     type: array
                     items:
                         type: integer
                         format: uint32
             description: gratos::model
-        api.appix.v1.ListClustersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                clusters:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Cluster'
-        api.appix.v1.ListClustersRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListClustersFilter'
-        api.appix.v1.ListDatacentersFilter:
-            type: object
-            properties:
-                page:
-                    type: integer
-                    format: uint32
-                pageSize:
-                    type: integer
-                    format: uint32
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-                names:
-                    type: array
-                    items:
-                        type: string
-            description: gratos::model
-        api.appix.v1.ListDatacentersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                datacenters:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Datacenter'
-        api.appix.v1.ListDatacentersRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListDatacentersFilter'
-        api.appix.v1.ListEnvsFilter:
-            type: object
-            properties:
-                page:
-                    type: integer
-                    format: uint32
-                pageSize:
-                    type: integer
-                    format: uint32
-                names:
-                    type: array
-                    items:
-                        type: string
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-            description: gratos::model
-        api.appix.v1.ListEnvsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                envs:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Env'
-        api.appix.v1.ListEnvsRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListEnvsFilter'
-            description: ListEnvsRequst has no fields because envs count is not very big
-        api.appix.v1.ListFeaturesFilter:
-            type: object
-            properties:
-                page:
-                    type: integer
-                    format: uint32
-                pageSize:
-                    type: integer
-                    format: uint32
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-                names:
-                    type: array
-                    items:
-                        type: string
-                kvs:
-                    type: array
-                    items:
-                        type: string
-            description: gratos::model
-        api.appix.v1.ListFeaturesReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                features:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.ListFeaturesRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListFeaturesFilter'
-        api.appix.v1.ListHostgroupsFilter:
-            type: object
-            properties:
-                page:
-                    type: integer
-                    format: uint32
-                pageSize:
-                    type: integer
-                    format: uint32
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-                names:
-                    type: array
-                    items:
-                        type: string
-                clusters:
-                    type: array
-                    items:
-                        type: string
-                datacenters:
-                    type: array
-                    items:
-                        type: string
-                envs:
-                    type: array
-                    items:
-                        type: string
-                products:
-                    type: array
-                    items:
-                        type: string
-                teams:
-                    type: array
-                    items:
-                        type: string
-                features:
-                    type: array
-                    items:
-                        type: string
-                tags:
-                    type: array
-                    items:
-                        type: string
-                shareProducts:
-                    type: array
-                    items:
-                        type: string
-                shareTeams:
-                    type: array
-                    items:
-                        type: string
-            description: gratos::model
-        api.appix.v1.ListHostgroupsReply:
+        ListHostgroupsReply:
             type: object
             properties:
                 message:
@@ -1692,36 +307,29 @@ components:
                 hostgroups:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Hostgroup'
-        api.appix.v1.ListHostgroupsRequest:
+                        $ref: '#/components/schemas/Hostgroup'
+        ListHostgroupsRequest:
             type: object
             properties:
                 filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListHostgroupsFilter'
-        api.appix.v1.ListProductsFilter:
+                    $ref: '#/components/schemas/ListHostgroupsFilter'
+        Status:
             type: object
             properties:
-                page:
+                code:
                     type: integer
-                    format: uint32
-                pageSize:
-                    type: integer
-                    format: uint32
-                names:
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
                     type: array
                     items:
-                        type: string
-                codes:
-                    type: array
-                    items:
-                        type: string
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-            description: gratos::model
-        api.appix.v1.ListProductsReply:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateHostgroupsReply:
             type: object
             properties:
                 message:
@@ -1731,310 +339,12 @@ components:
                     format: int32
                 action:
                     type: string
-                products:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Product'
-        api.appix.v1.ListProductsRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListProductsFilter'
-        api.appix.v1.ListTagsFilter:
-            type: object
-            properties:
-                page:
-                    type: integer
-                    format: uint32
-                pageSize:
-                    type: integer
-                    format: uint32
-                keys:
-                    type: array
-                    items:
-                        type: string
-                kvs:
-                    type: array
-                    items:
-                        type: string
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-            description: gratos::model
-        api.appix.v1.ListTagsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                tags:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.ListTagsRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListTagsFilter'
-        api.appix.v1.ListTeamsFilter:
-            type: object
-            properties:
-                page:
-                    type: integer
-                    format: uint32
-                pageSize:
-                    type: integer
-                    format: uint32
-                names:
-                    type: array
-                    items:
-                        type: string
-                codes:
-                    type: array
-                    items:
-                        type: string
-                leaders:
-                    type: array
-                    items:
-                        type: string
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-            description: gratos::model
-        api.appix.v1.ListTeamsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                teams:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Team'
-        api.appix.v1.ListTeamsRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/api.appix.v1.ListTeamsFilter'
-        api.appix.v1.Product:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                name:
-                    type: string
-                code:
-                    type: string
-                description:
-                    type: string
-            description: gratos::model
-        api.appix.v1.Tag:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                key:
-                    type: string
-                value:
-                    type: string
-            description: gratos::model
-        api.appix.v1.Team:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                name:
-                    type: string
-                code:
-                    type: string
-                description:
-                    type: string
-                leader:
-                    type: string
-            description: gratos::model
-        api.appix.v1.UpdateApplicationsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.UpdateApplicationsRequest:
-            type: object
-            properties:
-                apps:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Application'
-        api.appix.v1.UpdateClustersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.UpdateClustersRequest:
-            type: object
-            properties:
-                clusters:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Cluster'
-        api.appix.v1.UpdateDatacentersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.UpdateDatacentersRequest:
-            type: object
-            properties:
-                datacenters:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Datacenter'
-        api.appix.v1.UpdateEnvsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.UpdateEnvsRequest:
-            type: object
-            properties:
-                envs:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Env'
-        api.appix.v1.UpdateFeaturesReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.UpdateFeaturesRequest:
-            type: object
-            properties:
-                features:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.UpdateHostgroupsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.UpdateHostgroupsRequest:
+        UpdateHostgroupsRequest:
             type: object
             properties:
                 hostgroups:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Hostgroup'
-        api.appix.v1.UpdateProductsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.UpdateProductsRequest:
-            type: object
-            properties:
-                products:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Product'
-        api.appix.v1.UpdateTagsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.UpdateTagsRequest:
-            type: object
-            properties:
-                tags:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.UpdateTeamsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        api.appix.v1.UpdateTeamsRequest:
-            type: object
-            properties:
-                teams:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/api.appix.v1.Team'
-        helloworld.v1.HelloReply:
-            type: object
-            properties:
-                message:
-                    type: string
-            description: The response message containing the greetings
+                        $ref: '#/components/schemas/Hostgroup'
 tags:
-    - name: Applications
-    - name: Clusters
-    - name: Datacenters
-    - name: Envs
-    - name: Features
-    - name: Greeter
-      description: The greeting service definition.
     - name: Hostgroups
-    - name: Products
-    - name: Tags
-    - name: Teams

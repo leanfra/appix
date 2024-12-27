@@ -144,15 +144,19 @@ func (s *HostgroupsService) ListHostgroups(ctx context.Context, req *pb.ListHost
 	var filter = biz.DefaultHostgroupFilter()
 	if req.Filter != nil {
 		filter = &biz.ListHostgroupsFilter{
-			Names:       req.Filter.Names,
-			Ids:         req.Filter.Ids,
-			Clusters:    req.Filter.Clusters,
-			Datacenters: req.Filter.Datacenters,
-			Envs:        req.Filter.Envs,
-			Products:    req.Filter.Products,
-			Teams:       req.Filter.Teams,
-			Features:    req.Filter.Features,
-			Tags:        req.Filter.Tags,
+			Names:           req.Filter.Names,
+			Ids:             req.Filter.Ids,
+			ClustersId:      req.Filter.ClustersId,
+			DatacentersId:   req.Filter.DatacentersId,
+			EnvsId:          req.Filter.EnvsId,
+			ProductsId:      req.Filter.ProductsId,
+			ShareProductsId: req.Filter.ShareProductsId,
+			ShareTeamsId:    req.Filter.ShareTeamsId,
+			TeamsId:         req.Filter.TeamsId,
+			FeaturesId:      req.Filter.FeaturesId,
+			TagsId:          req.Filter.TagsId,
+			PageSize:        req.Filter.PageSize,
+			Page:            req.Filter.Page,
 		}
 		if req.Filter.PageSize > 0 {
 			filter.PageSize = req.Filter.PageSize

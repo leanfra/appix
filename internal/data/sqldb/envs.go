@@ -1,39 +1,35 @@
-package data
+package sqldb
 
 import (
-	"appix/internal/biz"
+	"appix/internal/data/repo"
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
-type EnvsRepoImpl struct {
-	data *Data
+type EnvsRepoGorm struct {
+	data *DataGorm
 	log  *log.Helper
 }
 
-func NewEnvsRepoImpl(data *Data, logger log.Logger) (biz.EnvsRepo, error) {
+func NewEnvsRepoGorm(data *DataGorm, logger log.Logger) (repo.EnvsRepo, error) {
 
 	if err := validateData(data); err != nil {
 		return nil, err
 	}
-	if err := initTable(data.db, &Env{}, envTable); err != nil {
+	if err := initTable(data.db, &repo.Env{}, repo.EnvTable); err != nil {
 		return nil, err
 	}
-	return &EnvsRepoImpl{
+	return &EnvsRepoGorm{
 		data: data,
 		log:  log.NewHelper(logger),
 	}, nil
 }
 
 // CreateEnvs is
-func (d *EnvsRepoImpl) CreateEnvs(ctx context.Context, envs []*biz.Env) error {
+func (d *EnvsRepoGorm) CreateEnvs(ctx context.Context, envs []*repo.Env) error {
 
-	db_env, err := NewEnvs(envs)
-	if err != nil {
-		return err
-	}
-	r := d.data.db.WithContext(ctx).Create(db_env)
+	r := d.data.db.WithContext(ctx).Create(envs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -41,13 +37,9 @@ func (d *EnvsRepoImpl) CreateEnvs(ctx context.Context, envs []*biz.Env) error {
 }
 
 // UpdateEnvs is
-func (d *EnvsRepoImpl) UpdateEnvs(ctx context.Context, envs []*biz.Env) error {
+func (d *EnvsRepoGorm) UpdateEnvs(ctx context.Context, envs []*repo.Env) error {
 
-	db_envs, err := NewEnvs(envs)
-	if err != nil {
-		return err
-	}
-	r := d.data.db.WithContext(ctx).Save(db_envs)
+	r := d.data.db.WithContext(ctx).Save(envs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -55,9 +47,9 @@ func (d *EnvsRepoImpl) UpdateEnvs(ctx context.Context, envs []*biz.Env) error {
 }
 
 // DeleteEnvs is
-func (d *EnvsRepoImpl) DeleteEnvs(ctx context.Context, ids []uint32) error {
+func (d *EnvsRepoGorm) DeleteEnvs(ctx context.Context, ids []uint32) error {
 
-	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&Env{})
+	r := d.data.db.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Env{})
 	if r.Error != nil {
 		return r.Error
 	}
@@ -65,22 +57,24 @@ func (d *EnvsRepoImpl) DeleteEnvs(ctx context.Context, ids []uint32) error {
 }
 
 // GetEnvs is
-func (d *EnvsRepoImpl) GetEnvs(ctx context.Context, id uint32) (*biz.Env, error) {
+func (d *EnvsRepoGorm) GetEnvs(ctx context.Context, id uint32) (*repo.Env, error) {
 
-	env := &Env{}
+	env := &repo.Env{}
 	r := d.data.db.WithContext(ctx).First(env, id)
 	if r.Error != nil {
 		return nil, r.Error
 	}
 
-	return NewBizEnv(env)
+	return env, nil
 }
 
 // ListEnvs is
-func (d *EnvsRepoImpl) ListEnvs(ctx context.Context, filter *biz.ListEnvsFilter) ([]*biz.Env, error) {
+func (d *EnvsRepoGorm) ListEnvs(ctx context.Context,
+	tx repo.TX,
+	filter *repo.EnvsFilter) ([]*repo.Env, error) {
 
-	envs := []*Env{}
-	query := d.data.db.WithContext(ctx)
+	envs := []*repo.Env{}
+	query := d.data.WithTX(tx).WithContext(ctx)
 	if filter != nil {
 		var offset int
 		if filter.Page > 0 && filter.PageSize > 0 {
@@ -100,5 +94,5 @@ func (d *EnvsRepoImpl) ListEnvs(ctx context.Context, filter *biz.ListEnvsFilter)
 		return nil, r.Error
 	}
 
-	return NewBizEnvs(envs)
+	return envs, nil
 }

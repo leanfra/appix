@@ -49,11 +49,11 @@ message Application {
 	bool is_stateful = 13;
 	uint32 cluster_id = 4;
 	uint32 datacenter_id = 5;
-	uint32 env_id = 6;
 	uint32 product_id = 7;
 	uint32 team_id = 8;
 	repeated uint32 features_id = 9;
 	repeated uint32 tags_id = 10;
+	repeated uint32 hostgroups_id = 12;
 }
 
 message CreateApplicationsRequest {
@@ -99,14 +99,14 @@ message ListApplicationsFilter {
 	uint32 page_size = 2;
 	repeated uint32 ids = 11;
 	repeated string names = 3;
-	repeated string clusters = 4;
-	repeated string datacenters = 5;
-	repeated string envs = 6;
-	repeated string products = 7;
-	repeated string teams = 8;
-	repeated string features = 9;
-	repeated string tags = 10;
 	string is_stateful = 12;
+	repeated uint32 clusters_id = 13;
+	repeated uint32 datacenters_id = 14;
+	repeated uint32 products_id = 16;
+	repeated uint32 teams_id = 17;
+	repeated uint32 features_id = 18;
+	repeated uint32 tags_id = 19;
+	repeated uint32 hostgroups_id = 20;
 
 }
 

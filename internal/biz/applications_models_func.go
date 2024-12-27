@@ -1,6 +1,7 @@
 package biz
 
 import (
+	"appix/internal/data/repo"
 	"fmt"
 )
 
@@ -13,6 +14,24 @@ func (m *Application) Validate(isNew bool) error {
 			return fmt.Errorf("InvalidId")
 		}
 	}
+	if len(m.Name) == 0 {
+		return fmt.Errorf("InvalidNameValue")
+	}
+	if len(m.Owner) == 0 {
+		return fmt.Errorf("InvalidOwnerValue")
+	}
+	if m.ClusterId <= 0 {
+		return fmt.Errorf("InvalidClusterId")
+	}
+	if m.DatacenterId <= 0 {
+		return fmt.Errorf("InvalidDatacenterId")
+	}
+	if m.ProductId <= 0 {
+		return fmt.Errorf("InvalidProductId")
+	}
+	if m.TeamId <= 0 {
+		return fmt.Errorf("InvalidTeamId")
+	}
 	return nil
 }
 
@@ -22,13 +41,13 @@ func (m *ListApplicationsFilter) Validate() error {
 	}
 	if len(m.Ids) > MaxFilterValues ||
 		len(m.Names) > MaxFilterValues ||
-		len(m.Clusters) > MaxFilterValues ||
-		len(m.Datacenters) > MaxFilterValues ||
-		len(m.Envs) > MaxFilterValues ||
-		len(m.Products) > MaxFilterValues ||
-		len(m.Teams) > MaxFilterValues ||
-		len(m.Features) > MaxFilterValues ||
-		len(m.Tags) > MaxFilterValues {
+		len(m.ClustersId) > MaxFilterValues ||
+		len(m.DatacentersId) > MaxFilterValues ||
+		len(m.ProductsId) > MaxFilterValues ||
+		len(m.TeamsId) > MaxFilterValues ||
+		len(m.FeaturesId) > MaxFilterValues ||
+		len(m.HostgroupsId) > MaxFilterValues ||
+		len(m.TagsId) > MaxFilterValues {
 
 		return ErrFilterValuesExceedMax
 	}
@@ -49,5 +68,90 @@ func DefaultApplicationFilter() *ListApplicationsFilter {
 		Page:       1,
 		PageSize:   DefaultPageSize,
 		IsStateful: IsStatefulNone,
+	}
+}
+
+func NewDbApplication(app *Application) (*repo.Application, error) {
+	if app == nil {
+		return nil, nil
+	}
+	return &repo.Application{
+		Id:           app.Id,
+		Name:         app.Name,
+		Description:  app.Description,
+		Owner:        app.Owner,
+		IsStateful:   app.IsStateful,
+		ClusterId:    app.ClusterId,
+		DatacenterId: app.DatacenterId,
+		ProductId:    app.ProductId,
+		TeamId:       app.TeamId,
+	}, nil
+}
+
+func NewDbApplications(apps []*Application) ([]*repo.Application, error) {
+	db_apps := make([]*repo.Application, len(apps))
+	for i, a := range apps {
+		db_app, e := NewDbApplication(a)
+		if e != nil {
+			return nil, e
+		}
+		db_apps[i] = db_app
+	}
+	return db_apps, nil
+}
+
+func NewBizApplication(t *repo.Application) (*Application, error) {
+	if t == nil {
+		return nil, nil
+	}
+	return &Application{
+		Id:           t.Id,
+		Name:         t.Name,
+		Description:  t.Description,
+		Owner:        t.Owner,
+		IsStateful:   t.IsStateful,
+		ClusterId:    t.ClusterId,
+		DatacenterId: t.DatacenterId,
+		ProductId:    t.ProductId,
+		TeamId:       t.TeamId,
+	}, nil
+}
+
+func NewBizApplications(es []*repo.Application) ([]*Application, error) {
+	apps := make([]*Application, len(es))
+	for i, e := range es {
+		app, err := NewBizApplication(e)
+		if err != nil {
+			return nil, err
+		}
+		apps[i] = app
+	}
+	return apps, nil
+}
+
+func NewRepoApplicationsFilter(filter *ListApplicationsFilter) *repo.ApplicationsFilter {
+	if filter == nil {
+		return nil
+	}
+	return &repo.ApplicationsFilter{
+		Ids:   filter.Ids,
+		Names: filter.Names,
+		//Clusters:      filter.Clusters,
+		//Datacenters:   filter.Datacenters,
+		//Products:      filter.Products,
+		//Teams:         filter.Teams,
+		//Features:      filter.Features,
+		//Tags:          filter.Tags,
+		ClustersId:    filter.ClustersId,
+		DatacentersId: filter.DatacentersId,
+		ProductsId:    filter.ProductsId,
+		TeamsId:       filter.TeamsId,
+		//FeaturesId:    filter.FeaturesId,
+		//TagsId:        filter.TagsId,
+		IsStateful: filter.IsStateful,
+		//HostgroupsId:  filter.HostgroupsId,
+		Page:     filter.Page,
+		PageSize: filter.PageSize,
+		// Hostgroups:    filter.Hostgroups,
 	}
 }

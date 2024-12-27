@@ -1,29 +1,24 @@
 package biz
 
 import (
+	"appix/internal/data/repo"
 	"context"
 	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
-type FeaturesRepo interface {
-	CreateFeatures(ctx context.Context, features []*Feature) error
-	UpdateFeatures(ctx context.Context, features []*Feature) error
-	DeleteFeatures(ctx context.Context, ids []uint32) error
-	GetFeatures(ctx context.Context, id uint32) (*Feature, error)
-	ListFeatures(ctx context.Context, filter *ListFeaturesFilter) ([]Feature, error)
-}
-
 type FeaturesUsecase struct {
-	repo FeaturesRepo
+	repo repo.FeaturesRepo
 	log  *log.Helper
+	txm  repo.TxManager
 }
 
-func NewFeaturesUsecase(repo FeaturesRepo, logger log.Logger) *FeaturesUsecase {
+func NewFeaturesUsecase(repo repo.FeaturesRepo, logger log.Logger, txm repo.TxManager) *FeaturesUsecase {
 	return &FeaturesUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
+		txm:  txm,
 	}
 }
 
@@ -41,7 +36,11 @@ func (s *FeaturesUsecase) CreateFeatures(ctx context.Context, features []*Featur
 	if err := s.validate(true, features); err != nil {
 		return err
 	}
-	return s.repo.CreateFeatures(ctx, features)
+	_f, e := NewFeatures(features)
+	if e != nil {
+		return e
+	}
+	return s.repo.CreateFeatures(ctx, _f)
 }
 
 // UpdateFeatures is
@@ -49,7 +48,11 @@ func (s *FeaturesUsecase) UpdateFeatures(ctx context.Context, features []*Featur
 	if err := s.validate(false, features); err != nil {
 		return err
 	}
-	return s.repo.UpdateFeatures(ctx, features)
+	_f, e := NewFeatures(features)
+	if e != nil {
+		return e
+	}
+	return s.repo.UpdateFeatures(ctx, _f)
 }
 
 // DeleteFeatures is
@@ -65,17 +68,25 @@ func (s *FeaturesUsecase) GetFeatures(ctx context.Context, id uint32) (*Feature,
 	if id <= 0 {
 		return nil, fmt.Errorf("EmptyId")
 	}
-	return s.repo.GetFeatures(ctx, id)
+	_f, e := s.repo.GetFeatures(ctx, id)
+	if e != nil {
+		return nil, e
+	}
+	return NewBizFeature(_f)
 }
 
 // ListFeatures is
 func (s *FeaturesUsecase) ListFeatures(ctx context.Context,
-	filter *ListFeaturesFilter) ([]Feature, error) {
+	filter *ListFeaturesFilter) ([]*Feature, error) {
 
 	if filter != nil {
 		if err := filter.Validate(); err != nil {
 			return nil, err
 		}
 	}
-	return s.repo.ListFeatures(ctx, filter)
+	_f, e := s.repo.ListFeatures(ctx, nil, NewFeaturesFilter(filter))
+	if e != nil {
+		return nil, e
+	}
+	return NewBizFeatures(_f)
 }

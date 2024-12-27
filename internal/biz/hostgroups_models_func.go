@@ -1,6 +1,9 @@
 package biz
 
-import "fmt"
+import (
+	"appix/internal/data/repo"
+	"fmt"
+)
 
 func (f *Hostgroup) Validate(isNew bool) error {
 	if len(f.Name) == 0 {
@@ -36,15 +39,15 @@ func (lf *ListHostgroupsFilter) Validate() error {
 	}
 
 	if len(lf.Names) > MaxFilterValues ||
-		len(lf.Clusters) > MaxFilterValues ||
-		len(lf.Datacenters) > MaxFilterValues ||
-		len(lf.Envs) > MaxFilterValues ||
-		len(lf.Products) > MaxFilterValues ||
-		len(lf.Teams) > MaxFilterValues ||
-		len(lf.Features) > MaxFilterValues ||
-		len(lf.Tags) > MaxFilterValues ||
-		len(lf.ShareProducts) > MaxFilterValues ||
-		len(lf.ShareTeams) > MaxFilterValues {
+		len(lf.ClustersId) > MaxFilterValues ||
+		len(lf.DatacentersId) > MaxFilterValues ||
+		len(lf.EnvsId) > MaxFilterValues ||
+		len(lf.ProductsId) > MaxFilterValues ||
+		len(lf.TeamsId) > MaxFilterValues ||
+		len(lf.FeaturesId) > MaxFilterValues ||
+		len(lf.TagsId) > MaxFilterValues ||
+		len(lf.ShareProductsId) > MaxFilterValues ||
+		len(lf.ShareTeamsId) > MaxFilterValues {
 
 		return ErrFilterValuesExceedMax
 	}
@@ -59,5 +62,73 @@ func DefaultHostgroupFilter() *ListHostgroupsFilter {
 	return &ListHostgroupsFilter{
 		Page:     1,
 		PageSize: DefaultPageSize,
+	}
+}
+
+func NewHostgroup(t *Hostgroup) (*repo.Hostgroup, error) {
+	return &repo.Hostgroup{
+		Id:           t.Id,
+		Name:         t.Name,
+		Description:  t.Description,
+		ClusterId:    t.ClusterId,
+		DatacenterId: t.DatacenterId,
+		EnvId:        t.EnvId,
+		ProductId:    t.ProductId,
+		TeamId:       t.TeamId,
+	}, nil
+}
+
+func NewHostgroups(ts []*Hostgroup) ([]*repo.Hostgroup, error) {
+	var products = make([]*repo.Hostgroup, len(ts))
+	for i, t := range ts {
+		nt, err := NewHostgroup(t)
+		if err != nil {
+			return nil, err
+		}
+		products[i] = nt
+	}
+	return products, nil
+}
+
+func NewBizHostgroup(t *repo.Hostgroup) (*Hostgroup, error) {
+	return &Hostgroup{
+		Id:           t.Id,
+		Description:  t.Description,
+		Name:         t.Name,
+		ClusterId:    t.ClusterId,
+		DatacenterId: t.DatacenterId,
+		EnvId:        t.EnvId,
+		ProductId:    t.ProductId,
+		TeamId:       t.TeamId,
+	}, nil
+}
+
+func NewBizHostgroups(ps []*repo.Hostgroup) ([]*Hostgroup, error) {
+	var biz_ps []*Hostgroup
+	for _, t := range ps {
+		if t != nil {
+			bhg, err := NewBizHostgroup(t)
+			if err != nil {
+				return nil, err
+			}
+			biz_ps = append(biz_ps, bhg)
+		}
+	}
+	return biz_ps, nil
+}
+
+func NewHostgroupsFilter(filter *ListHostgroupsFilter) *repo.HostgroupsFilter {
+	return &repo.HostgroupsFilter{
+		Ids:             filter.Ids,
+		Names:           filter.Names,
+		ClustersId:      filter.ClustersId,
+		DatacentersId:   filter.DatacentersId,
+		EnvsId:          filter.EnvsId,
+		ProductsId:      filter.ProductsId,
+		TeamsId:         filter.TeamsId,
+		ShareProductsId: filter.ShareProductsId,
+		ShareTeamsId:    filter.ShareTeamsId,
+		FeaturesId:      filter.FeaturesId,
+		TagsId:          filter.TagsId,
 	}
 }

@@ -1,29 +1,24 @@
 package biz
 
 import (
+	"appix/internal/data/repo"
 	"context"
 	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
-type ProductsRepo interface {
-	CreateProducts(ctx context.Context, ps []*Product) error
-	UpdateProducts(ctx context.Context, ps []*Product) error
-	DeleteProducts(ctx context.Context, ids []uint32) error
-	GetProducts(ctx context.Context, id uint32) (*Product, error)
-	ListProducts(ctx context.Context, filter *ListProductsFilter) ([]*Product, error)
-}
-
 type ProductsUsecase struct {
-	repo ProductsRepo
+	txm  repo.TxManager
+	repo repo.ProductsRepo
 	log  *log.Helper
 }
 
-func NewProductsUsecase(repo ProductsRepo, logger log.Logger) *ProductsUsecase {
+func NewProductsUsecase(repo repo.ProductsRepo, logger log.Logger, txm repo.TxManager) *ProductsUsecase {
 	return &ProductsUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
+		txm:  txm,
 	}
 }
 
@@ -41,7 +36,11 @@ func (s *ProductsUsecase) CreateProducts(ctx context.Context, ps []*Product) err
 	if err := s.validate(true, ps); err != nil {
 		return err
 	}
-	return s.repo.CreateProducts(ctx, ps)
+	_ps, e := ToProductsDB(ps)
+	if e != nil {
+		return e
+	}
+	return s.repo.CreateProducts(ctx, _ps)
 }
 
 // UpdateProducts is
@@ -49,7 +48,11 @@ func (s *ProductsUsecase) UpdateProducts(ctx context.Context, ps []*Product) err
 	if err := s.validate(false, ps); err != nil {
 		return err
 	}
-	return s.repo.UpdateProducts(ctx, ps)
+	dps, e := ToProductsDB(ps)
+	if e != nil {
+		return e
+	}
+	return s.repo.UpdateProducts(ctx, dps)
 }
 
 // DeleteProducts is
@@ -65,7 +68,11 @@ func (s *ProductsUsecase) GetProducts(ctx context.Context, id uint32) (*Product,
 	if id <= 0 {
 		return nil, fmt.Errorf("EmptyId")
 	}
-	return s.repo.GetProducts(ctx, id)
+	ps, e := s.repo.GetProducts(ctx, id)
+	if e != nil {
+		return nil, e
+	}
+	return ToProductBiz(ps)
 }
 
 // ListProducts is
@@ -75,5 +82,9 @@ func (s *ProductsUsecase) ListProducts(ctx context.Context, filter *ListProducts
 			return nil, err
 		}
 	}
-	return s.repo.ListProducts(ctx, filter)
+	dbps, e := s.repo.ListProducts(ctx, nil, ToProductFilterDB(filter))
+	if e != nil {
+		return nil, e
+	}
+	return ToProductsBiz(dbps)
 }

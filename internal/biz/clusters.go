@@ -1,29 +1,24 @@
 package biz
 
 import (
+	"appix/internal/data/repo"
 	"context"
 	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
-type ClustersRepo interface {
-	CreateClusters(ctx context.Context, cs []*Cluster) error
-	UpdateClusters(ctx context.Context, cs []*Cluster) error
-	DeleteClusters(ctx context.Context, ids []uint32) error
-	GetClusters(ctx context.Context, id uint32) (*Cluster, error)
-	ListClusters(ctx context.Context, filter *ListClustersFilter) ([]*Cluster, error)
-}
-
 type ClustersUsecase struct {
-	repo ClustersRepo
+	repo repo.ClustersRepo
 	log  *log.Helper
+	txm  repo.TxManager
 }
 
-func NewClustersUsecase(repo ClustersRepo, logger log.Logger) *ClustersUsecase {
+func NewClustersUsecase(repo repo.ClustersRepo, logger log.Logger, txm repo.TxManager) *ClustersUsecase {
 	return &ClustersUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
+		txm:  txm,
 	}
 }
 
@@ -41,7 +36,11 @@ func (s *ClustersUsecase) CreateClusters(ctx context.Context, cs []*Cluster) err
 	if err := s.validate(true, cs); err != nil {
 		return err
 	}
-	return s.repo.CreateClusters(ctx, cs)
+	_cs, err := NewClusters(cs)
+	if err != nil {
+		return err
+	}
+	return s.repo.CreateClusters(ctx, _cs)
 }
 
 // UpdateClusters is
@@ -49,7 +48,11 @@ func (s *ClustersUsecase) UpdateClusters(ctx context.Context, cs []*Cluster) err
 	if err := s.validate(false, cs); err != nil {
 		return err
 	}
-	return s.repo.UpdateClusters(ctx, cs)
+	_cs, err := NewClusters(cs)
+	if err != nil {
+		return err
+	}
+	return s.repo.UpdateClusters(ctx, _cs)
 }
 
 // DeleteClusters is
@@ -66,7 +69,11 @@ func (s *ClustersUsecase) GetClusters(ctx context.Context, id uint32) (*Cluster,
 	if id <= 0 {
 		return nil, fmt.Errorf("InvalidId")
 	}
-	return s.repo.GetClusters(ctx, id)
+	_cs, err := s.repo.GetClusters(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return NewBizCluster(_cs)
 }
 
 // ListClusters is
@@ -78,5 +85,9 @@ func (s *ClustersUsecase) ListClusters(ctx context.Context,
 			return nil, err
 		}
 	}
-	return s.repo.ListClusters(ctx, filter)
+	_cs, err := s.repo.ListClusters(ctx, nil, NewClustersFilter(filter))
+	if err != nil {
+		return nil, err
+	}
+	return NewBizClusters(_cs)
 }

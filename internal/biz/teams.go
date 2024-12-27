@@ -4,26 +4,29 @@ import (
 	"context"
 	"fmt"
 
+	"appix/internal/data/repo"
+
 	"github.com/go-kratos/kratos/v2/log"
 )
 
-type TeamsRepo interface {
-	CreateTeams(ctx context.Context, teams []*Team) error
-	UpdateTeams(ctx context.Context, teams []*Team) error
-	DeleteTeams(ctx context.Context, ids []uint32) error
-	GetTeams(ctx context.Context, id uint32) (*Team, error)
-	ListTeams(ctx context.Context, filter *ListTeamsFilter) ([]*Team, error)
-}
-
 type TeamsUsecase struct {
-	repo TeamsRepo
-	log  *log.Helper
+	teamRepo      repo.TeamsRepo
+	hostgroupRepo repo.HostgroupsRepo // hostgroup need team as foreign key
+	txm           repo.TxManager
+	log           *log.Helper
 }
 
-func NewTeamsUsecase(repo TeamsRepo, logger log.Logger) *TeamsUsecase {
+func NewTeamsUsecase(
+	repo repo.TeamsRepo,
+	hgrepo repo.HostgroupsRepo,
+	logger log.Logger,
+	txm repo.TxManager) *TeamsUsecase {
+
 	return &TeamsUsecase{
-		repo: repo,
-		log:  log.NewHelper(logger),
+		teamRepo:      repo,
+		log:           log.NewHelper(logger),
+		txm:           txm,
+		hostgroupRepo: hgrepo,
 	}
 }
 
@@ -42,7 +45,12 @@ func (s *TeamsUsecase) CreateTeams(ctx context.Context, teams []*Team) error {
 		return err
 	}
 
-	return s.repo.CreateTeams(ctx, teams)
+	_teams, e := ToTeamsDB(teams)
+	if e != nil {
+		return e
+	}
+
+	return s.teamRepo.CreateTeams(ctx, _teams)
 }
 
 // UpdateTeams is
@@ -50,7 +58,11 @@ func (s *TeamsUsecase) UpdateTeams(ctx context.Context, teams []*Team) error {
 	if err := s.validate(false, teams); err != nil {
 		return err
 	}
-	return s.repo.UpdateTeams(ctx, teams)
+	_teams, e := ToTeamsDB(teams)
+	if e != nil {
+		return e
+	}
+	return s.teamRepo.UpdateTeams(ctx, _teams)
 }
 
 // DeleteTeams is
@@ -58,7 +70,14 @@ func (s *TeamsUsecase) DeleteTeams(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
-	return s.repo.DeleteTeams(ctx, ids)
+
+	return s.txm.RunInTX(
+		func(tx repo.TX) error {
+			// check hostgroups count use team ids
+			return nil
+		})
+
+	// return s.teamRepo.DeleteTeams(ctx, ids)
 }
 
 // GetTeams is
@@ -66,15 +85,25 @@ func (s *TeamsUsecase) GetTeams(ctx context.Context, id uint32) (*Team, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("EmptyId")
 	}
-	return s.repo.GetTeams(ctx, id)
+	dbt, e := s.teamRepo.GetTeams(ctx, id)
+	if e != nil {
+		return nil, e
+	}
+	return ToTeamBiz(dbt)
 }
 
 // ListTeams is
-func (s *TeamsUsecase) ListTeams(ctx context.Context, filter *ListTeamsFilter) ([]*Team, error) {
+func (s *TeamsUsecase) ListTeams(ctx context.Context,
+	filter *ListTeamsFilter) ([]*Team, error) {
 	if filter != nil {
 		if err := filter.Validate(); err != nil {
 			return nil, err
 		}
 	}
-	return s.repo.ListTeams(ctx, filter)
+	teams, e := s.teamRepo.ListTeams(ctx, nil, ToTeamsFilterDB(filter))
+
+	if e != nil {
+		return nil, e
+	}
+	return ToTeamsBiz(teams)
 }

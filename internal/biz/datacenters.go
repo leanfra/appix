@@ -1,29 +1,24 @@
 package biz
 
 import (
+	"appix/internal/data/repo"
 	"context"
 	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
-type DatacentersRepo interface {
-	CreateDatacenters(ctx context.Context, dcs []*Datacenter) error
-	UpdateDatacenters(ctx context.Context, dcs []*Datacenter) error
-	DeleteDatacenters(ctx context.Context, ids []uint32) error
-	GetDatacenters(ctx context.Context, id uint32) (*Datacenter, error)
-	ListDatacenters(ctx context.Context, filter *ListDatacentersFilter) ([]*Datacenter, error)
-}
-
 type DatacentersUsecase struct {
-	repo DatacentersRepo
+	repo repo.DatacentersRepo
 	log  *log.Helper
+	txm  repo.TxManager
 }
 
-func NewDatacentersUsecase(repo DatacentersRepo, logger log.Logger) *DatacentersUsecase {
+func NewDatacentersUsecase(repo repo.DatacentersRepo, logger log.Logger, txm repo.TxManager) *DatacentersUsecase {
 	return &DatacentersUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
+		txm:  txm,
 	}
 }
 
@@ -42,7 +37,12 @@ func (s *DatacentersUsecase) CreateDatacenters(ctx context.Context, dcs []*Datac
 	if err := s.validate(true, dcs); err != nil {
 		return err
 	}
-	return s.repo.CreateDatacenters(ctx, dcs)
+
+	_dcs, err := NewDatacenters(dcs)
+	if err != nil {
+		return err
+	}
+	return s.repo.CreateDatacenters(ctx, _dcs)
 }
 
 // UpdateDatacenters is
@@ -50,7 +50,11 @@ func (s *DatacentersUsecase) UpdateDatacenters(ctx context.Context, dcs []*Datac
 	if err := s.validate(false, dcs); err != nil {
 		return err
 	}
-	return s.repo.UpdateDatacenters(ctx, dcs)
+	_dcs, err := NewDatacenters(dcs)
+	if err != nil {
+		return err
+	}
+	return s.repo.UpdateDatacenters(ctx, _dcs)
 }
 
 // DeleteDatacenters is
@@ -66,7 +70,11 @@ func (s *DatacentersUsecase) GetDatacenters(ctx context.Context, id uint32) (*Da
 	if id <= 0 {
 		return nil, fmt.Errorf("InvalidId")
 	}
-	return s.repo.GetDatacenters(ctx, id)
+	_dsc, err := s.repo.GetDatacenters(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return NewBizDatacenter(_dsc)
 }
 
 // ListDatacenters is
@@ -78,5 +86,9 @@ func (s *DatacentersUsecase) ListDatacenters(ctx context.Context,
 			return nil, err
 		}
 	}
-	return s.repo.ListDatacenters(ctx, filter)
+	_dcs, err := s.repo.ListDatacenters(ctx, nil, NewDatacentersFilter(filter))
+	if err != nil {
+		return nil, err
+	}
+	return NewBizDatacenters(_dcs)
 }

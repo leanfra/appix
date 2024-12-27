@@ -16,17 +16,17 @@ type Hostgroup struct {
 }
 
 type ListHostgroupsFilter struct {
-	Page          uint32
-	PageSize      uint32
-	Ids           []uint32
-	Names         []string
-	Clusters      []string
-	Datacenters   []string
-	Envs          []string
-	Products      []string
-	Teams         []string
-	Features      []string
-	Tags          []string
-	ShareProducts []string
-	ShareTeams    []string
+	Page            uint32
+	PageSize        uint32
+	Ids             []uint32
+	Names           []string
+	ClustersId      []uint32
+	DatacentersId   []uint32
+	EnvsId          []uint32
+	ProductsId      []uint32
+	TeamsId         []uint32
+	FeaturesId      []uint32
+	TagsId          []uint32
+	ShareProductsId []uint32
+	ShareTeamsId    []uint32
 }

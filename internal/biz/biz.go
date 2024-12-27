@@ -37,3 +37,56 @@ func filterKvValidate(kvstr string) error {
 	}
 	return nil
 }
+
+func DedupSliceUint32(s []uint32) []uint32 {
+	if s == nil {
+		return nil
+	}
+	var result []uint32
+	m := make(map[uint32]struct{})
+	for i := 0; i < len(s); i++ {
+		if _, exists := m[s[i]]; !exists {
+			m[s[i]] = struct{}{}
+			result = append(result, s[i])
+
+		}
+	}
+	return result
+}
+
+// DiffUint32 return (s1 - s2)
+func DiffSliceUint32(s1 []uint32, s2 []uint32) []uint32 {
+	result := []uint32{}
+	set2Map := make(map[uint32]bool)
+	for _, v := range s2 {
+		set2Map[v] = true
+	}
+	for _, v := range s1 {
+		if _, ok := set2Map[v]; !ok {
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
+// IntersectSliceUint32 返回两个 []uint32 切片的交集
+func IntersectSliceUint32(slice1, slice2 []uint32) []uint32 {
+	if len(slice1) == 0 || len(slice2) == 0 {
+		return nil
+	}
+
+	elemMap := make(map[uint32]struct{})
+	for _, num := range slice1 {
+		elemMap[num] = struct{}{}
+	}
+
+	var intersection []uint32
+	for _, num := range slice2 {
+		if _, exists := elemMap[num]; exists {
+			intersection = append(intersection, num)
+			delete(elemMap, num) // 删除已找到的元素以避免重复
+		}
+	}
+
+	return intersection
+}

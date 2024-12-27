@@ -5,6 +5,7 @@ import (
 
 	v1 "appix/api/helloworld/v1"
 	"appix/internal/biz"
+	"appix/internal/data"
 )
 
 // GreeterService is a greeter service.
@@ -21,7 +22,7 @@ func NewGreeterService(uc *biz.GreeterUsecase) *GreeterService {
 
 // SayHello implements helloworld.GreeterServer.
 func (s *GreeterService) SayHello(ctx context.Context, in *v1.HelloRequest) (*v1.HelloReply, error) {
-	g, err := s.uc.CreateGreeter(ctx, &biz.Greeter{Hello: in.Name})
+	g, err := s.uc.CreateGreeter(ctx, &data.Greeter{Hello: in.Name})
 	if err != nil {
 		return nil, err
 	}

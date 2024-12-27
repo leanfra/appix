@@ -1,6 +1,9 @@
 package biz
 
-import "fmt"
+import (
+	"appix/internal/data/repo"
+	"fmt"
+)
 
 func (f *Env) Validate(isNew bool) error {
 	if len(f.Name) == 0 {
@@ -31,5 +34,60 @@ func DefaultEnvFilter() *ListEnvsFilter {
 	return &ListEnvsFilter{
 		Page:     1,
 		PageSize: DefaultPageSize,
+	}
+}
+
+func NewEnv(t *Env) (*repo.Env, error) {
+	if t == nil {
+		return nil, nil
+	}
+	return &repo.Env{
+		ID:          t.Id,
+		Name:        t.Name,
+		Description: t.Description,
+	}, nil
+}
+
+func NewEnvs(es []*Env) ([]*repo.Env, error) {
+	var envs = make([]*repo.Env, len(es))
+	for i, f := range es {
+		nf, err := NewEnv(f)
+		if err != nil {
+			return nil, err
+		}
+		envs[i] = nf
+	}
+	return envs, nil
+}
+
+func NewBizEnv(t *repo.Env) (*Env, error) {
+	return &Env{
+		Id:          t.ID,
+		Name:        t.Name,
+		Description: t.Description,
+	}, nil
+}
+
+func NewBizEnvs(es []*repo.Env) ([]*Env, error) {
+	var biz_envs = make([]*Env, len(es))
+	for i, f := range es {
+		biz_envs[i] = &Env{
+			Id:          f.ID,
+			Name:        f.Name,
+			Description: f.Description,
+		}
+	}
+	return biz_envs, nil
+}
+
+func NewEnvsFilter(filter *ListEnvsFilter) *repo.EnvsFilter {
+	if filter == nil {
+		return nil
+	}
+	return &repo.EnvsFilter{
+		Ids:      filter.Ids,
+		Names:    filter.Names,
+		Page:     filter.Page,
+		PageSize: filter.PageSize,
 	}
 }

@@ -36,7 +36,6 @@ func toBizApp(a *pb.Application) (*biz.Application, error) {
 		IsStateful:   a.IsStateful,
 		ClusterId:    a.ClusterId,
 		DatacenterId: a.DatacenterId,
-		EnvId:        a.EnvId,
 		ProductId:    a.ProductId,
 		TeamId:       a.TeamId,
 		FeaturesId:   a.FeaturesId,
@@ -134,7 +133,6 @@ func (s *ApplicationsService) GetApplications(ctx context.Context, req *pb.GetAp
 			IsStateful:   bizApp.IsStateful,
 			ClusterId:    bizApp.ClusterId,
 			DatacenterId: bizApp.DatacenterId,
-			EnvId:        bizApp.EnvId,
 			ProductId:    bizApp.ProductId,
 			TeamId:       bizApp.TeamId,
 			FeaturesId:   bizApp.FeaturesId,
@@ -154,16 +152,18 @@ func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.List
 	var filter = biz.DefaultApplicationFilter()
 	if req.Filter != nil {
 		filter = &biz.ListApplicationsFilter{
-			Ids:         req.Filter.Ids,
-			Names:       req.Filter.Names,
-			Clusters:    req.Filter.Clusters,
-			Datacenters: req.Filter.Datacenters,
-			Envs:        req.Filter.Envs,
-			Products:    req.Filter.Products,
-			Teams:       req.Filter.Teams,
-			Features:    req.Filter.Features,
-			Tags:        req.Filter.Tags,
-			IsStateful:  req.Filter.IsStateful,
+			Ids:           req.Filter.Ids,
+			Names:         req.Filter.Names,
+			IsStateful:    req.Filter.IsStateful,
+			ClustersId:    req.Filter.ClustersId,
+			DatacentersId: req.Filter.DatacentersId,
+			ProductsId:    req.Filter.ProductsId,
+			TeamsId:       req.Filter.TeamsId,
+			FeaturesId:    req.Filter.FeaturesId,
+			TagsId:        req.Filter.TagsId,
+			HostgroupsId:  req.Filter.HostgroupsId,
+			Page:          req.Filter.Page,
+			PageSize:      req.Filter.PageSize,
 		}
 		if req.Filter.PageSize > 0 {
 			filter.PageSize = req.Filter.PageSize
@@ -189,11 +189,11 @@ func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.List
 				IsStateful:   a.IsStateful,
 				ClusterId:    a.ClusterId,
 				DatacenterId: a.DatacenterId,
-				EnvId:        a.EnvId,
 				ProductId:    a.ProductId,
 				TeamId:       a.TeamId,
 				FeaturesId:   a.FeaturesId,
 				TagsId:       a.TagsId,
+				HostgroupsId: a.HostgroupsId,
 			}
 		}
 		return reply, nil
