@@ -108,7 +108,7 @@ func (d *FeaturesRepoGorm) ListFeatures(ctx context.Context,
 		}
 		if len(filter.Kvs) > 0 {
 			kvConditions, kvs := buildOrKV("name", "value", filter.Kvs)
-			query = query.Where(kvConditions, kvs)
+			query = query.Where(kvConditions, kvs...)
 		}
 	}
 	r = query.Find(&features)
