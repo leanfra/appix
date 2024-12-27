@@ -109,8 +109,8 @@ func buildOrLike(key string, count int) string {
 //
 //	return: "(k=? AND v=?) OR (k=? AND v=?) ... "
 //	return: [k1, v1, k2, v2, ...]
-func buildOrKV(kname string, vname string, kvstr []string) (string, []string) {
-	var kv []string
+func buildOrKV(kname string, vname string, kvstr []string) (string, []interface{}) {
+	var kv []interface{}
 	var builder strings.Builder
 	for i := 0; i < len(kvstr); i++ {
 		if i > 0 {
@@ -118,7 +118,7 @@ func buildOrKV(kname string, vname string, kvstr []string) (string, []string) {
 		}
 		_kvs := strings.Split(kvstr[i], FilterKVSplit)
 		if len(_kvs) == 2 {
-			kv = append(kv, _kvs...)
+			kv = append(kv, _kvs[0], _kvs[1])
 			builder.WriteString(fmt.Sprintf("( %s = ? AND  %s = ? )", kname, vname))
 		}
 	}

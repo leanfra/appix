@@ -102,11 +102,7 @@ func (d *TagsRepoGorm) ListTags(ctx context.Context,
 		}
 		if len(filter.Kvs) > 0 {
 			kvConditions, kvs := buildOrKV("key", "value", filter.Kvs)
-			params := make([]interface{}, len(kvs))
-			for i, v := range kvs {
-				params[i] = v
-			}
-			query = query.Where(kvConditions, params...)
+			query = query.Where(kvConditions, kvs...)
 		}
 	}
 	r = query.Find(&tags)

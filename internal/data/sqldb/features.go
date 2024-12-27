@@ -3,6 +3,7 @@ package sqldb
 import (
 	"appix/internal/data/repo"
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
@@ -60,6 +61,10 @@ func (d *FeaturesRepoGorm) DeleteFeatures(ctx context.Context, ids []uint32) err
 	if r.Error != nil {
 		return r.Error
 	}
+	if r.RowsAffected != int64(len(ids)) {
+		return fmt.Errorf("delete failed. rows affected not equal wanted. affected %d. want %d",
+			r.RowsAffected, len(ids))
+	}
 	return nil
 }
 
@@ -95,7 +100,11 @@ func (d *FeaturesRepoGorm) ListFeatures(ctx context.Context,
 		}
 		if len(filter.Names) > 0 {
 			nameConditions := buildOrLike("name", len(filter.Names))
-			query = query.Where(nameConditions, filter.Names)
+			params := make([]interface{}, len(filter.Names))
+			for i, v := range filter.Names {
+				params[i] = v
+			}
+			query = query.Where(nameConditions, params...)
 		}
 		if len(filter.Kvs) > 0 {
 			kvConditions, kvs := buildOrKV("name", "value", filter.Kvs)
