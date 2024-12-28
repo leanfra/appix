@@ -185,11 +185,11 @@ func testListEnvs_name_partial(t *testing.T) {
 	}
 	createBaseEnvs(t, Envs)
 	filter := &repo.EnvsFilter{
-		Names: []string{"prd"},
+		Names: []string{"tg"},
 	}
 	_Envs, err := envsRepo.ListEnvs(context.Background(), nil, filter)
 	assert.NoError(t, err)
-	assert.Equal(t, Envs[:1], _Envs)
+	assert.Equal(t, Envs[1:], _Envs)
 }
 
 func testListEnvs_nil_all(t *testing.T) {

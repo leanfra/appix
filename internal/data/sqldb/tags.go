@@ -96,7 +96,7 @@ func (d *TagsRepoGorm) ListTags(ctx context.Context,
 			keyConditions := buildOrLike("key", len(filter.Keys))
 			params := make([]interface{}, len(filter.Keys))
 			for i, v := range filter.Keys {
-				params[i] = v
+				params[i] = "%" + v + "%"
 			}
 			query = query.Where(keyConditions, params...)
 		}

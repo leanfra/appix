@@ -98,7 +98,11 @@ func (d *ApplicationsRepoGorm) ListApplications(ctx context.Context,
 		}
 		if len(filter.Names) > 0 {
 			s_q := buildOrLike("name", len(filter.Names))
-			query = query.Where(s_q, filter.Names)
+			params := make([]interface{}, len(filter.Names))
+			for i, v := range filter.Names {
+				params[i] = "%" + v + "%"
+			}
+			query = query.Where(s_q, params...)
 		}
 		if len(filter.ProductsId) > 0 {
 			query = query.Where("product_id in (?)", filter.ProductsId)

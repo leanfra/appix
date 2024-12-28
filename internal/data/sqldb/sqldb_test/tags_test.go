@@ -190,11 +190,11 @@ func testListTags_keys_partial(t *testing.T) {
 	}
 	createBaseTags(t, tags)
 	filter := &repo.TagsFilter{
-		Keys: []string{"test"},
+		Keys: []string{"test1"},
 	}
 	_tags, err := tagsRepo.ListTags(context.Background(), nil, filter)
 	assert.NoError(t, err)
-	assert.Equal(t, tags[:2], _tags)
+	assert.Equal(t, tags[2:], _tags)
 }
 func testListTags_kvs_partial(t *testing.T) {
 	tags := []*repo.Tag{

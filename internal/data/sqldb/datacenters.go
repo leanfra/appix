@@ -99,7 +99,7 @@ func (d *DatacentersRepoGorm) ListDatacenters(ctx context.Context,
 			nameConditions := buildOrLike("name", len(filter.Names))
 			params := make([]interface{}, len(filter.Names))
 			for i, name := range filter.Names {
-				params[i] = name
+				params[i] = "%" + name + "%"
 			}
 			query = query.Where(nameConditions, params)
 		}

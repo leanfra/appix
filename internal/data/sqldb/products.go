@@ -91,7 +91,7 @@ func (d *ProductsRepoGorm) ListProducts(ctx context.Context,
 			nameConditions := buildOrLike("name", len(filter.Names))
 			params := make([]interface{}, len(filter.Names))
 			for i, v := range filter.Names {
-				params[i] = v
+				params[i] = "%" + v + "%"
 			}
 			query = query.Where(nameConditions, params...)
 		}
@@ -99,7 +99,7 @@ func (d *ProductsRepoGorm) ListProducts(ctx context.Context,
 			codeConditions := buildOrLike("code", len(filter.Codes))
 			params := make([]interface{}, len(filter.Codes))
 			for i, v := range filter.Codes {
-				params[i] = v
+				params[i] = "%" + v + "%"
 			}
 			query = query.Where(codeConditions, params...)
 		}

@@ -102,7 +102,7 @@ func (d *FeaturesRepoGorm) ListFeatures(ctx context.Context,
 			nameConditions := buildOrLike("name", len(filter.Names))
 			params := make([]interface{}, len(filter.Names))
 			for i, v := range filter.Names {
-				params[i] = v
+				params[i] = "%" + v + "%"
 			}
 			query = query.Where(nameConditions, params...)
 		}

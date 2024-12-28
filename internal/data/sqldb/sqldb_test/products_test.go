@@ -49,6 +49,7 @@ func TestProdsRepoGorm(t *testing.T) {
 		{"ListProds_id_partial", testListProds_id_partial},
 		{"ListProds_page_partial", testListProds_page_partial},
 		{"ListProds_keys_partial", testListProds_keys_partial},
+		{"ListProds_name_partial", testListProds_name_partial},
 		{"ListProds_code_partial", testListProds_code_partial},
 		{"ListProds_nil_all", testListProds_nil_all},
 		{"CountProds_partial", testCountProds_partial},
@@ -189,11 +190,24 @@ func testListProds_keys_partial(t *testing.T) {
 	}
 	createBaseProds(t, data)
 	filter := &repo.ProductsFilter{
-		Names: []string{"test"},
+		Names: []string{"st1"},
 	}
 	_tags, err := prodsRepo.ListProducts(context.Background(), nil, filter)
 	assert.NoError(t, err)
-	assert.Equal(t, data[:1], _tags)
+	assert.Equal(t, data[1:], _tags)
+}
+func testListProds_name_partial(t *testing.T) {
+	data := []*repo.Product{
+		{Name: "test", Code: "test"},
+		{Name: "test1", Code: "test1"},
+	}
+	createBaseProds(t, data)
+	filter := &repo.ProductsFilter{
+		Names: []string{"st1"},
+	}
+	_data, err := prodsRepo.ListProducts(context.Background(), nil, filter)
+	assert.NoError(t, err)
+	assert.Equal(t, data[1:], _data)
 }
 func testListProds_code_partial(t *testing.T) {
 	data := []*repo.Product{
@@ -202,11 +216,11 @@ func testListProds_code_partial(t *testing.T) {
 	}
 	createBaseProds(t, data)
 	filter := &repo.ProductsFilter{
-		Codes: []string{"test", "test1"},
+		Codes: []string{"st1"},
 	}
 	_data, err := prodsRepo.ListProducts(context.Background(), nil, filter)
 	assert.NoError(t, err)
-	assert.Equal(t, data, _data)
+	assert.Equal(t, data[1:], _data)
 }
 func testListProds_nil_all(t *testing.T) {
 	createBaseProds(t, nil)

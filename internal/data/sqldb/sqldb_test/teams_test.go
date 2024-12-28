@@ -225,11 +225,11 @@ func TestListTeams_WithNamesFilter_ReturnsFilteredTeams(t *testing.T) {
 		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
 	}
 	createBaseTeamsData(teams)
-	filter := &repo.TeamsFilter{Names: []string{"Team1", "Team2"}}
+	filter := &repo.TeamsFilter{Names: []string{"am1"}}
 
 	teams_filtered, err := teamsRepo.ListTeams(context.Background(), nil, filter)
 	assert.NoError(t, err)
-	assert.Equal(t, teams, teams_filtered)
+	assert.Equal(t, teams[:1], teams_filtered)
 	for _, _t := range teams_filtered {
 		t.Log(_t)
 	}

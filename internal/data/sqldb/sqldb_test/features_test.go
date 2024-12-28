@@ -208,7 +208,7 @@ func testListFeatures_name_partial(t *testing.T) {
 	}
 	createBaseFeatures(t, data)
 	filter := &repo.FeaturesFilter{
-		Names: []string{"cpu"},
+		Names: []string{"pu"},
 	}
 	_data, err := ftRepo.ListFeatures(context.Background(), nil, filter)
 	assert.NoError(t, err)

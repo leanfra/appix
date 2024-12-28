@@ -96,7 +96,7 @@ func (d *TeamsRepoGorm) ListTeams(ctx context.Context,
 			codeConditions := buildOrLike("code", len(filter.Codes))
 			params := make([]interface{}, len(filter.Codes))
 			for i, v := range filter.Codes {
-				params[i] = v
+				params[i] = "%" + v + "%"
 			}
 			query = query.Where(codeConditions, params...)
 		}
@@ -104,7 +104,7 @@ func (d *TeamsRepoGorm) ListTeams(ctx context.Context,
 			leaderConditions := buildOrLike("leader", len(filter.Leaders))
 			params := make([]interface{}, len(filter.Leaders))
 			for i, v := range filter.Leaders {
-				params[i] = v
+				params[i] = "%" + v + "%"
 			}
 			query = query.Where(leaderConditions, params...)
 		}
@@ -112,7 +112,7 @@ func (d *TeamsRepoGorm) ListTeams(ctx context.Context,
 			nameConditions := buildOrLike("name", len(filter.Names))
 			params := make([]interface{}, len(filter.Names))
 			for i, v := range filter.Names {
-				params[i] = v
+				params[i] = "%" + v + "%"
 			}
 			query = query.Where(nameConditions, params...)
 		}
