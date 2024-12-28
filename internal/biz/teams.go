@@ -17,13 +17,13 @@ type TeamsUsecase struct {
 }
 
 func NewTeamsUsecase(
-	repo repo.TeamsRepo,
+	teamrepo repo.TeamsRepo,
 	hgrepo repo.HostgroupsRepo,
 	logger log.Logger,
 	txm repo.TxManager) *TeamsUsecase {
 
 	return &TeamsUsecase{
-		teamRepo:      repo,
+		teamRepo:      teamrepo,
 		log:           log.NewHelper(logger),
 		txm:           txm,
 		hostgroupRepo: hgrepo,
