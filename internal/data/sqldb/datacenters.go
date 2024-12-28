@@ -3,6 +3,7 @@ package sqldb
 import (
 	"appix/internal/data/repo"
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -59,6 +60,10 @@ func (d *DatacentersRepoGorm) DeleteDatacenters(ctx context.Context, ids []uint3
 	if r.Error != nil {
 		return r.Error
 	}
+	if r.RowsAffected != int64(len(ids)) {
+		return fmt.Errorf("delete failed. rows affected not equal wanted. affected %d. want %d",
+			r.RowsAffected, len(ids))
+	}
 
 	return nil
 }
@@ -92,7 +97,11 @@ func (d *DatacentersRepoGorm) ListDatacenters(ctx context.Context,
 		}
 		if len(filter.Names) > 0 {
 			nameConditions := buildOrLike("name", len(filter.Names))
-			query = query.Where(nameConditions, filter.Names)
+			params := make([]interface{}, len(filter.Names))
+			for i, name := range filter.Names {
+				params[i] = name
+			}
+			query = query.Where(nameConditions, params)
 		}
 	}
 	r := query.Find(&dcs)
