@@ -3,6 +3,7 @@ package sqldb
 import (
 	"appix/internal/data/repo"
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -55,6 +56,10 @@ func (d *ClustersRepoGorm) DeleteClusters(ctx context.Context, ids []uint32) err
 	if r.Error != nil {
 		return r.Error
 	}
+	if r.RowsAffected != int64(len(ids)) {
+		return fmt.Errorf("delete failed. rows affected not equal wanted. affected %d. want %d",
+			r.RowsAffected, len(ids))
+	}
 	return nil
 }
 
@@ -90,7 +95,7 @@ func (d *ClustersRepoGorm) ListClusters(ctx context.Context,
 			for i, v := range filter.Names {
 				params[i] = "%" + v + "%"
 			}
-			query = query.Where(nameConditions, filter.Names)
+			query = query.Where(nameConditions, params...)
 		}
 	}
 	r := query.Find(&cs)
