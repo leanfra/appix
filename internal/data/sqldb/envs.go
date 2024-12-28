@@ -105,3 +105,21 @@ func (d *EnvsRepoGorm) ListEnvs(ctx context.Context,
 
 	return envs, nil
 }
+
+func (d *EnvsRepoGorm) CountEnvs(ctx context.Context,
+	tx repo.TX,
+	filter repo.CountFilter) (int64, error) {
+
+	query := d.data.WithTX(tx).WithContext(ctx)
+	var count int64
+	if filter != nil {
+		if len(filter.GetIds()) > 0 {
+			query = query.Where("id in (?)", filter.GetIds())
+		}
+	}
+	r := query.Model(&repo.Env{}).Count(&count)
+	if r.Error != nil {
+		return 0, r.Error
+	}
+	return count, nil
+}

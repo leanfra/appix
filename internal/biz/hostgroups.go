@@ -71,6 +71,7 @@ func (s *HostgroupsUsecase) validate(isNew bool, hgs []*Hostgroup) error {
 
 const hgPropCluster = "cluster"
 const hgPropDatacenter = "datacenter"
+const hgPropEnv = "env"
 const hgPropProduct = "product"
 const hgPropTeam = "team"
 const hgPropFeature = "feature"
@@ -95,6 +96,14 @@ func hostgroupPropFilter(hgs []*Hostgroup, prop string) repo.CountFilter {
 		}
 		ids = DedupSliceUint32(ids)
 		return &repo.DatacentersFilter{
+			Ids: ids,
+		}
+	case hgPropEnv:
+		for _, a := range hgs {
+			ids = append(ids, a.EnvId)
+		}
+		ids = DedupSliceUint32(ids)
+		return &repo.EnvsFilter{
 			Ids: ids,
 		}
 	case hgPropProduct:
@@ -160,6 +169,7 @@ func (s *HostgroupsUsecase) validateProps(
 	counters := []propsCount{
 		{hgPropCluster, hostgroupPropFilter(hgs, hgPropCluster), s.clsrepo.CountClusters},
 		{hgPropDatacenter, hostgroupPropFilter(hgs, hgPropDatacenter), s.dcrepo.CountDatacenters},
+		{hgPropEnv, hostgroupPropFilter(hgs, hgPropEnv), s.envrepo.CountEnvs},
 		{hgPropProduct, hostgroupPropFilter(hgs, hgPropProduct), s.prdrepo.CountProducts},
 		{hgPropTeam, hostgroupPropFilter(hgs, hgPropTeam), s.teamrepo.CountTeams},
 		{hgPropFeature, hostgroupPropFilter(hgs, hgPropFeature), s.ftrepo.CountFeatures},
@@ -182,7 +192,7 @@ func (s *HostgroupsUsecase) validateProps(
 	return nil
 }
 
-func (s *HostgroupsUsecase) createProps(
+func (s *HostgroupsUsecase) createM2MProps(
 	ctx context.Context, tx repo.TX, hgid uint32, ids []uint32, prop string) error {
 
 	switch prop {
@@ -245,16 +255,16 @@ func (s *HostgroupsUsecase) CreateHostgroups(ctx context.Context, hgs []*Hostgro
 		}
 
 		for _, hg := range hgs {
-			if err := s.createProps(ctx, tx, hg.Id, hg.TagsId, hgPropTag); err != nil {
+			if err := s.createM2MProps(ctx, tx, hg.Id, hg.TagsId, hgPropTag); err != nil {
 				return err
 			}
-			if err := s.createProps(ctx, tx, hg.Id, hg.FeaturesId, hgPropFeature); err != nil {
+			if err := s.createM2MProps(ctx, tx, hg.Id, hg.FeaturesId, hgPropFeature); err != nil {
 				return err
 			}
-			if err := s.createProps(ctx, tx, hg.Id, hg.ShareProductsId, hgPropShareProduct); err != nil {
+			if err := s.createM2MProps(ctx, tx, hg.Id, hg.ShareProductsId, hgPropShareProduct); err != nil {
 				return err
 			}
-			if err := s.createProps(ctx, tx, hg.Id, hg.ShareTeamsId, hgPropShareTeam); err != nil {
+			if err := s.createM2MProps(ctx, tx, hg.Id, hg.ShareTeamsId, hgPropShareTeam); err != nil {
 				return err
 			}
 		}
@@ -262,7 +272,7 @@ func (s *HostgroupsUsecase) CreateHostgroups(ctx context.Context, hgs []*Hostgro
 	})
 }
 
-func (s *HostgroupsUsecase) listProps(
+func (s *HostgroupsUsecase) listM2MProps(
 	ctx context.Context, tx repo.TX, hgids []uint32, prop string) (interface{}, error) {
 
 	switch prop {
@@ -286,7 +296,7 @@ func (s *HostgroupsUsecase) listProps(
 	return nil, fmt.Errorf("listProps invalid prop %s", prop)
 }
 
-func (s *HostgroupsUsecase) deleteProps(
+func (s *HostgroupsUsecase) deleteM2MProps(
 	ctx context.Context, tx repo.TX, ids []uint32, prop string) error {
 
 	switch prop {
@@ -302,7 +312,7 @@ func (s *HostgroupsUsecase) deleteProps(
 	return fmt.Errorf("deleteProps invalid prop %s", prop)
 }
 
-func (s *HostgroupsUsecase) deletePropsByHostgroup(
+func (s *HostgroupsUsecase) deleteM2MPropsByHostgroup(
 	ctx context.Context, tx repo.TX, hgid uint32, prop string) error {
 
 	switch prop {
@@ -321,7 +331,7 @@ func (s *HostgroupsUsecase) deletePropsByHostgroup(
 func (s *HostgroupsUsecase) handleM2MProps(
 	ctx context.Context, tx repo.TX, hgid uint32, ids []uint32, prop string) error {
 
-	oldItems, err := s.listProps(ctx, tx, []uint32{hgid}, prop)
+	oldItems, err := s.listM2MProps(ctx, tx, []uint32{hgid}, prop)
 	if err != nil {
 		return err
 	}
@@ -346,12 +356,12 @@ func (s *HostgroupsUsecase) handleM2MProps(
 	toNewids := DiffSliceUint32(ids, oldIds)
 
 	if len(toDelIds) > 0 {
-		if err := s.deleteProps(ctx, tx, toDelIds, prop); err != nil {
+		if err := s.deleteM2MProps(ctx, tx, toDelIds, prop); err != nil {
 			return err
 		}
 	}
 	if len(toNewids) > 0 {
-		if err := s.createProps(ctx, tx, hgid, toNewids, prop); err != nil {
+		if err := s.createM2MProps(ctx, tx, hgid, toNewids, prop); err != nil {
 			return err
 		}
 	}
@@ -405,16 +415,16 @@ func (s *HostgroupsUsecase) DeleteHostgroups(ctx context.Context, ids []uint32) 
 	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
 		for _, id := range ids {
-			if err := s.deletePropsByHostgroup(ctx, tx, id, hgPropTag); err != nil {
+			if err := s.deleteM2MPropsByHostgroup(ctx, tx, id, hgPropTag); err != nil {
 				return err
 			}
-			if err := s.deletePropsByHostgroup(ctx, tx, id, hgPropFeature); err != nil {
+			if err := s.deleteM2MPropsByHostgroup(ctx, tx, id, hgPropFeature); err != nil {
 				return err
 			}
-			if err := s.deletePropsByHostgroup(ctx, tx, id, hgPropShareProduct); err != nil {
+			if err := s.deleteM2MPropsByHostgroup(ctx, tx, id, hgPropShareProduct); err != nil {
 				return err
 			}
-			if err := s.deletePropsByHostgroup(ctx, tx, id, hgPropShareTeam); err != nil {
+			if err := s.deleteM2MPropsByHostgroup(ctx, tx, id, hgPropShareTeam); err != nil {
 				return err
 			}
 		}
@@ -443,7 +453,7 @@ func (s *HostgroupsUsecase) GetHostgroups(ctx context.Context, id uint32) (*Host
 
 func (s *HostgroupsUsecase) attachM2MProps(ctx context.Context, hg *Hostgroup) error {
 	// tags id
-	_tags, err := s.listProps(ctx, nil, []uint32{hg.Id}, hgPropTag)
+	_tags, err := s.listM2MProps(ctx, nil, []uint32{hg.Id}, hgPropTag)
 	if err != nil {
 		return err
 	}
@@ -451,7 +461,7 @@ func (s *HostgroupsUsecase) attachM2MProps(ctx context.Context, hg *Hostgroup) e
 		hg.TagsId = append(hg.TagsId, tag.Id)
 	}
 	// features id
-	_fts, err := s.listProps(ctx, nil, []uint32{hg.Id}, hgPropFeature)
+	_fts, err := s.listM2MProps(ctx, nil, []uint32{hg.Id}, hgPropFeature)
 	if err != nil {
 		return err
 	}
@@ -460,7 +470,7 @@ func (s *HostgroupsUsecase) attachM2MProps(ctx context.Context, hg *Hostgroup) e
 	}
 
 	// share products id
-	_prds, err := s.listProps(ctx, nil, []uint32{hg.Id}, hgPropShareProduct)
+	_prds, err := s.listM2MProps(ctx, nil, []uint32{hg.Id}, hgPropShareProduct)
 	if err != nil {
 		return err
 	}
@@ -468,7 +478,7 @@ func (s *HostgroupsUsecase) attachM2MProps(ctx context.Context, hg *Hostgroup) e
 		hg.ShareProductsId = append(hg.ShareProductsId, prd.Id)
 	}
 	// share teams id
-	_teams, err := s.listProps(ctx, nil, []uint32{hg.Id}, hgPropShareTeam)
+	_teams, err := s.listM2MProps(ctx, nil, []uint32{hg.Id}, hgPropShareTeam)
 	if err != nil {
 		return err
 	}

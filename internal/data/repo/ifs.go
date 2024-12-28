@@ -75,6 +75,7 @@ type EnvsRepo interface {
 	DeleteEnvs(ctx context.Context, ids []uint32) error
 	GetEnvs(ctx context.Context, id uint32) (*Env, error)
 	ListEnvs(ctx context.Context, tx TX, filter *EnvsFilter) ([]*Env, error)
+	CountEnvs(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }
 
 type FeaturesRepo interface {

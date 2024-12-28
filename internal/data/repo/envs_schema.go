@@ -14,3 +14,7 @@ type EnvsFilter struct {
 	Names    []string
 	Ids      []uint32
 }
+
+func (f *EnvsFilter) GetIds() []uint32 {
+	return f.Ids
+}
