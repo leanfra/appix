@@ -10,12 +10,10 @@ import (
 )
 
 type TeamsUsecase struct {
-	teamRepo      repo.TeamsRepo
-	hostgroupRepo repo.HostgroupsRepo // hostgroup need team as foreign key
-	hteamRepo     repo.HostgroupTeamsRepo
-	appRepo       repo.ApplicationsRepo
-	txm           repo.TxManager
-	log           *log.Helper
+	teamRepo repo.TeamsRepo
+	txm      repo.TxManager
+	log      *log.Helper
+	required []requiredBy
 }
 
 func NewTeamsUsecase(
@@ -27,12 +25,14 @@ func NewTeamsUsecase(
 	txm repo.TxManager) *TeamsUsecase {
 
 	return &TeamsUsecase{
-		teamRepo:      teamrepo,
-		log:           log.NewHelper(logger),
-		txm:           txm,
-		hostgroupRepo: hgrepo,
-		appRepo:       apprepo,
-		hteamRepo:     htrepo,
+		teamRepo: teamrepo,
+		log:      log.NewHelper(logger),
+		txm:      txm,
+		required: []requiredBy{
+			{inst: hgrepo, name: "hostgroup"},
+			{inst: apprepo, name: "app"},
+			{inst: htrepo, name: "hostgroup_team"},
+		},
 	}
 }
 
@@ -71,11 +71,6 @@ func (s *TeamsUsecase) UpdateTeams(ctx context.Context, teams []*Team) error {
 	return s.teamRepo.UpdateTeams(ctx, _teams)
 }
 
-type requires struct {
-	name string
-	inst repo.CountRequire
-}
-
 // DeleteTeams is
 func (s *TeamsUsecase) DeleteTeams(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
@@ -85,13 +80,7 @@ func (s *TeamsUsecase) DeleteTeams(ctx context.Context, ids []uint32) error {
 	return s.txm.RunInTX(
 		func(tx repo.TX) error {
 
-			_requires := []requires{
-				{name: "hostgroup", inst: s.hostgroupRepo},
-				{name: "app", inst: s.appRepo},
-				{name: "hostgroup_team", inst: s.hteamRepo},
-			}
-			// check hostgroups count use team ids
-			for _, r := range _requires {
+			for _, r := range s.required {
 				c, err := r.inst.CountRequire(ctx, tx, repo.RequireTeam, ids)
 				if err != nil {
 					return err

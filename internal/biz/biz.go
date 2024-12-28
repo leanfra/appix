@@ -1,6 +1,7 @@
 package biz
 
 import (
+	"appix/internal/data/repo"
 	"errors"
 	"strings"
 
@@ -89,4 +90,9 @@ func IntersectSliceUint32(slice1, slice2 []uint32) []uint32 {
 	}
 
 	return intersection
+}
+
+type requiredBy struct {
+	name string
+	inst repo.CountRequire
 }
