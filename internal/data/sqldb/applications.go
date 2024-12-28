@@ -3,6 +3,7 @@ package sqldb
 import (
 	"appix/internal/data/repo"
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -68,6 +69,9 @@ func (d *ApplicationsRepoGorm) DeleteApplications(
 	r := d.data.WithTX(tx).WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Application{})
 	if r.Error != nil {
 		return r.Error
+	}
+	if r.RowsAffected != int64(len(ids)) {
+		return fmt.Errorf("delete failed. rows affected not equal wanted. affected %d. want %d", r.RowsAffected, len(ids))
 	}
 
 	return nil
