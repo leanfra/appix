@@ -14,19 +14,15 @@ type Hostgroup struct {
 }
 
 type HostgroupsFilter struct {
-	Page            uint32
-	PageSize        uint32
-	Ids             []uint32
-	Names           []string
-	ClustersId      []uint32
-	DatacentersId   []uint32
-	EnvsId          []uint32
-	ProductsId      []uint32
-	TeamsId         []uint32
-	FeaturesId      []uint32
-	TagsId          []uint32
-	ShareProductsId []uint32
-	ShareTeamsId    []uint32
+	Page          uint32
+	PageSize      uint32
+	Ids           []uint32
+	Names         []string
+	ClustersId    []uint32
+	DatacentersId []uint32
+	EnvsId        []uint32
+	ProductsId    []uint32
+	TeamsId       []uint32
 }
 
 func (f *HostgroupsFilter) GetIds() []uint32 {

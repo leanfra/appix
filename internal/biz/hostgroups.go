@@ -499,7 +499,7 @@ func (s *HostgroupsUsecase) ListHostgroups(
 		}
 	}
 
-	dbFilter := NewHostgroupsFilter(filter)
+	dbFilter := NewRepoHostgroupsFilter(filter)
 
 	processInitIds := func(filterIds []uint32, prop string) error {
 		if len(filterIds) == 0 {

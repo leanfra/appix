@@ -80,7 +80,45 @@ func (d *HostgroupsRepoGorm) ListHostgroups(ctx context.Context,
 	tx repo.TX,
 	filter *repo.HostgroupsFilter) ([]*repo.Hostgroup, error) {
 
-	return nil, nil
+	query := d.data.WithTX(tx).WithContext(ctx).Model(&repo.Hostgroup{})
+	if filter != nil {
+		if len(filter.Ids) > 0 {
+			query = query.Where("id in (?)", filter.Ids)
+		}
+		if len(filter.Names) > 0 {
+			s_q := buildOrLike("name", len(filter.Names))
+			params := make([]interface{}, len(filter.Names))
+			for i, v := range filter.Names {
+				params[i] = "%" + v + "%"
+			}
+			query = query.Where(s_q, params...)
+		}
+		if len(filter.ProductsId) > 0 {
+			query = query.Where("product_id in (?)", filter.ProductsId)
+		}
+		if len(filter.DatacentersId) > 0 {
+			query = query.Where("datacenter_id in (?)", filter.DatacentersId)
+		}
+		if len(filter.EnvsId) > 0 {
+			query = query.Where("env_id in (?)", filter.EnvsId)
+		}
+		if len(filter.ClustersId) > 0 {
+			query = query.Where("cluster_id in (?)", filter.ClustersId)
+		}
+		if len(filter.TeamsId) > 0 {
+			query = query.Where("team_id in (?)", filter.TeamsId)
+		}
+		if filter.Page > 0 && filter.PageSize > 0 {
+			offset := int((filter.Page - 1) * filter.PageSize)
+			query = query.Offset(offset).Limit(int(filter.PageSize))
+		}
+	}
+	var hgs []*repo.Hostgroup
+	r := query.Find(&hgs)
+	if r.Error != nil {
+		return nil, r.Error
+	}
+	return hgs, nil
 }
 
 func (d *HostgroupsRepoGorm) CountHostgroups(ctx context.Context,

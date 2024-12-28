@@ -117,18 +117,14 @@ func NewBizHostgroups(ps []*repo.Hostgroup) ([]*Hostgroup, error) {
 	return biz_ps, nil
 }
 
-func NewHostgroupsFilter(filter *ListHostgroupsFilter) *repo.HostgroupsFilter {
+func NewRepoHostgroupsFilter(filter *ListHostgroupsFilter) *repo.HostgroupsFilter {
 	return &repo.HostgroupsFilter{
-		Ids:             filter.Ids,
-		Names:           filter.Names,
-		ClustersId:      filter.ClustersId,
-		DatacentersId:   filter.DatacentersId,
-		EnvsId:          filter.EnvsId,
-		ProductsId:      filter.ProductsId,
-		TeamsId:         filter.TeamsId,
-		ShareProductsId: filter.ShareProductsId,
-		ShareTeamsId:    filter.ShareTeamsId,
-		FeaturesId:      filter.FeaturesId,
-		TagsId:          filter.TagsId,
+		Ids:           filter.Ids,
+		Names:         filter.Names,
+		ClustersId:    filter.ClustersId,
+		DatacentersId: filter.DatacentersId,
+		EnvsId:        filter.EnvsId,
+		ProductsId:    filter.ProductsId,
+		TeamsId:       filter.TeamsId,
 	}
 }
