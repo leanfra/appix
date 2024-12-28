@@ -67,7 +67,7 @@ func (d *HostgroupFeaturesRepoGorm) ListHostgroupFeatures(ctx context.Context,
 	}
 	if len(filter.KVs) > 0 {
 		s_q, kvs := buildOrKV("hostgroup_id", "feature_id", filter.KVs)
-		query = query.Where(s_q, kvs)
+		query = query.Where(s_q, kvs...)
 	}
 	if filter.Page > 0 && filter.PageSize > 0 {
 		offset := int(filter.PageSize * (filter.Page - 1))
@@ -80,4 +80,33 @@ func (d *HostgroupFeaturesRepoGorm) ListHostgroupFeatures(ctx context.Context,
 	}
 
 	return hostgroups, nil
+}
+
+func (d *HostgroupFeaturesRepoGorm) CountRequire(ctx context.Context,
+	tx repo.TX,
+	need repo.RequireType,
+	ids []uint32) (int64, error) {
+
+	if len(ids) == 0 {
+		return 0, repo.ErrorRequireIds
+	}
+
+	var condition string
+	switch need {
+	case repo.RequireHostgroup:
+		condition = "hostgroup_id in (?)"
+	case repo.RequireFeature:
+		condition = "feature_id in (?)"
+	default:
+		return 0, nil
+	}
+
+	var count int64
+	r := d.data.WithTX(tx).WithContext(ctx).Model(&repo.HostgroupFeature{}).
+		Where(condition, ids).Count(&count)
+	if r.Error != nil {
+		return 0, r.Error
+	}
+	// require nothing
+	return count, nil
 }

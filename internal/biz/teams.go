@@ -12,6 +12,8 @@ import (
 type TeamsUsecase struct {
 	teamRepo      repo.TeamsRepo
 	hostgroupRepo repo.HostgroupsRepo // hostgroup need team as foreign key
+	hteamRepo     repo.HostgroupTeamsRepo
+	appRepo       repo.ApplicationsRepo
 	txm           repo.TxManager
 	log           *log.Helper
 }
@@ -19,6 +21,8 @@ type TeamsUsecase struct {
 func NewTeamsUsecase(
 	teamrepo repo.TeamsRepo,
 	hgrepo repo.HostgroupsRepo,
+	htrepo repo.HostgroupTeamsRepo,
+	apprepo repo.ApplicationsRepo,
 	logger log.Logger,
 	txm repo.TxManager) *TeamsUsecase {
 
@@ -27,6 +31,8 @@ func NewTeamsUsecase(
 		log:           log.NewHelper(logger),
 		txm:           txm,
 		hostgroupRepo: hgrepo,
+		appRepo:       apprepo,
+		hteamRepo:     htrepo,
 	}
 }
 
@@ -65,6 +71,11 @@ func (s *TeamsUsecase) UpdateTeams(ctx context.Context, teams []*Team) error {
 	return s.teamRepo.UpdateTeams(ctx, _teams)
 }
 
+type requires struct {
+	name string
+	inst repo.CountRequire
+}
+
 // DeleteTeams is
 func (s *TeamsUsecase) DeleteTeams(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
@@ -73,11 +84,27 @@ func (s *TeamsUsecase) DeleteTeams(ctx context.Context, ids []uint32) error {
 
 	return s.txm.RunInTX(
 		func(tx repo.TX) error {
+
+			_requires := []requires{
+				{name: "hostgroup", inst: s.hostgroupRepo},
+				{name: "app", inst: s.appRepo},
+				{name: "hostgroup_team", inst: s.hteamRepo},
+			}
 			// check hostgroups count use team ids
+			for _, r := range _requires {
+				c, err := r.inst.CountRequire(ctx, tx, repo.RequireTeam, ids)
+				if err != nil {
+					return err
+				}
+				if c > 0 {
+					return fmt.Errorf("some %s requires", r.name)
+				}
+			}
+			if e := s.teamRepo.DeleteTeams(ctx, tx, ids); e != nil {
+				return e
+			}
 			return nil
 		})
-
-	// return s.teamRepo.DeleteTeams(ctx, ids)
 }
 
 // GetTeams is

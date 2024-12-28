@@ -63,11 +63,11 @@ func (d *AppHostgroupsRepoGorm) ListAppHostgroups(ctx context.Context,
 		query = query.Where("app_id in (?)", filter.AppIds)
 	}
 	if len(filter.HostgroupIds) > 0 {
-		query = query.Where("feature_id in (?)", filter.HostgroupIds)
+		query = query.Where("hostgroup_id in (?)", filter.HostgroupIds)
 	}
 	if len(filter.KVs) > 0 {
-		s_q, kvs := buildOrKV("app_id", "feature_id", filter.KVs)
-		query = query.Where(s_q, kvs)
+		s_q, kvs := buildOrKV("app_id", "hostgroup_id", filter.KVs)
+		query = query.Where(s_q, kvs...)
 	}
 	if filter.Page > 0 && filter.PageSize > 0 {
 		offset := int(filter.PageSize * (filter.Page - 1))
@@ -91,4 +91,33 @@ func (d *AppHostgroupsRepoGorm) DeleteAppHostgroupsByAppId(ctx context.Context,
 	return d.data.WithTX(tx).
 		WithContext(ctx).
 		Delete(&repo.AppHostgroup{}, "app_id in (?)", appids).Error
+}
+
+func (d *AppHostgroupsRepoGorm) CountRequire(ctx context.Context,
+	tx repo.TX,
+	need repo.RequireType,
+	ids []uint32) (int64, error) {
+
+	if len(ids) == 0 {
+		return 0, repo.ErrorRequireIds
+	}
+
+	var condition string
+	switch need {
+	case repo.RequireApp:
+		condition = "app_id in (?)"
+	case repo.RequireHostgroup:
+		condition = "hostgroup_id in (?)"
+	default:
+		return 0, nil
+	}
+
+	var count int64
+	r := d.data.WithTX(tx).WithContext(ctx).Model(&repo.AppHostgroup{}).
+		Where(condition, ids).Count(&count)
+	if r.Error != nil {
+		return 0, r.Error
+	}
+
+	return count, nil
 }

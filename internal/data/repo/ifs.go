@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"errors"
 )
 
 type TX interface {
@@ -18,7 +19,28 @@ type CountFilter interface {
 	GetIds() []uint32
 }
 
+type RequireType string
+
+const (
+	RequireTeam       RequireType = "team"
+	RequireTag        RequireType = "tag"
+	RequireProduct    RequireType = "product"
+	RequireHostgroup  RequireType = "hostgroup"
+	RequireFeature    RequireType = "feature"
+	RequireEnv        RequireType = "env"
+	RequireDatacenter RequireType = "datacenter"
+	RequireCluster    RequireType = "cluster"
+	RequireApp        RequireType = "app"
+)
+
+var ErrorRequireIds = errors.New("invalid require ids")
+
+type CountRequire interface {
+	CountRequire(ctx context.Context, tx TX, need RequireType, ids []uint32) (int64, error)
+}
+
 type ApplicationsRepo interface {
+	CountRequire
 	CreateApplications(ctx context.Context, tx TX, apps []*Application) error
 	UpdateApplications(ctx context.Context, tx TX, apps []*Application) error
 	DeleteApplications(ctx context.Context, tx TX, ids []uint32) error
@@ -28,6 +50,7 @@ type ApplicationsRepo interface {
 }
 
 type AppTagsRepo interface {
+	CountRequire
 	CreateAppTags(ctx context.Context, tx TX, apps []*AppTag) error
 	UpdateAppTags(ctx context.Context, tx TX, apps []*AppTag) error
 	DeleteAppTags(ctx context.Context, tx TX, ids []uint32) error
@@ -37,13 +60,16 @@ type AppTagsRepo interface {
 }
 
 type AppFeaturesRepo interface {
+	CountRequire
 	CreateAppFeatures(ctx context.Context, tx TX, apps []*AppFeature) error
 	UpdateAppFeatures(ctx context.Context, tx TX, apps []*AppFeature) error
 	DeleteAppFeatures(ctx context.Context, tx TX, ids []uint32) error
 	DeleteAppFeaturesByAppId(ctx context.Context, tx TX, appids []uint32) error
 	ListAppFeatures(ctx context.Context, tx TX, filter *AppFeaturesFilter) ([]*AppFeature, error)
 }
+
 type AppHostgroupsRepo interface {
+	CountRequire
 	CreateAppHostgroups(ctx context.Context, tx TX, apps []*AppHostgroup) error
 	UpdateAppHostgroups(ctx context.Context, tx TX, apps []*AppHostgroup) error
 	DeleteAppHostgroups(ctx context.Context, tx TX, ids []uint32) error
@@ -52,6 +78,7 @@ type AppHostgroupsRepo interface {
 }
 
 type ClustersRepo interface {
+	CountRequire
 	CreateClusters(ctx context.Context, cs []*Cluster) error
 	UpdateClusters(ctx context.Context, cs []*Cluster) error
 	DeleteClusters(ctx context.Context, ids []uint32) error
@@ -61,6 +88,7 @@ type ClustersRepo interface {
 }
 
 type DatacentersRepo interface {
+	CountRequire
 	CreateDatacenters(ctx context.Context, dcs []*Datacenter) error
 	UpdateDatacenters(ctx context.Context, dcs []*Datacenter) error
 	DeleteDatacenters(ctx context.Context, ids []uint32) error
@@ -70,6 +98,7 @@ type DatacentersRepo interface {
 }
 
 type EnvsRepo interface {
+	CountRequire
 	CreateEnvs(ctx context.Context, envs []*Env) error
 	UpdateEnvs(ctx context.Context, envs []*Env) error
 	DeleteEnvs(ctx context.Context, ids []uint32) error
@@ -79,6 +108,7 @@ type EnvsRepo interface {
 }
 
 type FeaturesRepo interface {
+	CountRequire
 	CreateFeatures(ctx context.Context, features []*Feature) error
 	UpdateFeatures(ctx context.Context, features []*Feature) error
 	DeleteFeatures(ctx context.Context, ids []uint32) error
@@ -88,6 +118,7 @@ type FeaturesRepo interface {
 }
 
 type HostgroupsRepo interface {
+	CountRequire
 	CreateHostgroups(ctx context.Context, tx TX, hgs []*Hostgroup) error
 	UpdateHostgroups(ctx context.Context, tx TX, hgs []*Hostgroup) error
 	DeleteHostgroups(ctx context.Context, tx TX, ids []uint32) error
@@ -96,6 +127,7 @@ type HostgroupsRepo interface {
 	CountHostgroups(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }
 type HostgroupTeamsRepo interface {
+	CountRequire
 	CreateHostgroupTeams(ctx context.Context, tx TX, hfs []*HostgroupTeam) error
 	UpdateHostgroupTeams(ctx context.Context, tx TX, hfs []*HostgroupTeam) error
 	DeleteHostgroupTeams(ctx context.Context, tx TX, ids []uint32) error
@@ -103,6 +135,7 @@ type HostgroupTeamsRepo interface {
 		filter *HostgroupTeamsFilter) ([]*HostgroupTeam, error)
 }
 type HostgroupProductsRepo interface {
+	CountRequire
 	CreateHostgroupProducts(ctx context.Context, tx TX, hfs []*HostgroupProduct) error
 	UpdateHostgroupProducts(ctx context.Context, tx TX, hfs []*HostgroupProduct) error
 	DeleteHostgroupProducts(ctx context.Context, tx TX, ids []uint32) error
@@ -111,6 +144,7 @@ type HostgroupProductsRepo interface {
 }
 
 type HostgroupTagsRepo interface {
+	CountRequire
 	CreateHostgroupTags(ctx context.Context, tx TX, hfs []*HostgroupTag) error
 	UpdateHostgroupTags(ctx context.Context, tx TX, hfs []*HostgroupTag) error
 	DeleteHostgroupTags(ctx context.Context, tx TX, ids []uint32) error
@@ -119,6 +153,7 @@ type HostgroupTagsRepo interface {
 }
 
 type HostgroupFeaturesRepo interface {
+	CountRequire
 	CreateHostgroupFeatures(ctx context.Context, tx TX, hfs []*HostgroupFeature) error
 	UpdateHostgroupFeatures(ctx context.Context, tx TX, hfs []*HostgroupFeature) error
 	DeleteHostgroupFeatures(ctx context.Context, tx TX, ids []uint32) error
@@ -127,6 +162,7 @@ type HostgroupFeaturesRepo interface {
 }
 
 type ProductsRepo interface {
+	CountRequire
 	CreateProducts(ctx context.Context, ps []*Product) error
 	UpdateProducts(ctx context.Context, ps []*Product) error
 	DeleteProducts(ctx context.Context, ids []uint32) error
@@ -136,6 +172,7 @@ type ProductsRepo interface {
 }
 
 type TagsRepo interface {
+	CountRequire
 	CreateTags(ctx context.Context, tags []*Tag) error
 	UpdateTags(ctx context.Context, tags []*Tag) error
 	DeleteTags(ctx context.Context, ids []uint32) error
@@ -145,9 +182,10 @@ type TagsRepo interface {
 }
 
 type TeamsRepo interface {
+	CountRequire
 	CreateTeams(ctx context.Context, teams []*Team) error
 	UpdateTeams(ctx context.Context, teams []*Team) error
-	DeleteTeams(ctx context.Context, ids []uint32) error
+	DeleteTeams(ctx context.Context, tx TX, ids []uint32) error
 	GetTeams(ctx context.Context, id uint32) (*Team, error)
 	ListTeams(ctx context.Context, tx TX, filter *TeamsFilter) ([]*Team, error)
 	CountTeams(ctx context.Context, tx TX, filter CountFilter) (int64, error)

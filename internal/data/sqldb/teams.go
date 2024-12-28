@@ -51,7 +51,10 @@ func (d *TeamsRepoGorm) UpdateTeams(ctx context.Context, teams []*repo.Team) err
 
 // DeleteTeams is delete items by id
 // return error if affected rows not equal to wanted
-func (d *TeamsRepoGorm) DeleteTeams(ctx context.Context, ids []uint32) error {
+func (d *TeamsRepoGorm) DeleteTeams(ctx context.Context,
+	tx repo.TX,
+	ids []uint32) error {
+
 	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Team{})
 	if r.Error != nil {
 		return r.Error
@@ -141,4 +144,18 @@ func (d *TeamsRepoGorm) CountTeams(ctx context.Context,
 		return 0, r.Error
 	}
 	return count, nil
+}
+
+func (d *TeamsRepoGorm) CountRequire(ctx context.Context,
+	tx repo.TX,
+	need repo.RequireType,
+	ids []uint32) (int64, error) {
+
+	if len(ids) == 0 {
+		return 0, repo.ErrorRequireIds
+	}
+
+	// require nothing
+	return 0, nil
+
 }

@@ -143,3 +143,38 @@ func (d *HostgroupsRepoGorm) CountHostgroups(ctx context.Context,
 
 	return count, nil
 }
+
+func (d *HostgroupsRepoGorm) CountRequire(ctx context.Context,
+	tx repo.TX,
+	need repo.RequireType,
+	ids []uint32) (int64, error) {
+
+	if len(ids) == 0 {
+		return 0, repo.ErrorRequireIds
+	}
+
+	var condition string
+	switch need {
+	case repo.RequireCluster:
+		condition = "cluster_id in (?)"
+	case repo.RequireDatacenter:
+		condition = "datacenter_id in (?)"
+	case repo.RequireEnv:
+		condition = "env_id in (?)"
+	case repo.RequireProduct:
+		condition = "product_id in (?)"
+	case repo.RequireTeam:
+		condition = "team_id in (?)"
+	default:
+		return 0, nil
+	}
+
+	var count int64
+	r := d.data.WithTX(tx).WithContext(ctx).Model(&repo.Hostgroup{}).
+		Where(condition, ids).Count(&count)
+	if r.Error != nil {
+		return 0, r.Error
+	}
+	// require nothing
+	return count, nil
+}

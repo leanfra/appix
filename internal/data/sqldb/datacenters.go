@@ -130,3 +130,17 @@ func (d *DatacentersRepoGorm) CountDatacenters(ctx context.Context,
 	}
 	return count, nil
 }
+
+func (d *DatacentersRepoGorm) CountRequire(ctx context.Context,
+	tx repo.TX,
+	need repo.RequireType,
+	ids []uint32) (int64, error) {
+
+	if len(ids) == 0 {
+		return 0, repo.ErrorRequireIds
+	}
+
+	// require nothing
+	return 0, nil
+
+}
