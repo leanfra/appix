@@ -165,7 +165,7 @@ type ProductsRepo interface {
 	CountRequire
 	CreateProducts(ctx context.Context, ps []*Product) error
 	UpdateProducts(ctx context.Context, ps []*Product) error
-	DeleteProducts(ctx context.Context, ids []uint32) error
+	DeleteProducts(ctx context.Context, tx TX, ids []uint32) error
 	GetProducts(ctx context.Context, id uint32) (*Product, error)
 	ListProducts(ctx context.Context, tx TX, filter *ProductsFilter) ([]*Product, error)
 	CountProducts(ctx context.Context, tx TX, filter CountFilter) (int64, error)
@@ -175,7 +175,7 @@ type TagsRepo interface {
 	CountRequire
 	CreateTags(ctx context.Context, tags []*Tag) error
 	UpdateTags(ctx context.Context, tags []*Tag) error
-	DeleteTags(ctx context.Context, ids []uint32) error
+	DeleteTags(ctx context.Context, tx TX, ids []uint32) error
 	GetTags(ctx context.Context, id uint32) (*Tag, error)
 	ListTags(ctx context.Context, tx TX, filter *TagsFilter) ([]*Tag, error)
 	CountTags(ctx context.Context, tx TX, filter CountFilter) (int64, error)

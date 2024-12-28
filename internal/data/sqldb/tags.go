@@ -51,7 +51,8 @@ func (d *TagsRepoGorm) UpdateTags(ctx context.Context, tags []*repo.Tag) error {
 }
 
 // DeleteTags is
-func (d *TagsRepoGorm) DeleteTags(ctx context.Context, ids []uint32) error {
+func (d *TagsRepoGorm) DeleteTags(ctx context.Context,
+	tx repo.TX, ids []uint32) error {
 
 	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Tag{})
 	if r.Error != nil {

@@ -51,7 +51,7 @@ func (d *ProductsRepoGorm) UpdateProducts(ctx context.Context, ps []*repo.Produc
 }
 
 // DeleteProducts is
-func (d *ProductsRepoGorm) DeleteProducts(ctx context.Context, ids []uint32) error {
+func (d *ProductsRepoGorm) DeleteProducts(ctx context.Context, tx repo.TX, ids []uint32) error {
 
 	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Product{})
 	if r.Error != nil {

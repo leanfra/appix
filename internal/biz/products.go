@@ -9,16 +9,26 @@ import (
 )
 
 type ProductsUsecase struct {
-	txm  repo.TxManager
-	repo repo.ProductsRepo
-	log  *log.Helper
+	txm      repo.TxManager
+	repo     repo.ProductsRepo
+	log      *log.Helper
+	required []requiredBy
 }
 
-func NewProductsUsecase(repo repo.ProductsRepo, logger log.Logger, txm repo.TxManager) *ProductsUsecase {
+func NewProductsUsecase(repo repo.ProductsRepo,
+	hostgrouprepo repo.HostgroupsRepo,
+	apprepo repo.ApplicationsRepo,
+	hprepo repo.HostgroupProductsRepo,
+	logger log.Logger, txm repo.TxManager) *ProductsUsecase {
 	return &ProductsUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
 		txm:  txm,
+		required: []requiredBy{
+			{inst: hostgrouprepo, name: "hostgroup"},
+			{inst: apprepo, name: "app"},
+			{inst: hprepo, name: "hostgroup_product"},
+		},
 	}
 }
 
@@ -60,7 +70,21 @@ func (s *ProductsUsecase) DeleteProducts(ctx context.Context, ids []uint32) erro
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
-	return s.repo.DeleteProducts(ctx, ids)
+	return s.txm.RunInTX(func(tx repo.TX) error {
+		for _, r := range s.required {
+			c, err := r.inst.CountRequire(ctx, nil, repo.RequireProduct, ids)
+			if err != nil {
+				return err
+			}
+			if c > 0 {
+				return fmt.Errorf("some %s requires", r.name)
+			}
+		}
+		if e := s.repo.DeleteProducts(ctx, tx, ids); e != nil {
+			return e
+		}
+		return nil
+	})
 }
 
 // GetProducts is

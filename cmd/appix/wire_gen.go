@@ -57,7 +57,17 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 		cleanup()
 		return nil, nil, err
 	}
-	teamsUsecase := biz.NewTeamsUsecase(teamsRepo, hostgroupsRepo, logger, txManager)
+	hostgroupTeamsRepo, err := sqldb.NewHostgroupTeamsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	applicationsRepo, err := sqldb.NewApplicationsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	teamsUsecase := biz.NewTeamsUsecase(teamsRepo, hostgroupsRepo, hostgroupTeamsRepo, applicationsRepo, logger, txManager)
 	teamsService := service.NewTeamsService(teamsUsecase, logger)
 	productsRepo, err := sqldb.NewProductsRepoGorm(dataGorm, logger)
 	if err != nil {
@@ -87,11 +97,6 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	}
 	datacentersUsecase := biz.NewDatacentersUsecase(datacentersRepo, logger, txManager)
 	datacentersService := service.NewDatacentersService(datacentersUsecase, logger)
-	hostgroupTeamsRepo, err := sqldb.NewHostgroupTeamsRepoGorm(dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
 	hostgroupProductsRepo, err := sqldb.NewHostgroupProductsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
@@ -109,11 +114,6 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	}
 	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, hostgroupTeamsRepo, hostgroupProductsRepo, hostgroupTagsRepo, hostgroupFeaturesRepo, clustersRepo, datacentersRepo, envsRepo, featuresRepo, tagsRepo, teamsRepo, productsRepo, logger, txManager)
 	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
-	applicationsRepo, err := sqldb.NewApplicationsRepoGorm(dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
 	appTagsRepo, err := sqldb.NewAppTagsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()

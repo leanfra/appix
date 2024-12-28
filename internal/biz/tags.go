@@ -9,16 +9,26 @@ import (
 )
 
 type TagsUsecase struct {
-	repo repo.TagsRepo
-	txm  repo.TxManager
-	log  *log.Helper
+	repo     repo.TagsRepo
+	txm      repo.TxManager
+	log      *log.Helper
+	required []requiredBy
 }
 
-func NewTagsUsecase(repo repo.TagsRepo, logger log.Logger, txm repo.TxManager) *TagsUsecase {
+func NewTagsUsecase(repo repo.TagsRepo,
+	logger log.Logger,
+	apptagrepo repo.AppTagsRepo,
+	hgtagrepo repo.HostgroupTagsRepo,
+	txm repo.TxManager) *TagsUsecase {
+
 	return &TagsUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
 		txm:  txm,
+		required: []requiredBy{
+			{inst: apptagrepo, name: "app_tag"},
+			{inst: hgtagrepo, name: "hostgroup_tag"},
+		},
 	}
 }
 
@@ -65,7 +75,21 @@ func (s *TagsUsecase) DeleteTags(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
-	return s.repo.DeleteTags(ctx, ids)
+	return s.txm.RunInTX(func(tx repo.TX) error {
+		for _, r := range s.required {
+			c, err := r.inst.CountRequire(ctx, tx, repo.RequireTag, ids)
+			if err != nil {
+				return err
+			}
+			if c > 0 {
+				return fmt.Errorf("some %s requires", r.name)
+			}
+		}
+		if e := s.repo.DeleteTags(ctx, tx, ids); e != nil {
+			return e
+		}
+		return nil
+	})
 }
 
 // GetTags is
