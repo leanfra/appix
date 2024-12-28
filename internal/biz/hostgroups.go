@@ -241,7 +241,7 @@ func (s *HostgroupsUsecase) CreateHostgroups(ctx context.Context, hgs []*Hostgro
 	if err := s.validate(true, hgs); err != nil {
 		return err
 	}
-	dbhgs, err := NewHostgroups(hgs)
+	dbhgs, err := ToDBHostgroups(hgs)
 	if err != nil {
 		return err
 	}
@@ -373,7 +373,7 @@ func (s *HostgroupsUsecase) UpdateHostgroups(ctx context.Context, hgs []*Hostgro
 	if err := s.validate(false, hgs); err != nil {
 		return err
 	}
-	_hgs, err := NewHostgroups(hgs)
+	_hgs, err := ToDBHostgroups(hgs)
 	if err != nil {
 		return err
 	}
@@ -441,7 +441,7 @@ func (s *HostgroupsUsecase) GetHostgroups(ctx context.Context, id uint32) (*Host
 	if err != nil {
 		return nil, err
 	}
-	bizhg, e := NewBizHostgroup(hg)
+	bizhg, e := ToBizHostgroup(hg)
 	if e != nil {
 		return nil, e
 	}
@@ -499,7 +499,7 @@ func (s *HostgroupsUsecase) ListHostgroups(
 		}
 	}
 
-	dbFilter := NewRepoHostgroupsFilter(filter)
+	dbFilter := ToDBHostgroupsFilter(filter)
 
 	processInitIds := func(filterIds []uint32, prop string) error {
 		if len(filterIds) == 0 {
@@ -580,7 +580,7 @@ func (s *HostgroupsUsecase) ListHostgroups(
 	if err != nil {
 		return nil, err
 	}
-	bizhg, err := NewBizHostgroups(hg)
+	bizhg, err := ToBizHostgroups(hg)
 	if err != nil {
 		return nil, err
 	}

@@ -178,7 +178,7 @@ func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Ap
 	if err := s.validate(true, nil); err != nil {
 		return err
 	}
-	_apps, err := NewDbApplications(apps)
+	_apps, err := ToDBApplications(apps)
 	if err != nil {
 		return err
 	}
@@ -343,7 +343,7 @@ func (s *ApplicationsUsecase) UpdateApplications(ctx context.Context, apps []*Ap
 	if err := s.validate(false, nil); err != nil {
 		return err
 	}
-	_apps, err := NewDbApplications(apps)
+	_apps, err := ToDBApplications(apps)
 	if err != nil {
 		return err
 	}
@@ -412,7 +412,7 @@ func (s *ApplicationsUsecase) GetApplications(ctx context.Context, id uint32) (*
 	if err != nil {
 		return nil, err
 	}
-	bapp, e := NewBizApplication(_app)
+	bapp, e := ToBizApplication(_app)
 	if e != nil {
 		return nil, e
 	}
@@ -464,7 +464,7 @@ func (s *ApplicationsUsecase) ListApplications(
 		}
 	}
 
-	dbFilter := NewRepoApplicationsFilter(filter)
+	dbFilter := ToDBApplicationsFilter(filter)
 
 	processInitIds := func(filterIds []uint32, prop string) error {
 		if len(filterIds) == 0 {
@@ -544,7 +544,7 @@ func (s *ApplicationsUsecase) ListApplications(
 	if err != nil {
 		return nil, err
 	}
-	bapps, err := NewBizApplications(_apps)
+	bapps, err := ToBizApplications(_apps)
 	if err != nil {
 		return nil, err
 	}

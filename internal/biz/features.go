@@ -36,7 +36,7 @@ func (s *FeaturesUsecase) CreateFeatures(ctx context.Context, features []*Featur
 	if err := s.validate(true, features); err != nil {
 		return err
 	}
-	_f, e := NewFeatures(features)
+	_f, e := ToDBFeatures(features)
 	if e != nil {
 		return e
 	}
@@ -48,7 +48,7 @@ func (s *FeaturesUsecase) UpdateFeatures(ctx context.Context, features []*Featur
 	if err := s.validate(false, features); err != nil {
 		return err
 	}
-	_f, e := NewFeatures(features)
+	_f, e := ToDBFeatures(features)
 	if e != nil {
 		return e
 	}
@@ -72,7 +72,7 @@ func (s *FeaturesUsecase) GetFeatures(ctx context.Context, id uint32) (*Feature,
 	if e != nil {
 		return nil, e
 	}
-	return NewBizFeature(_f)
+	return ToBizFeature(_f)
 }
 
 // ListFeatures is
@@ -84,9 +84,9 @@ func (s *FeaturesUsecase) ListFeatures(ctx context.Context,
 			return nil, err
 		}
 	}
-	_f, e := s.repo.ListFeatures(ctx, nil, NewFeaturesFilter(filter))
+	_f, e := s.repo.ListFeatures(ctx, nil, ToDBFeaturesFilter(filter))
 	if e != nil {
 		return nil, e
 	}
-	return NewBizFeatures(_f)
+	return ToBizFeatures(_f)
 }

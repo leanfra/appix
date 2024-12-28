@@ -71,7 +71,7 @@ func DefaultApplicationFilter() *ListApplicationsFilter {
 	}
 }
 
-func NewDbApplication(app *Application) (*repo.Application, error) {
+func ToDBApplication(app *Application) (*repo.Application, error) {
 	if app == nil {
 		return nil, nil
 	}
@@ -88,10 +88,10 @@ func NewDbApplication(app *Application) (*repo.Application, error) {
 	}, nil
 }
 
-func NewDbApplications(apps []*Application) ([]*repo.Application, error) {
+func ToDBApplications(apps []*Application) ([]*repo.Application, error) {
 	db_apps := make([]*repo.Application, len(apps))
 	for i, a := range apps {
-		db_app, e := NewDbApplication(a)
+		db_app, e := ToDBApplication(a)
 		if e != nil {
 			return nil, e
 		}
@@ -100,7 +100,7 @@ func NewDbApplications(apps []*Application) ([]*repo.Application, error) {
 	return db_apps, nil
 }
 
-func NewBizApplication(t *repo.Application) (*Application, error) {
+func ToBizApplication(t *repo.Application) (*Application, error) {
 	if t == nil {
 		return nil, nil
 	}
@@ -117,10 +117,10 @@ func NewBizApplication(t *repo.Application) (*Application, error) {
 	}, nil
 }
 
-func NewBizApplications(es []*repo.Application) ([]*Application, error) {
+func ToBizApplications(es []*repo.Application) ([]*Application, error) {
 	apps := make([]*Application, len(es))
 	for i, e := range es {
-		app, err := NewBizApplication(e)
+		app, err := ToBizApplication(e)
 		if err != nil {
 			return nil, err
 		}
@@ -129,29 +129,19 @@ func NewBizApplications(es []*repo.Application) ([]*Application, error) {
 	return apps, nil
 }
 
-func NewRepoApplicationsFilter(filter *ListApplicationsFilter) *repo.ApplicationsFilter {
+func ToDBApplicationsFilter(filter *ListApplicationsFilter) *repo.ApplicationsFilter {
 	if filter == nil {
 		return nil
 	}
 	return &repo.ApplicationsFilter{
-		Ids:   filter.Ids,
-		Names: filter.Names,
-		//Clusters:      filter.Clusters,
-		//Datacenters:   filter.Datacenters,
-		//Products:      filter.Products,
-		//Teams:         filter.Teams,
-		//Features:      filter.Features,
-		//Tags:          filter.Tags,
+		Ids:           filter.Ids,
+		Names:         filter.Names,
 		ClustersId:    filter.ClustersId,
 		DatacentersId: filter.DatacentersId,
 		ProductsId:    filter.ProductsId,
 		TeamsId:       filter.TeamsId,
-		//FeaturesId:    filter.FeaturesId,
-		//TagsId:        filter.TagsId,
-		IsStateful: filter.IsStateful,
-		//HostgroupsId:  filter.HostgroupsId,
-		Page:     filter.Page,
-		PageSize: filter.PageSize,
-		// Hostgroups:    filter.Hostgroups,
+		IsStateful:    filter.IsStateful,
+		Page:          filter.Page,
+		PageSize:      filter.PageSize,
 	}
 }

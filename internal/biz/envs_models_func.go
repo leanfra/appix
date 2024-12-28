@@ -37,7 +37,7 @@ func DefaultEnvFilter() *ListEnvsFilter {
 	}
 }
 
-func NewEnv(t *Env) (*repo.Env, error) {
+func ToDBEnv(t *Env) (*repo.Env, error) {
 	if t == nil {
 		return nil, nil
 	}
@@ -48,10 +48,10 @@ func NewEnv(t *Env) (*repo.Env, error) {
 	}, nil
 }
 
-func NewEnvs(es []*Env) ([]*repo.Env, error) {
+func ToDBEnvs(es []*Env) ([]*repo.Env, error) {
 	var envs = make([]*repo.Env, len(es))
 	for i, f := range es {
-		nf, err := NewEnv(f)
+		nf, err := ToDBEnv(f)
 		if err != nil {
 			return nil, err
 		}
@@ -60,7 +60,7 @@ func NewEnvs(es []*Env) ([]*repo.Env, error) {
 	return envs, nil
 }
 
-func NewBizEnv(t *repo.Env) (*Env, error) {
+func ToBizEnv(t *repo.Env) (*Env, error) {
 	return &Env{
 		Id:          t.ID,
 		Name:        t.Name,
@@ -68,7 +68,7 @@ func NewBizEnv(t *repo.Env) (*Env, error) {
 	}, nil
 }
 
-func NewBizEnvs(es []*repo.Env) ([]*Env, error) {
+func ToBizEnvs(es []*repo.Env) ([]*Env, error) {
 	var biz_envs = make([]*Env, len(es))
 	for i, f := range es {
 		biz_envs[i] = &Env{
@@ -80,7 +80,7 @@ func NewBizEnvs(es []*repo.Env) ([]*Env, error) {
 	return biz_envs, nil
 }
 
-func NewEnvsFilter(filter *ListEnvsFilter) *repo.EnvsFilter {
+func ToDBEnvsFilter(filter *ListEnvsFilter) *repo.EnvsFilter {
 	if filter == nil {
 		return nil
 	}

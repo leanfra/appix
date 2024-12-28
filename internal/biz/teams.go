@@ -45,7 +45,7 @@ func (s *TeamsUsecase) CreateTeams(ctx context.Context, teams []*Team) error {
 		return err
 	}
 
-	_teams, e := ToTeamsDB(teams)
+	_teams, e := ToDBTeams(teams)
 	if e != nil {
 		return e
 	}
@@ -58,7 +58,7 @@ func (s *TeamsUsecase) UpdateTeams(ctx context.Context, teams []*Team) error {
 	if err := s.validate(false, teams); err != nil {
 		return err
 	}
-	_teams, e := ToTeamsDB(teams)
+	_teams, e := ToDBTeams(teams)
 	if e != nil {
 		return e
 	}
@@ -89,7 +89,7 @@ func (s *TeamsUsecase) GetTeams(ctx context.Context, id uint32) (*Team, error) {
 	if e != nil {
 		return nil, e
 	}
-	return ToTeamBiz(dbt)
+	return ToBizTeam(dbt)
 }
 
 // ListTeams is
@@ -100,10 +100,10 @@ func (s *TeamsUsecase) ListTeams(ctx context.Context,
 			return nil, err
 		}
 	}
-	teams, e := s.teamRepo.ListTeams(ctx, nil, ToTeamsFilterDB(filter))
+	teams, e := s.teamRepo.ListTeams(ctx, nil, ToDBTeamsFilter(filter))
 
 	if e != nil {
 		return nil, e
 	}
-	return ToTeamsBiz(teams)
+	return ToBizTeams(teams)
 }

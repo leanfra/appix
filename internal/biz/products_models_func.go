@@ -41,7 +41,7 @@ func DefaultProductsFilter() *ListProductsFilter {
 	}
 }
 
-func ToProductDB(t *Product) (*repo.Product, error) {
+func ToDBProduct(t *Product) (*repo.Product, error) {
 	return &repo.Product{
 		ID:          t.Id,
 		Name:        t.Name,
@@ -50,10 +50,10 @@ func ToProductDB(t *Product) (*repo.Product, error) {
 	}, nil
 }
 
-func ToProductsDB(ts []*Product) ([]*repo.Product, error) {
+func ToDBProducts(ts []*Product) ([]*repo.Product, error) {
 	var products = make([]*repo.Product, len(ts))
 	for i, t := range ts {
-		nt, err := ToProductDB(t)
+		nt, err := ToDBProduct(t)
 		if err != nil {
 			return nil, err
 		}
@@ -62,7 +62,7 @@ func ToProductsDB(ts []*Product) ([]*repo.Product, error) {
 	return products, nil
 }
 
-func ToProductBiz(t *repo.Product) (*Product, error) {
+func ToBizProduct(t *repo.Product) (*Product, error) {
 	return &Product{
 		Id:          t.ID,
 		Code:        t.Code,
@@ -71,7 +71,7 @@ func ToProductBiz(t *repo.Product) (*Product, error) {
 	}, nil
 }
 
-func ToProductsBiz(ps []*repo.Product) ([]*Product, error) {
+func ToBizProducts(ps []*repo.Product) ([]*Product, error) {
 	var _ps = make([]*Product, len(ps))
 	for i, t := range ps {
 		_ps[i] = &Product{
@@ -84,7 +84,7 @@ func ToProductsBiz(ps []*repo.Product) ([]*Product, error) {
 	return _ps, nil
 }
 
-func ToProductFilterDB(filter *ListProductsFilter) *repo.ProductsFilter {
+func ToDBProductFilter(filter *ListProductsFilter) *repo.ProductsFilter {
 	return &repo.ProductsFilter{
 		Codes:    filter.Codes,
 		Ids:      filter.Ids,

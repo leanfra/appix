@@ -38,7 +38,7 @@ func (s *TagsUsecase) CreateTags(ctx context.Context, tags []*Tag) error {
 		return err
 	}
 
-	_tags, e := ToTagsDB(tags)
+	_tags, e := ToDBTags(tags)
 	if e != nil {
 		return e
 	}
@@ -52,7 +52,7 @@ func (s *TagsUsecase) UpdateTags(ctx context.Context, tags []*Tag) error {
 	if err := s.validate(false, tags); err != nil {
 		return err
 	}
-	_tags, e := ToTagsDB(tags)
+	_tags, e := ToDBTags(tags)
 	if e != nil {
 		return e
 	}
@@ -77,7 +77,7 @@ func (s *TagsUsecase) GetTags(ctx context.Context, id uint32) (*Tag, error) {
 	if e != nil {
 		return nil, e
 	}
-	return ToTagBiz(t)
+	return ToBizTag(t)
 }
 
 // ListTags is
@@ -88,9 +88,9 @@ func (s *TagsUsecase) ListTags(ctx context.Context,
 			return nil, err
 		}
 	}
-	_ts, e := s.repo.ListTags(ctx, nil, ToTagsFilterDB(filter))
+	_ts, e := s.repo.ListTags(ctx, nil, ToDBTagsFilter(filter))
 	if e != nil {
 		return nil, e
 	}
-	return ToTagsBiz(_ts)
+	return ToBizTags(_ts)
 }

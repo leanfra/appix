@@ -36,7 +36,7 @@ func (s *ClustersUsecase) CreateClusters(ctx context.Context, cs []*Cluster) err
 	if err := s.validate(true, cs); err != nil {
 		return err
 	}
-	_cs, err := NewClusters(cs)
+	_cs, err := ToDBClusters(cs)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (s *ClustersUsecase) UpdateClusters(ctx context.Context, cs []*Cluster) err
 	if err := s.validate(false, cs); err != nil {
 		return err
 	}
-	_cs, err := NewClusters(cs)
+	_cs, err := ToDBClusters(cs)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (s *ClustersUsecase) GetClusters(ctx context.Context, id uint32) (*Cluster,
 	if err != nil {
 		return nil, err
 	}
-	return NewBizCluster(_cs)
+	return ToBizCluster(_cs)
 }
 
 // ListClusters is
@@ -85,9 +85,9 @@ func (s *ClustersUsecase) ListClusters(ctx context.Context,
 			return nil, err
 		}
 	}
-	_cs, err := s.repo.ListClusters(ctx, nil, NewClustersFilter(filter))
+	_cs, err := s.repo.ListClusters(ctx, nil, ToDBClustersFilter(filter))
 	if err != nil {
 		return nil, err
 	}
-	return NewBizClusters(_cs)
+	return ToBizClusters(_cs)
 }

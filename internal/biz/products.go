@@ -36,7 +36,7 @@ func (s *ProductsUsecase) CreateProducts(ctx context.Context, ps []*Product) err
 	if err := s.validate(true, ps); err != nil {
 		return err
 	}
-	_ps, e := ToProductsDB(ps)
+	_ps, e := ToDBProducts(ps)
 	if e != nil {
 		return e
 	}
@@ -48,7 +48,7 @@ func (s *ProductsUsecase) UpdateProducts(ctx context.Context, ps []*Product) err
 	if err := s.validate(false, ps); err != nil {
 		return err
 	}
-	dps, e := ToProductsDB(ps)
+	dps, e := ToDBProducts(ps)
 	if e != nil {
 		return e
 	}
@@ -72,7 +72,7 @@ func (s *ProductsUsecase) GetProducts(ctx context.Context, id uint32) (*Product,
 	if e != nil {
 		return nil, e
 	}
-	return ToProductBiz(ps)
+	return ToBizProduct(ps)
 }
 
 // ListProducts is
@@ -82,9 +82,9 @@ func (s *ProductsUsecase) ListProducts(ctx context.Context, filter *ListProducts
 			return nil, err
 		}
 	}
-	dbps, e := s.repo.ListProducts(ctx, nil, ToProductFilterDB(filter))
+	dbps, e := s.repo.ListProducts(ctx, nil, ToDBProductFilter(filter))
 	if e != nil {
 		return nil, e
 	}
-	return ToProductsBiz(dbps)
+	return ToBizProducts(dbps)
 }

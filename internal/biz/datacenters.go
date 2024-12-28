@@ -38,7 +38,7 @@ func (s *DatacentersUsecase) CreateDatacenters(ctx context.Context, dcs []*Datac
 		return err
 	}
 
-	_dcs, err := NewDatacenters(dcs)
+	_dcs, err := ToDBDatacenters(dcs)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func (s *DatacentersUsecase) UpdateDatacenters(ctx context.Context, dcs []*Datac
 	if err := s.validate(false, dcs); err != nil {
 		return err
 	}
-	_dcs, err := NewDatacenters(dcs)
+	_dcs, err := ToDBDatacenters(dcs)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func (s *DatacentersUsecase) GetDatacenters(ctx context.Context, id uint32) (*Da
 	if err != nil {
 		return nil, err
 	}
-	return NewBizDatacenter(_dsc)
+	return ToBizDatacenter(_dsc)
 }
 
 // ListDatacenters is
@@ -86,9 +86,9 @@ func (s *DatacentersUsecase) ListDatacenters(ctx context.Context,
 			return nil, err
 		}
 	}
-	_dcs, err := s.repo.ListDatacenters(ctx, nil, NewDatacentersFilter(filter))
+	_dcs, err := s.repo.ListDatacenters(ctx, nil, ToDBDatacentersFilter(filter))
 	if err != nil {
 		return nil, err
 	}
-	return NewBizDatacenters(_dcs)
+	return ToBizDatacenters(_dcs)
 }

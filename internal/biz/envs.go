@@ -36,7 +36,7 @@ func (s *EnvsUsecase) CreateEnvs(ctx context.Context, envs []*Env) error {
 	if err := s.validate(true, envs); err != nil {
 		return err
 	}
-	_envs, err := NewEnvs(envs)
+	_envs, err := ToDBEnvs(envs)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func (s *EnvsUsecase) UpdateEnvs(ctx context.Context, envs []*Env) error {
 	if err := s.validate(false, envs); err != nil {
 		return err
 	}
-	_envs, e := NewEnvs(envs)
+	_envs, e := ToDBEnvs(envs)
 	if e != nil {
 		return e
 	}
@@ -76,7 +76,7 @@ func (s *EnvsUsecase) GetEnvs(ctx context.Context, id uint32) (*Env, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewBizEnv(_envs)
+	return ToBizEnv(_envs)
 }
 
 // ListEnvs is
@@ -88,9 +88,9 @@ func (s *EnvsUsecase) ListEnvs(ctx context.Context, filter *ListEnvsFilter) ([]*
 		}
 	}
 
-	_envs, err := s.repo.ListEnvs(ctx, nil, NewEnvsFilter(filter))
+	_envs, err := s.repo.ListEnvs(ctx, nil, ToDBEnvsFilter(filter))
 	if err != nil {
 		return nil, err
 	}
-	return NewBizEnvs(_envs)
+	return ToBizEnvs(_envs)
 }

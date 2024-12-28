@@ -40,7 +40,7 @@ func DefaultTeamsFilter() *ListTeamsFilter {
 	}
 }
 
-func ToTeamDB(t *Team) (*repo.Team, error) {
+func ToDBTeam(t *Team) (*repo.Team, error) {
 	return &repo.Team{
 		ID:          t.Id,
 		Name:        t.Name,
@@ -50,10 +50,10 @@ func ToTeamDB(t *Team) (*repo.Team, error) {
 	}, nil
 }
 
-func ToTeamsDB(ts []*Team) ([]*repo.Team, error) {
+func ToDBTeams(ts []*Team) ([]*repo.Team, error) {
 	var teams = make([]*repo.Team, len(ts))
 	for i, t := range ts {
-		nt, err := ToTeamDB(t)
+		nt, err := ToDBTeam(t)
 		if err != nil {
 			return nil, err
 		}
@@ -62,7 +62,7 @@ func ToTeamsDB(ts []*Team) ([]*repo.Team, error) {
 	return teams, nil
 }
 
-func ToTeamBiz(t *repo.Team) (*Team, error) {
+func ToBizTeam(t *repo.Team) (*Team, error) {
 	return &Team{
 		Id:          t.ID,
 		Code:        t.Code,
@@ -72,7 +72,7 @@ func ToTeamBiz(t *repo.Team) (*Team, error) {
 	}, nil
 }
 
-func ToTeamsBiz(teams []*repo.Team) ([]*Team, error) {
+func ToBizTeams(teams []*repo.Team) ([]*Team, error) {
 	var biz_teams = make([]*Team, len(teams))
 	for i, t := range teams {
 		biz_teams[i] = &Team{
@@ -86,7 +86,7 @@ func ToTeamsBiz(teams []*repo.Team) ([]*Team, error) {
 	return biz_teams, nil
 }
 
-func ToTeamsFilterDB(filter *ListTeamsFilter) *repo.TeamsFilter {
+func ToDBTeamsFilter(filter *ListTeamsFilter) *repo.TeamsFilter {
 	return &repo.TeamsFilter{
 		Codes:    filter.Codes,
 		Ids:      filter.Ids,

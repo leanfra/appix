@@ -42,7 +42,7 @@ func DefaultTagsFilter() *ListTagsFilter {
 	}
 }
 
-func ToTagDB(t *Tag) (*repo.Tag, error) {
+func ToDBTag(t *Tag) (*repo.Tag, error) {
 	if t == nil {
 		return nil, nil
 	}
@@ -53,10 +53,10 @@ func ToTagDB(t *Tag) (*repo.Tag, error) {
 	}, nil
 }
 
-func ToTagsDB(ts []*Tag) ([]*repo.Tag, error) {
+func ToDBTags(ts []*Tag) ([]*repo.Tag, error) {
 	var tags = make([]*repo.Tag, len(ts))
 	for i, t := range ts {
-		nt, err := ToTagDB(t)
+		nt, err := ToDBTag(t)
 		if err != nil {
 			return nil, err
 		}
@@ -65,7 +65,7 @@ func ToTagsDB(ts []*Tag) ([]*repo.Tag, error) {
 	return tags, nil
 }
 
-func ToTagBiz(t *repo.Tag) (*Tag, error) {
+func ToBizTag(t *repo.Tag) (*Tag, error) {
 	return &Tag{
 		Id:    t.ID,
 		Key:   t.Key,
@@ -73,7 +73,7 @@ func ToTagBiz(t *repo.Tag) (*Tag, error) {
 	}, nil
 }
 
-func ToTagsBiz(tags []*repo.Tag) ([]*Tag, error) {
+func ToBizTags(tags []*repo.Tag) ([]*Tag, error) {
 	var biz_tags = make([]*Tag, len(tags))
 	for i, t := range tags {
 		biz_tags[i] = &Tag{
@@ -85,7 +85,7 @@ func ToTagsBiz(tags []*repo.Tag) ([]*Tag, error) {
 	return biz_tags, nil
 }
 
-func ToTagsFilterDB(filter *ListTagsFilter) *repo.TagsFilter {
+func ToDBTagsFilter(filter *ListTagsFilter) *repo.TagsFilter {
 	if filter == nil {
 		return nil
 	}

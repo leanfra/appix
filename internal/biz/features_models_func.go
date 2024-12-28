@@ -49,7 +49,7 @@ func DefaultFeaturesFilter() *ListFeaturesFilter {
 	}
 }
 
-func NewFeature(t *Feature) (*repo.Feature, error) {
+func ToDBFeature(t *Feature) (*repo.Feature, error) {
 	return &repo.Feature{
 		Id:    t.Id,
 		Name:  t.Name,
@@ -57,10 +57,10 @@ func NewFeature(t *Feature) (*repo.Feature, error) {
 	}, nil
 }
 
-func NewFeatures(fs []*Feature) ([]*repo.Feature, error) {
+func ToDBFeatures(fs []*Feature) ([]*repo.Feature, error) {
 	var features = make([]*repo.Feature, len(fs))
 	for i, f := range fs {
-		nf, err := NewFeature(f)
+		nf, err := ToDBFeature(f)
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +69,7 @@ func NewFeatures(fs []*Feature) ([]*repo.Feature, error) {
 	return features, nil
 }
 
-func NewBizFeature(t *repo.Feature) (*Feature, error) {
+func ToBizFeature(t *repo.Feature) (*Feature, error) {
 	return &Feature{
 		Id:    t.Id,
 		Name:  t.Name,
@@ -77,7 +77,7 @@ func NewBizFeature(t *repo.Feature) (*Feature, error) {
 	}, nil
 }
 
-func NewBizFeatures(fs []*repo.Feature) ([]*Feature, error) {
+func ToBizFeatures(fs []*repo.Feature) ([]*Feature, error) {
 	var biz_fts = make([]*Feature, len(fs))
 	for i, f := range fs {
 		biz_fts[i] = &Feature{
@@ -89,7 +89,7 @@ func NewBizFeatures(fs []*repo.Feature) ([]*Feature, error) {
 	return biz_fts, nil
 }
 
-func NewFeaturesFilter(filter *ListFeaturesFilter) *repo.FeaturesFilter {
+func ToDBFeaturesFilter(filter *ListFeaturesFilter) *repo.FeaturesFilter {
 	return &repo.FeaturesFilter{
 		Ids:      filter.Ids,
 		Kvs:      filter.Kvs,

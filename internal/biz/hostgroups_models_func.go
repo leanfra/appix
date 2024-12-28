@@ -65,7 +65,7 @@ func DefaultHostgroupFilter() *ListHostgroupsFilter {
 	}
 }
 
-func NewHostgroup(t *Hostgroup) (*repo.Hostgroup, error) {
+func ToDBHostgroup(t *Hostgroup) (*repo.Hostgroup, error) {
 	return &repo.Hostgroup{
 		Id:           t.Id,
 		Name:         t.Name,
@@ -78,10 +78,10 @@ func NewHostgroup(t *Hostgroup) (*repo.Hostgroup, error) {
 	}, nil
 }
 
-func NewHostgroups(ts []*Hostgroup) ([]*repo.Hostgroup, error) {
+func ToDBHostgroups(ts []*Hostgroup) ([]*repo.Hostgroup, error) {
 	var products = make([]*repo.Hostgroup, len(ts))
 	for i, t := range ts {
-		nt, err := NewHostgroup(t)
+		nt, err := ToDBHostgroup(t)
 		if err != nil {
 			return nil, err
 		}
@@ -90,7 +90,7 @@ func NewHostgroups(ts []*Hostgroup) ([]*repo.Hostgroup, error) {
 	return products, nil
 }
 
-func NewBizHostgroup(t *repo.Hostgroup) (*Hostgroup, error) {
+func ToBizHostgroup(t *repo.Hostgroup) (*Hostgroup, error) {
 	return &Hostgroup{
 		Id:           t.Id,
 		Description:  t.Description,
@@ -103,11 +103,11 @@ func NewBizHostgroup(t *repo.Hostgroup) (*Hostgroup, error) {
 	}, nil
 }
 
-func NewBizHostgroups(ps []*repo.Hostgroup) ([]*Hostgroup, error) {
+func ToBizHostgroups(ps []*repo.Hostgroup) ([]*Hostgroup, error) {
 	var biz_ps []*Hostgroup
 	for _, t := range ps {
 		if t != nil {
-			bhg, err := NewBizHostgroup(t)
+			bhg, err := ToBizHostgroup(t)
 			if err != nil {
 				return nil, err
 			}
@@ -117,7 +117,7 @@ func NewBizHostgroups(ps []*repo.Hostgroup) ([]*Hostgroup, error) {
 	return biz_ps, nil
 }
 
-func NewRepoHostgroupsFilter(filter *ListHostgroupsFilter) *repo.HostgroupsFilter {
+func ToDBHostgroupsFilter(filter *ListHostgroupsFilter) *repo.HostgroupsFilter {
 	return &repo.HostgroupsFilter{
 		Ids:           filter.Ids,
 		Names:         filter.Names,

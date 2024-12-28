@@ -37,7 +37,7 @@ func DefaultDatacentersFilter() *ListDatacentersFilter {
 	}
 }
 
-func NewDatacenter(t *Datacenter) (*repo.Datacenter, error) {
+func ToDBDatacenter(t *Datacenter) (*repo.Datacenter, error) {
 	return &repo.Datacenter{
 		ID:          t.Id,
 		Name:        t.Name,
@@ -45,10 +45,10 @@ func NewDatacenter(t *Datacenter) (*repo.Datacenter, error) {
 	}, nil
 }
 
-func NewDatacenters(es []*Datacenter) ([]*repo.Datacenter, error) {
+func ToDBDatacenters(es []*Datacenter) ([]*repo.Datacenter, error) {
 	var clusters = make([]*repo.Datacenter, len(es))
 	for i, f := range es {
-		nf, err := NewDatacenter(f)
+		nf, err := ToDBDatacenter(f)
 		if err != nil {
 			return nil, err
 		}
@@ -57,7 +57,7 @@ func NewDatacenters(es []*Datacenter) ([]*repo.Datacenter, error) {
 	return clusters, nil
 }
 
-func NewBizDatacenter(t *repo.Datacenter) (*Datacenter, error) {
+func ToBizDatacenter(t *repo.Datacenter) (*Datacenter, error) {
 	return &Datacenter{
 		Id:          t.ID,
 		Name:        t.Name,
@@ -65,7 +65,7 @@ func NewBizDatacenter(t *repo.Datacenter) (*Datacenter, error) {
 	}, nil
 }
 
-func NewBizDatacenters(es []*repo.Datacenter) ([]*Datacenter, error) {
+func ToBizDatacenters(es []*repo.Datacenter) ([]*Datacenter, error) {
 	var biz_clusters = make([]*Datacenter, len(es))
 	for i, f := range es {
 		biz_clusters[i] = &Datacenter{
@@ -77,7 +77,7 @@ func NewBizDatacenters(es []*repo.Datacenter) ([]*Datacenter, error) {
 	return biz_clusters, nil
 }
 
-func NewDatacentersFilter(filter *ListDatacentersFilter) *repo.DatacentersFilter {
+func ToDBDatacentersFilter(filter *ListDatacentersFilter) *repo.DatacentersFilter {
 	return &repo.DatacentersFilter{
 		Ids:      filter.Ids,
 		Names:    filter.Names,
