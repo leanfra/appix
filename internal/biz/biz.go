@@ -3,6 +3,7 @@ package biz
 import (
 	"appix/internal/data/repo"
 	"errors"
+	"regexp"
 	"strings"
 
 	"github.com/google/wire"
@@ -94,5 +95,31 @@ func IntersectSliceUint32(slice1, slice2 []uint32) []uint32 {
 
 type requiredBy struct {
 	name string
-	inst repo.CountRequire
+	inst repo.RequireCounter
+}
+
+var NamePattern = regexp.MustCompile(`^[a-z][a-z0-9-]*[a-z0-9]$`)
+var CodePattern = regexp.MustCompile(`^[a-z0-9][a-z0-9-]*[a-z0-9]$`)
+
+const MaxNameLength = 255
+const MaxCodeLength = 255
+
+func ValidateName(name string) error {
+	if len(name) > MaxNameLength {
+		return errors.New("name too long")
+	}
+	if !NamePattern.MatchString(name) {
+		return errors.New("name invalid")
+	}
+	return nil
+}
+
+func ValidateCode(code string) error {
+	if len(code) > MaxCodeLength {
+		return errors.New("code too long")
+	}
+	if !CodePattern.MatchString(code) {
+		return errors.New("code invalid")
+	}
+	return nil
 }

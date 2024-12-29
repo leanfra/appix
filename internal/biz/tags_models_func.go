@@ -14,6 +14,12 @@ func (t *Tag) Validate(isNew bool) error {
 			return fmt.Errorf("InvalidId")
 		}
 	}
+	if e := ValidateName(t.Key); e != nil {
+		return e
+	}
+	if e := ValidateCode(t.Value); e != nil {
+		return e
+	}
 	return nil
 }
 

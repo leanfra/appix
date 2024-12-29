@@ -14,6 +14,9 @@ func (f *Env) Validate(isNew bool) error {
 			return fmt.Errorf("InvalidId")
 		}
 	}
+	if e := ValidateName(f.Name); e != nil {
+		return e
+	}
 	return nil
 }
 

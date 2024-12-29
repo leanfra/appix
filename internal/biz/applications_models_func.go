@@ -9,6 +9,9 @@ func (m *Application) Validate(isNew bool) error {
 	if len(m.Name) == 0 {
 		return fmt.Errorf("InvalidNameValue")
 	}
+	if e := ValidateName(m.Name); e != nil {
+		return e
+	}
 	if !isNew {
 		if m.Id == 0 {
 			return fmt.Errorf("InvalidId")

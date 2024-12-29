@@ -14,6 +14,14 @@ func (f *Team) Validate(isNew bool) error {
 			return fmt.Errorf("InvalidId")
 		}
 	}
+
+	if e := ValidateName(f.Name); e != nil {
+		return e
+	}
+	if e := ValidateCode(f.Code); e != nil {
+		return e
+	}
+
 	return nil
 }
 

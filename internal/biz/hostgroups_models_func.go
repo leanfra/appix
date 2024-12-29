@@ -14,6 +14,9 @@ func (f *Hostgroup) Validate(isNew bool) error {
 			return fmt.Errorf("InvalidId")
 		}
 	}
+	if e := ValidateName(f.Name); e != nil {
+		return e
+	}
 	if f.ClusterId <= 0 {
 		return fmt.Errorf("InvalidClusterId")
 	}

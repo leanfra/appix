@@ -37,15 +37,35 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 		cleanup()
 		return nil, nil, err
 	}
+	appTagsRepo, err := sqldb.NewAppTagsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	hostgroupTagsRepo, err := sqldb.NewHostgroupTagsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	txManager := sqldb.NewTxManagerGorm(dataGorm, logger)
-	tagsUsecase := biz.NewTagsUsecase(tagsRepo, logger, txManager)
+	tagsUsecase := biz.NewTagsUsecase(tagsRepo, logger, appTagsRepo, hostgroupTagsRepo, txManager)
 	tagsService := service.NewTagsService(tagsUsecase, logger)
 	featuresRepo, err := sqldb.NewFeaturesRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	featuresUsecase := biz.NewFeaturesUsecase(featuresRepo, logger, txManager)
+	hostgroupFeaturesRepo, err := sqldb.NewHostgroupFeaturesRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	appFeaturesRepo, err := sqldb.NewAppFeaturesRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	featuresUsecase := biz.NewFeaturesUsecase(featuresRepo, logger, hostgroupFeaturesRepo, appFeaturesRepo, txManager)
 	featuresService := service.NewFeaturesService(featuresUsecase, logger)
 	teamsRepo, err := sqldb.NewTeamsRepoGorm(dataGorm, logger)
 	if err != nil {
@@ -74,61 +94,41 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 		cleanup()
 		return nil, nil, err
 	}
-	productsUsecase := biz.NewProductsUsecase(productsRepo, logger, txManager)
+	hostgroupProductsRepo, err := sqldb.NewHostgroupProductsRepoGorm(dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	productsUsecase := biz.NewProductsUsecase(productsRepo, hostgroupsRepo, applicationsRepo, hostgroupProductsRepo, logger, txManager)
 	productsService := service.NewProductsService(productsUsecase, logger)
 	envsRepo, err := sqldb.NewEnvsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	envsUsecase := biz.NewEnvsUsecase(envsRepo, logger, txManager)
+	envsUsecase := biz.NewEnvsUsecase(envsRepo, hostgroupsRepo, logger, txManager)
 	envsService := service.NewEnvsService(envsUsecase, logger)
 	clustersRepo, err := sqldb.NewClustersRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	clustersUsecase := biz.NewClustersUsecase(clustersRepo, logger, txManager)
+	clustersUsecase := biz.NewClustersUsecase(clustersRepo, hostgroupsRepo, logger, txManager)
 	clustersService := service.NewClustersService(clustersUsecase, logger)
 	datacentersRepo, err := sqldb.NewDatacentersRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	datacentersUsecase := biz.NewDatacentersUsecase(datacentersRepo, logger, txManager)
+	datacentersUsecase := biz.NewDatacentersUsecase(datacentersRepo, hostgroupsRepo, logger, txManager)
 	datacentersService := service.NewDatacentersService(datacentersUsecase, logger)
-	hostgroupProductsRepo, err := sqldb.NewHostgroupProductsRepoGorm(dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	hostgroupTagsRepo, err := sqldb.NewHostgroupTagsRepoGorm(dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	hostgroupFeaturesRepo, err := sqldb.NewHostgroupFeaturesRepoGorm(dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, hostgroupTeamsRepo, hostgroupProductsRepo, hostgroupTagsRepo, hostgroupFeaturesRepo, clustersRepo, datacentersRepo, envsRepo, featuresRepo, tagsRepo, teamsRepo, productsRepo, logger, txManager)
-	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
-	appTagsRepo, err := sqldb.NewAppTagsRepoGorm(dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	appFeaturesRepo, err := sqldb.NewAppFeaturesRepoGorm(dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
 	appHostgroupsRepo, err := sqldb.NewAppHostgroupsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
+	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, hostgroupTeamsRepo, hostgroupProductsRepo, hostgroupTagsRepo, hostgroupFeaturesRepo, clustersRepo, datacentersRepo, envsRepo, featuresRepo, tagsRepo, teamsRepo, productsRepo, appHostgroupsRepo, logger, txManager)
+	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
 	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, appTagsRepo, appFeaturesRepo, appHostgroupsRepo, clustersRepo, datacentersRepo, productsRepo, teamsRepo, featuresRepo, tagsRepo, hostgroupsRepo, logger, txManager)
 	applicationsService := service.NewApplicationsService(applicationsUsecase, logger)
 	grpcServer := server.NewGRPCServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
