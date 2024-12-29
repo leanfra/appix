@@ -9,16 +9,23 @@ import (
 )
 
 type ClustersUsecase struct {
-	repo repo.ClustersRepo
-	log  *log.Helper
-	txm  repo.TxManager
+	repo     repo.ClustersRepo
+	log      *log.Helper
+	txm      repo.TxManager
+	required []requiredBy
 }
 
-func NewClustersUsecase(repo repo.ClustersRepo, logger log.Logger, txm repo.TxManager) *ClustersUsecase {
+func NewClustersUsecase(
+	repo repo.ClustersRepo,
+	hgrepo repo.HostgroupsRepo,
+	logger log.Logger, txm repo.TxManager) *ClustersUsecase {
 	return &ClustersUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
 		txm:  txm,
+		required: []requiredBy{
+			{inst: hgrepo, name: "hostgroup"},
+		},
 	}
 }
 
@@ -61,7 +68,19 @@ func (s *ClustersUsecase) DeleteClusters(ctx context.Context, ids []uint32) erro
 		return fmt.Errorf("EmptyIds")
 	}
 
-	return s.repo.DeleteClusters(ctx, ids)
+	return s.txm.RunInTX(func(tx repo.TX) error {
+
+		for _, r := range s.required {
+			c, err := r.inst.CountRequire(ctx, tx, repo.RequireCluster, ids)
+			if err != nil {
+				return err
+			}
+			if c > 0 {
+				return fmt.Errorf("Cluster is required by %s", r.name)
+			}
+		}
+		return s.repo.DeleteClusters(ctx, tx, ids)
+	})
 }
 
 // GetClusters is

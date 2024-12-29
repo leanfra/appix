@@ -25,6 +25,8 @@ type HostgroupsUsecase struct {
 	envrepo  repo.EnvsRepo
 
 	log *log.Helper
+
+	required []requiredBy
 }
 
 func NewHostgroupsUsecase(repo repo.HostgroupsRepo,
@@ -39,6 +41,7 @@ func NewHostgroupsUsecase(repo repo.HostgroupsRepo,
 	tagrepo repo.TagsRepo,
 	teamrepo repo.TeamsRepo,
 	prdrepo repo.ProductsRepo,
+	apphgrepo repo.AppHostgroupsRepo,
 	logger log.Logger,
 	txm repo.TxManager) *HostgroupsUsecase {
 
@@ -57,6 +60,9 @@ func NewHostgroupsUsecase(repo repo.HostgroupsRepo,
 		envrepo:   envrepo,
 		log:       log.NewHelper(logger),
 		txm:       txm,
+		required: []requiredBy{
+			{name: "app_hostgroup", inst: apphgrepo},
+		},
 	}
 }
 
@@ -414,6 +420,15 @@ func (s *HostgroupsUsecase) DeleteHostgroups(ctx context.Context, ids []uint32) 
 		return fmt.Errorf("EmptyIds")
 	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
+		for _, r := range s.required {
+			c, err := r.inst.CountRequire(ctx, tx, repo.RequireHostgroup, ids)
+			if err != nil {
+				return err
+			}
+			if c > 0 {
+				return fmt.Errorf("some %s requires", r.name)
+			}
+		}
 		for _, id := range ids {
 			if err := s.deleteM2MPropsByHostgroup(ctx, tx, id, hgPropTag); err != nil {
 				return err

@@ -50,9 +50,9 @@ func (d *ClustersRepoGorm) UpdateClusters(ctx context.Context, cs []*repo.Cluste
 }
 
 // DeleteClusters is
-func (d *ClustersRepoGorm) DeleteClusters(ctx context.Context, ids []uint32) error {
+func (d *ClustersRepoGorm) DeleteClusters(ctx context.Context, tx repo.TX, ids []uint32) error {
 
-	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Cluster{})
+	r := d.data.WithTX(tx).WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Cluster{})
 	if r.Error != nil {
 		return r.Error
 	}

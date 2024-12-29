@@ -9,16 +9,23 @@ import (
 )
 
 type EnvsUsecase struct {
-	repo repo.EnvsRepo
-	log  *log.Helper
-	txm  repo.TxManager
+	repo     repo.EnvsRepo
+	log      *log.Helper
+	txm      repo.TxManager
+	required []requiredBy
 }
 
-func NewEnvsUsecase(repo repo.EnvsRepo, logger log.Logger, txm repo.TxManager) *EnvsUsecase {
+func NewEnvsUsecase(
+	repo repo.EnvsRepo,
+	hgrepo repo.HostgroupsRepo,
+	logger log.Logger, txm repo.TxManager) *EnvsUsecase {
 	return &EnvsUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
 		txm:  txm,
+		required: []requiredBy{
+			{inst: hgrepo, name: "hostgroup"},
+		},
 	}
 }
 
@@ -64,7 +71,18 @@ func (s *EnvsUsecase) DeleteEnvs(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
-	return s.repo.DeleteEnvs(ctx, ids)
+	return s.txm.RunInTX(func(tx repo.TX) error {
+		for _, r := range s.required {
+			c, err := r.inst.CountRequire(ctx, nil, repo.RequireEnv, ids)
+			if err != nil {
+				return err
+			}
+			if c > 0 {
+				return fmt.Errorf("some %s requires", r.name)
+			}
+		}
+		return s.repo.DeleteEnvs(ctx, ids)
+	})
 }
 
 // GetEnvs is

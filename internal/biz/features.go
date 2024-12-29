@@ -9,16 +9,25 @@ import (
 )
 
 type FeaturesUsecase struct {
-	repo repo.FeaturesRepo
-	log  *log.Helper
-	txm  repo.TxManager
+	repo     repo.FeaturesRepo
+	log      *log.Helper
+	txm      repo.TxManager
+	required []requiredBy
 }
 
-func NewFeaturesUsecase(repo repo.FeaturesRepo, logger log.Logger, txm repo.TxManager) *FeaturesUsecase {
+func NewFeaturesUsecase(repo repo.FeaturesRepo,
+	logger log.Logger,
+	hgftrepo repo.HostgroupFeaturesRepo,
+	appftrepo repo.AppFeaturesRepo,
+	txm repo.TxManager) *FeaturesUsecase {
 	return &FeaturesUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
 		txm:  txm,
+		required: []requiredBy{
+			{inst: hgftrepo, name: "hostgroup_feature"},
+			{inst: appftrepo, name: "app_feature"},
+		},
 	}
 }
 
@@ -60,7 +69,18 @@ func (s *FeaturesUsecase) DeleteFeatures(ctx context.Context, ids []uint32) erro
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
-	return s.repo.DeleteFeatures(ctx, ids)
+	return s.txm.RunInTX(func(tx repo.TX) error {
+		for _, r := range s.required {
+			c, err := r.inst.CountRequire(ctx, nil, repo.RequireFeature, ids)
+			if err != nil {
+				return err
+			}
+			if c > 0 {
+				return fmt.Errorf("some %s requires", r.name)
+			}
+		}
+		return s.repo.DeleteFeatures(ctx, ids)
+	})
 }
 
 // GetFeatures is

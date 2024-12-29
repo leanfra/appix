@@ -99,10 +99,10 @@ func TestDeleteTeams_Success_ReturnNil(t *testing.T) {
 	initTeamsRepo()
 	createBaseTeamsData(nil)
 
-	err := teamsRepo.DeleteTeams(context.Background(), []uint32{})
+	err := teamsRepo.DeleteTeams(context.Background(), nil, []uint32{})
 	assert.NoError(t, err)
 
-	err = teamsRepo.DeleteTeams(context.Background(), []uint32{1, 2})
+	err = teamsRepo.DeleteTeams(context.Background(), nil, []uint32{1, 2})
 	assert.NoError(t, err)
 }
 
@@ -110,7 +110,7 @@ func TestDeleteTeams_Fail_ReturnError(t *testing.T) {
 	initTeamsRepo()
 	createBaseTeamsData(nil)
 
-	err := teamsRepo.DeleteTeams(context.Background(), []uint32{3})
+	err := teamsRepo.DeleteTeams(context.Background(), nil, []uint32{3})
 	t.Log(err)
 	assert.Error(t, err)
 }

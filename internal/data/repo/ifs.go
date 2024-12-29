@@ -81,7 +81,7 @@ type ClustersRepo interface {
 	CountRequire
 	CreateClusters(ctx context.Context, cs []*Cluster) error
 	UpdateClusters(ctx context.Context, cs []*Cluster) error
-	DeleteClusters(ctx context.Context, ids []uint32) error
+	DeleteClusters(ctx context.Context, tx TX, ids []uint32) error
 	GetClusters(ctx context.Context, id uint32) (*Cluster, error)
 	ListClusters(ctx context.Context, tx TX, filter *ClustersFilter) ([]*Cluster, error)
 	CountClusters(ctx context.Context, tx TX, filter CountFilter) (int64, error)
@@ -91,7 +91,7 @@ type DatacentersRepo interface {
 	CountRequire
 	CreateDatacenters(ctx context.Context, dcs []*Datacenter) error
 	UpdateDatacenters(ctx context.Context, dcs []*Datacenter) error
-	DeleteDatacenters(ctx context.Context, ids []uint32) error
+	DeleteDatacenters(ctx context.Context, tx TX, ids []uint32) error
 	GetDatacenters(ctx context.Context, id uint32) (*Datacenter, error)
 	ListDatacenters(ctx context.Context, tx TX, filter *DatacentersFilter) ([]*Datacenter, error)
 	CountDatacenters(ctx context.Context, tx TX, filter CountFilter) (int64, error)

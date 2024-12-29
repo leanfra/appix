@@ -107,14 +107,14 @@ func testUpdateDatacentersError(t *testing.T) {
 
 func testDeleteDatacentersSuccess(t *testing.T) {
 	createBaseDatacenters(t, nil)
-	err := dcsRepo.DeleteDatacenters(context.Background(), []uint32{1})
+	err := dcsRepo.DeleteDatacenters(context.Background(), nil, []uint32{1})
 	assert.NoError(t, err)
 }
 
 func testDeleteDatacentersError(t *testing.T) {
 
 	createBaseDatacenters(t, nil)
-	err := dcsRepo.DeleteDatacenters(context.Background(), []uint32{99})
+	err := dcsRepo.DeleteDatacenters(context.Background(), nil, []uint32{99})
 	assert.Error(t, err)
 }
 

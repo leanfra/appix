@@ -107,14 +107,14 @@ func testUpdateClustersError(t *testing.T) {
 
 func testDeleteClustersSuccess(t *testing.T) {
 	createBaseClusters(t, nil)
-	err := clusterRepo.DeleteClusters(context.Background(), []uint32{1})
+	err := clusterRepo.DeleteClusters(context.Background(), nil, []uint32{1})
 	assert.NoError(t, err)
 }
 
 func testDeleteClustersError(t *testing.T) {
 
 	createBaseClusters(t, nil)
-	err := clusterRepo.DeleteClusters(context.Background(), []uint32{99})
+	err := clusterRepo.DeleteClusters(context.Background(), nil, []uint32{99})
 	assert.Error(t, err)
 }
 

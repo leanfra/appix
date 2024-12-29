@@ -54,9 +54,9 @@ func (d *DatacentersRepoGorm) UpdateDatacenters(ctx context.Context,
 }
 
 // DeleteDatacenters is
-func (d *DatacentersRepoGorm) DeleteDatacenters(ctx context.Context, ids []uint32) error {
+func (d *DatacentersRepoGorm) DeleteDatacenters(ctx context.Context, tx repo.TX, ids []uint32) error {
 
-	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Datacenter{})
+	r := d.data.WithTX(tx).WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Datacenter{})
 	if r.Error != nil {
 		return r.Error
 	}

@@ -9,16 +9,23 @@ import (
 )
 
 type DatacentersUsecase struct {
-	repo repo.DatacentersRepo
-	log  *log.Helper
-	txm  repo.TxManager
+	repo     repo.DatacentersRepo
+	log      *log.Helper
+	txm      repo.TxManager
+	required []requiredBy
 }
 
-func NewDatacentersUsecase(repo repo.DatacentersRepo, logger log.Logger, txm repo.TxManager) *DatacentersUsecase {
+func NewDatacentersUsecase(
+	repo repo.DatacentersRepo,
+	hgrepo repo.HostgroupsRepo,
+	logger log.Logger, txm repo.TxManager) *DatacentersUsecase {
 	return &DatacentersUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
 		txm:  txm,
+		required: []requiredBy{
+			{inst: hgrepo, name: "hostgroup"},
+		},
 	}
 }
 
@@ -58,11 +65,23 @@ func (s *DatacentersUsecase) UpdateDatacenters(ctx context.Context, dcs []*Datac
 }
 
 // DeleteDatacenters is
-func (s *DatacentersUsecase) DeleteDatacenters(ctx context.Context, ids []uint32) error {
+func (s *DatacentersUsecase) DeleteDatacenters(ctx context.Context, tx repo.TX, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
-	return s.repo.DeleteDatacenters(ctx, ids)
+	return s.txm.RunInTX(func(tx repo.TX) error {
+		for _, r := range s.required {
+			c, err := r.inst.CountRequire(ctx, tx, repo.RequireDatacenter, ids)
+			if err != nil {
+				return err
+			}
+
+			if c > 0 {
+				return fmt.Errorf("Datacenter is required by %s", r.name)
+			}
+		}
+		return s.repo.DeleteDatacenters(ctx, tx, ids)
+	})
 }
 
 // GetDatacenters is

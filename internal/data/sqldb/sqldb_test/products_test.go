@@ -109,14 +109,14 @@ func testUpdateProdsError(t *testing.T) {
 
 func testDeleteProdsSuccess(t *testing.T) {
 	createBaseProds(t, nil)
-	err := prodsRepo.DeleteProducts(context.Background(), []uint32{1})
+	err := prodsRepo.DeleteProducts(context.Background(), nil, []uint32{1})
 	assert.NoError(t, err)
 }
 
 func testDeleteProdsError(t *testing.T) {
 
 	createBaseProds(t, nil)
-	err := prodsRepo.DeleteProducts(context.Background(), []uint32{99})
+	err := prodsRepo.DeleteProducts(context.Background(), nil, []uint32{99})
 	assert.Error(t, err)
 }
 

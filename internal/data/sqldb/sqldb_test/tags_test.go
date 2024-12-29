@@ -108,14 +108,14 @@ func testUpdateTagsError(t *testing.T) {
 
 func testDeleteTagsSuccess(t *testing.T) {
 	createBaseTags(t, nil)
-	err := tagsRepo.DeleteTags(context.Background(), []uint32{1})
+	err := tagsRepo.DeleteTags(context.Background(), nil, []uint32{1})
 	assert.NoError(t, err)
 }
 
 func testDeleteTagsError(t *testing.T) {
 
 	createBaseTags(t, nil)
-	err := tagsRepo.DeleteTags(context.Background(), []uint32{99})
+	err := tagsRepo.DeleteTags(context.Background(), nil, []uint32{99})
 	assert.Error(t, err)
 }
 
