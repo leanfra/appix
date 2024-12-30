@@ -568,12 +568,12 @@ type MockAppHostgroupsRepo struct {
 	mock.Mock
 }
 
-func (m *MockAppHostgroupsRepo) CreateAppHostgroups(ctx context.Context, a []*repo.AppHostgroup) error {
+func (m *MockAppHostgroupsRepo) CreateAppHostgroups(ctx context.Context, tx repo.TX, a []*repo.AppHostgroup) error {
 	args := m.Called(ctx, a)
 	return args.Error(0)
 }
 
-func (m *MockAppHostgroupsRepo) UpdateAppHostgroups(ctx context.Context, a []*repo.AppHostgroup) error {
+func (m *MockAppHostgroupsRepo) UpdateAppHostgroups(ctx context.Context, tx repo.TX, a []*repo.AppHostgroup) error {
 	args := m.Called(ctx, a)
 	return args.Error(0)
 }
@@ -609,7 +609,7 @@ func (m *MockAppHostgroupsRepo) CountRequire(ctx context.Context, tx repo.TX, ne
 	return args.Get(0).(int64), args.Error(1)
 }
 
-func (m *MockAppHostgroupsRepo) DeleteAppHostgroupsByAppId(ctx context.Context, tx repo.TX, appID uint32) error {
+func (m *MockAppHostgroupsRepo) DeleteAppHostgroupsByAppId(ctx context.Context, tx repo.TX, appID []uint32) error {
 	args := m.Called(ctx, tx, appID)
 	return args.Error(0)
 }

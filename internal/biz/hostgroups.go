@@ -191,7 +191,10 @@ func (s *HostgroupsUsecase) validateProps(
 			return err
 		} else {
 			if count == 0 {
-				return fmt.Errorf("invalid %s", counter.name)
+				return fmt.Errorf("lack all %s", counter.name)
+			}
+			if count != int64(len(counter.ids.GetIds())) {
+				return fmt.Errorf("lack some %s", counter.name)
 			}
 		}
 	}
