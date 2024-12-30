@@ -30,6 +30,9 @@ func (lf *ListClustersFilter) Validate() error {
 	if lf.PageSize == 0 || lf.PageSize > MaxPageSize {
 		return ErrFilterInvalidPagesize
 	}
+	if lf.Page == 0 {
+		return ErrFilterInvalidPage
+	}
 	return nil
 }
 

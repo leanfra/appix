@@ -58,6 +58,9 @@ func (m *ListApplicationsFilter) Validate() error {
 	if m.PageSize == 0 || m.PageSize > MaxPageSize {
 		return ErrFilterInvalidPagesize
 	}
+	if m.Page == 0 {
+		return ErrFilterInvalidPage
+	}
 
 	if m.IsStateful != IsStatefulFalse && m.IsStateful != IsStatefulTrue && m.IsStateful != IsStatefulNone {
 		return fmt.Errorf("InvalidIsStateful")
