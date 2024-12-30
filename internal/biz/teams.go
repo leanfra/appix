@@ -72,7 +72,8 @@ func (s *TeamsUsecase) UpdateTeams(ctx context.Context, teams []*Team) error {
 }
 
 // DeleteTeams is
-func (s *TeamsUsecase) DeleteTeams(ctx context.Context, ids []uint32) error {
+func (s *TeamsUsecase) DeleteTeams(ctx context.Context,
+	ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}

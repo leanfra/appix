@@ -13,9 +13,7 @@ type MockTXManager struct {
 }
 
 func (m *MockTXManager) RunInTX(fn func(repo.TX) error) error {
-	fn(nil)
-	args := m.Called(fn)
-	return args.Error(0)
+	return fn(nil)
 }
 
 type MockTeamsRepo struct {
@@ -47,7 +45,11 @@ func (m *MockTeamsRepo) GetTeams(ctx context.Context, id uint32) (*repo.Team, er
 
 func (m *MockTeamsRepo) ListTeams(ctx context.Context, tx repo.TX, filter *repo.TeamsFilter) ([]*repo.Team, error) {
 	args := m.Called(ctx, tx, filter)
-	return args.Get(0).([]*repo.Team), args.Error(1)
+	rt := args.Get(0)
+	if rt == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*repo.Team), nil
 }
 
 func (m *MockTeamsRepo) CountTeams(ctx context.Context, tx repo.TX, filter repo.CountFilter) (int64, error) {
@@ -95,7 +97,7 @@ func (m *MockTagsRepo) CountTags(ctx context.Context, tx repo.TX, filter repo.Co
 }
 
 func (m *MockTagsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -134,7 +136,7 @@ func (m *MockProductsRepo) CountProducts(ctx context.Context, tx repo.TX, filter
 }
 
 func (m *MockProductsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -173,7 +175,7 @@ func (m *MockHostgroupFeaturesRepo) CountHostgroupFeatures(ctx context.Context, 
 }
 
 func (m *MockHostgroupFeaturesRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -212,7 +214,7 @@ func (m *MockHostgroupTagsRepo) CountHostgroupTags(ctx context.Context, tx repo.
 }
 
 func (m *MockHostgroupTagsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -251,7 +253,7 @@ func (m *MockHostgroupProductsRepo) CountHostgroupProducts(ctx context.Context, 
 }
 
 func (m *MockHostgroupProductsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -294,7 +296,7 @@ func (m *MockHostgroupTeamsRepo) CountHostgroupTeams(ctx context.Context, tx rep
 }
 
 func (m *MockHostgroupTeamsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -333,7 +335,7 @@ func (m *MockHostgroupsRepo) CountHostgroups(ctx context.Context, tx repo.TX, fi
 }
 
 func (m *MockHostgroupsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -372,7 +374,7 @@ func (m *MockFeaturesRepo) CountFeatures(ctx context.Context, tx repo.TX, filter
 }
 
 func (m *MockFeaturesRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -411,7 +413,7 @@ func (m *MockEnvsRepo) CountEnvs(ctx context.Context, tx repo.TX, filter repo.Co
 }
 
 func (m *MockEnvsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -450,7 +452,7 @@ func (m *MockDatacentersRepo) CountDatacenters(ctx context.Context, tx repo.TX, 
 }
 
 func (m *MockDatacentersRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -489,7 +491,7 @@ func (m *MockClustersRepo) CountClusters(ctx context.Context, tx repo.TX, filter
 }
 
 func (m *MockClustersRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -528,7 +530,7 @@ func (m *MockAppHostgroupsRepo) CountAppHostgroups(ctx context.Context, tx repo.
 }
 
 func (m *MockAppHostgroupsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -572,7 +574,7 @@ func (m *MockAppFeaturesRepo) CountAppFeatures(ctx context.Context, tx repo.TX, 
 }
 
 func (m *MockAppFeaturesRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -616,7 +618,7 @@ func (m *MockAppTagsRepo) CountAppTags(ctx context.Context, tx repo.TX, filter r
 }
 
 func (m *MockAppTagsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
 
@@ -657,6 +659,6 @@ func (m *MockApplicationsRepo) CountApplications(ctx context.Context, tx repo.TX
 	return args.Get(0).(int64), args.Error(1)
 }
 func (m *MockApplicationsRepo) CountRequire(ctx context.Context, tx repo.TX, need repo.RequireType, ids []uint32) (int64, error) {
-	args := m.Called(ctx)
+	args := m.Called(ctx, tx, need, ids)
 	return args.Get(0).(int64), args.Error(1)
 }
