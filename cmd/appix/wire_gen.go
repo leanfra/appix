@@ -65,7 +65,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 		cleanup()
 		return nil, nil, err
 	}
-	featuresUsecase := biz.NewFeaturesUsecase(featuresRepo, logger, hostgroupFeaturesRepo, appFeaturesRepo, txManager)
+	featuresUsecase := biz.NewFeaturesUsecase(featuresRepo, hostgroupFeaturesRepo, appFeaturesRepo, logger, txManager)
 	featuresService := service.NewFeaturesService(featuresUsecase, logger)
 	teamsRepo, err := sqldb.NewTeamsRepoGorm(dataGorm, logger)
 	if err != nil {
