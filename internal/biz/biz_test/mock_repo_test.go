@@ -159,13 +159,13 @@ type MockHostgroupFeaturesRepo struct {
 	mock.Mock
 }
 
-func (m *MockHostgroupFeaturesRepo) CreateHostgroupFeatures(ctx context.Context, hgfs []*repo.HostgroupFeature) error {
-	args := m.Called(ctx, hgfs)
+func (m *MockHostgroupFeaturesRepo) CreateHostgroupFeatures(ctx context.Context, tx repo.TX, hgfs []*repo.HostgroupFeature) error {
+	args := m.Called(ctx, tx, hgfs)
 	return args.Error(0)
 }
 
-func (m *MockHostgroupFeaturesRepo) UpdateHostgroupFeatures(ctx context.Context, hgfs []*repo.HostgroupFeature) error {
-	args := m.Called(ctx, hgfs)
+func (m *MockHostgroupFeaturesRepo) UpdateHostgroupFeatures(ctx context.Context, tx repo.TX, hgfs []*repo.HostgroupFeature) error {
+	args := m.Called(ctx, tx, hgfs)
 	return args.Error(0)
 }
 
@@ -398,8 +398,8 @@ func (m *MockFeaturesRepo) UpdateFeatures(ctx context.Context, f []*repo.Feature
 	return args.Error(0)
 }
 
-func (m *MockFeaturesRepo) DeleteFeatures(ctx context.Context, tx repo.TX, ids []uint32) error {
-	args := m.Called(ctx, tx, ids)
+func (m *MockFeaturesRepo) DeleteFeatures(ctx context.Context, ids []uint32) error {
+	args := m.Called(ctx, ids)
 	return args.Error(0)
 }
 
@@ -618,13 +618,13 @@ type MockAppFeaturesRepo struct {
 	mock.Mock
 }
 
-func (m *MockAppFeaturesRepo) CreateAppFeatures(ctx context.Context, a []*repo.AppFeature) error {
-	args := m.Called(ctx, a)
+func (m *MockAppFeaturesRepo) CreateAppFeatures(ctx context.Context, tx repo.TX, a []*repo.AppFeature) error {
+	args := m.Called(ctx, tx, a)
 	return args.Error(0)
 }
 
-func (m *MockAppFeaturesRepo) UpdateAppFeatures(ctx context.Context, a []*repo.AppFeature) error {
-	args := m.Called(ctx, a)
+func (m *MockAppFeaturesRepo) UpdateAppFeatures(ctx context.Context, tx repo.TX, a []*repo.AppFeature) error {
+	args := m.Called(ctx, tx, a)
 	return args.Error(0)
 }
 
@@ -659,7 +659,7 @@ func (m *MockAppFeaturesRepo) CountRequire(ctx context.Context, tx repo.TX, need
 	return args.Get(0).(int64), args.Error(1)
 }
 
-func (m *MockAppFeaturesRepo) DeleteAppFeaturesByAppId(ctx context.Context, tx repo.TX, appID uint32) error {
+func (m *MockAppFeaturesRepo) DeleteAppFeaturesByAppId(ctx context.Context, tx repo.TX, appID []uint32) error {
 	args := m.Called(ctx, tx, appID)
 	return args.Error(0)
 }

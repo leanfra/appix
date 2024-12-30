@@ -15,10 +15,11 @@ type FeaturesUsecase struct {
 	required []requiredBy
 }
 
-func NewFeaturesUsecase(repo repo.FeaturesRepo,
-	logger log.Logger,
+func NewFeaturesUsecase(
+	repo repo.FeaturesRepo,
 	hgftrepo repo.HostgroupFeaturesRepo,
 	appftrepo repo.AppFeaturesRepo,
+	logger log.Logger,
 	txm repo.TxManager) *FeaturesUsecase {
 	return &FeaturesUsecase{
 		repo: repo,
