@@ -107,14 +107,14 @@ func testUpdateEnvsError(t *testing.T) {
 
 func testDeleteEnvsSuccess(t *testing.T) {
 	createBaseEnvs(t, nil)
-	err := envsRepo.DeleteEnvs(context.Background(), []uint32{1})
+	err := envsRepo.DeleteEnvs(context.Background(), nil, []uint32{1})
 	assert.NoError(t, err)
 }
 
 func testDeleteEnvsError(t *testing.T) {
 
 	createBaseEnvs(t, nil)
-	err := envsRepo.DeleteEnvs(context.Background(), []uint32{99})
+	err := envsRepo.DeleteEnvs(context.Background(), nil, []uint32{99})
 	assert.Error(t, err)
 }
 

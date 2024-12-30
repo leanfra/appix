@@ -18,7 +18,8 @@ type EnvsUsecase struct {
 func NewEnvsUsecase(
 	repo repo.EnvsRepo,
 	hgrepo repo.HostgroupsRepo,
-	logger log.Logger, txm repo.TxManager) *EnvsUsecase {
+	logger log.Logger,
+	txm repo.TxManager) *EnvsUsecase {
 	return &EnvsUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
@@ -81,7 +82,7 @@ func (s *EnvsUsecase) DeleteEnvs(ctx context.Context, ids []uint32) error {
 				return fmt.Errorf("some %s requires", r.name)
 			}
 		}
-		return s.repo.DeleteEnvs(ctx, ids)
+		return s.repo.DeleteEnvs(ctx, tx, ids)
 	})
 }
 

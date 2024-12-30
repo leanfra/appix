@@ -55,9 +55,9 @@ func (d *FeaturesRepoGorm) UpdateFeatures(ctx context.Context, features []*repo.
 }
 
 // DeleteFeatures is
-func (d *FeaturesRepoGorm) DeleteFeatures(ctx context.Context, ids []uint32) error {
+func (d *FeaturesRepoGorm) DeleteFeatures(ctx context.Context, tx repo.TX, ids []uint32) error {
 
-	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Feature{})
+	r := d.data.WithTX(tx).WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Feature{})
 	if r.Error != nil {
 		return r.Error
 	}

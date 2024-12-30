@@ -118,14 +118,14 @@ func testUpdateFeaturesError(t *testing.T) {
 
 func testDeleteFeaturesSuccess(t *testing.T) {
 	createBaseFeatures(t, nil)
-	err := ftRepo.DeleteFeatures(context.Background(), []uint32{1})
+	err := ftRepo.DeleteFeatures(context.Background(), nil, []uint32{1})
 	assert.NoError(t, err)
 }
 
 func testDeleteFeaturesError(t *testing.T) {
 
 	createBaseFeatures(t, nil)
-	err := ftRepo.DeleteFeatures(context.Background(), []uint32{99})
+	err := ftRepo.DeleteFeatures(context.Background(), nil, []uint32{99})
 	assert.Error(t, err)
 }
 

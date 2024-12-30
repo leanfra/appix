@@ -80,7 +80,7 @@ func (s *FeaturesUsecase) DeleteFeatures(ctx context.Context, ids []uint32) erro
 				return fmt.Errorf("some %s requires", r.name)
 			}
 		}
-		return s.repo.DeleteFeatures(ctx, ids)
+		return s.repo.DeleteFeatures(ctx, tx, ids)
 	})
 }
 

@@ -65,7 +65,7 @@ func (s *DatacentersUsecase) UpdateDatacenters(ctx context.Context, dcs []*Datac
 }
 
 // DeleteDatacenters is
-func (s *DatacentersUsecase) DeleteDatacenters(ctx context.Context, tx repo.TX, ids []uint32) error {
+func (s *DatacentersUsecase) DeleteDatacenters(ctx context.Context, ids []uint32) error {
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}

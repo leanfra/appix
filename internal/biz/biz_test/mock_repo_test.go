@@ -398,7 +398,7 @@ func (m *MockFeaturesRepo) UpdateFeatures(ctx context.Context, f []*repo.Feature
 	return args.Error(0)
 }
 
-func (m *MockFeaturesRepo) DeleteFeatures(ctx context.Context, ids []uint32) error {
+func (m *MockFeaturesRepo) DeleteFeatures(ctx context.Context, tx repo.TX, ids []uint32) error {
 	args := m.Called(ctx, ids)
 	return args.Error(0)
 }

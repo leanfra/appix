@@ -97,7 +97,7 @@ func (s *DatacentersService) DeleteDatacenters(ctx context.Context,
 	if req == nil {
 		return nil, fmt.Errorf("req is nil")
 	}
-	err := s.usecase.DeleteDatacenters(ctx, nil, req.Ids)
+	err := s.usecase.DeleteDatacenters(ctx, req.Ids)
 	reply := &pb.DeleteDatacentersReply{
 		Action:  "DeleteDatacenters",
 		Code:    0,

@@ -101,7 +101,7 @@ type EnvsRepo interface {
 	RequireCounter
 	CreateEnvs(ctx context.Context, envs []*Env) error
 	UpdateEnvs(ctx context.Context, envs []*Env) error
-	DeleteEnvs(ctx context.Context, ids []uint32) error
+	DeleteEnvs(ctx context.Context, tx TX, ids []uint32) error
 	GetEnvs(ctx context.Context, id uint32) (*Env, error)
 	ListEnvs(ctx context.Context, tx TX, filter *EnvsFilter) ([]*Env, error)
 	CountEnvs(ctx context.Context, tx TX, filter CountFilter) (int64, error)
@@ -111,7 +111,7 @@ type FeaturesRepo interface {
 	RequireCounter
 	CreateFeatures(ctx context.Context, features []*Feature) error
 	UpdateFeatures(ctx context.Context, features []*Feature) error
-	DeleteFeatures(ctx context.Context, ids []uint32) error
+	DeleteFeatures(ctx context.Context, tx TX, ids []uint32) error
 	GetFeatures(ctx context.Context, id uint32) (*Feature, error)
 	ListFeatures(ctx context.Context, tx TX, filter *FeaturesFilter) ([]*Feature, error)
 	CountFeatures(ctx context.Context, tx TX, filter CountFilter) (int64, error)

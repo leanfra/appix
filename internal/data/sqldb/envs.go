@@ -48,9 +48,12 @@ func (d *EnvsRepoGorm) UpdateEnvs(ctx context.Context, envs []*repo.Env) error {
 }
 
 // DeleteEnvs is
-func (d *EnvsRepoGorm) DeleteEnvs(ctx context.Context, ids []uint32) error {
+func (d *EnvsRepoGorm) DeleteEnvs(
+	ctx context.Context,
+	tx repo.TX,
+	ids []uint32) error {
 
-	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Env{})
+	r := d.data.WithTX(tx).WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Env{})
 	if r.Error != nil {
 		return r.Error
 	}
