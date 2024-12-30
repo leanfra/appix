@@ -31,6 +31,7 @@ const FilterKVSplit = ":"
 var ErrFilterValuesExceedMax = errors.New("filter values exceeded max number")
 var ErrFilterKVInvalid = errors.New("filter KV invalid format")
 var ErrFilterInvalidPagesize = errors.New("filter invalid page size")
+var ErrFilterInvalidPage = errors.New("filter invalid page")
 
 func filterKvValidate(kvstr string) error {
 	kv := strings.Split(kvstr, FilterKVSplit)

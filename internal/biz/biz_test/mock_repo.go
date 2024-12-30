@@ -40,6 +40,9 @@ func (m *MockTeamsRepo) DeleteTeams(ctx context.Context, tx repo.TX, ids []uint3
 
 func (m *MockTeamsRepo) GetTeams(ctx context.Context, id uint32) (*repo.Team, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.Team), args.Error(1)
 }
 
@@ -83,6 +86,9 @@ func (m *MockTagsRepo) DeleteTags(ctx context.Context, tx repo.TX, ids []uint32)
 
 func (m *MockTagsRepo) GetTags(ctx context.Context, id uint32) (*repo.Tag, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.Tag), args.Error(1)
 }
 
@@ -125,11 +131,17 @@ func (m *MockProductsRepo) DeleteProducts(ctx context.Context, tx repo.TX, ids [
 
 func (m *MockProductsRepo) GetProducts(ctx context.Context, id uint32) (*repo.Product, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.Product), args.Error(1)
 }
 
 func (m *MockProductsRepo) ListProducts(ctx context.Context, tx repo.TX, filter *repo.ProductsFilter) ([]*repo.Product, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.Product), args.Error(1)
 }
 
@@ -164,11 +176,17 @@ func (m *MockHostgroupFeaturesRepo) DeleteHostgroupFeatures(ctx context.Context,
 
 func (m *MockHostgroupFeaturesRepo) GetHostgroupFeatures(ctx context.Context, id uint32) (*repo.HostgroupFeature, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.HostgroupFeature), args.Error(1)
 }
 
 func (m *MockHostgroupFeaturesRepo) ListHostgroupFeatures(ctx context.Context, tx repo.TX, filter *repo.HostgroupFeaturesFilter) ([]*repo.HostgroupFeature, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.HostgroupFeature), args.Error(1)
 }
 
@@ -203,11 +221,17 @@ func (m *MockHostgroupTagsRepo) DeleteHostgroupTags(ctx context.Context, tx repo
 
 func (m *MockHostgroupTagsRepo) GetHostgroupTags(ctx context.Context, id uint32) (*repo.HostgroupTag, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.HostgroupTag), args.Error(1)
 }
 
 func (m *MockHostgroupTagsRepo) ListHostgroupTags(ctx context.Context, tx repo.TX, filter *repo.HostgroupTagsFilter) ([]*repo.HostgroupTag, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.HostgroupTag), args.Error(1)
 }
 
@@ -225,12 +249,12 @@ type MockHostgroupProductsRepo struct {
 	mock.Mock
 }
 
-func (m *MockHostgroupProductsRepo) CreateHostgroupProducts(ctx context.Context, hgp []*repo.HostgroupProduct) error {
-	args := m.Called(ctx, hgp)
+func (m *MockHostgroupProductsRepo) CreateHostgroupProducts(ctx context.Context, tx repo.TX, hgp []*repo.HostgroupProduct) error {
+	args := m.Called(ctx, tx, hgp)
 	return args.Error(0)
 }
 
-func (m *MockHostgroupProductsRepo) UpdateHostgroupProducts(ctx context.Context, hgp []*repo.HostgroupProduct) error {
+func (m *MockHostgroupProductsRepo) UpdateHostgroupProducts(ctx context.Context, tx repo.TX, hgp []*repo.HostgroupProduct) error {
 	args := m.Called(ctx, hgp)
 	return args.Error(0)
 }
@@ -242,11 +266,17 @@ func (m *MockHostgroupProductsRepo) DeleteHostgroupProducts(ctx context.Context,
 
 func (m *MockHostgroupProductsRepo) GetHostgroupProducts(ctx context.Context, id uint32) (*repo.HostgroupProduct, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.HostgroupProduct), args.Error(1)
 }
 
 func (m *MockHostgroupProductsRepo) ListHostgroupProducts(ctx context.Context, tx repo.TX, filter *repo.HostgroupProductsFilter) ([]*repo.HostgroupProduct, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.HostgroupProduct), args.Error(1)
 }
 
@@ -285,11 +315,17 @@ func (m *MockHostgroupTeamsRepo) DeleteHostgroupTeams(ctx context.Context, tx re
 
 func (m *MockHostgroupTeamsRepo) GetHostgroupTeams(ctx context.Context, id uint32) (*repo.HostgroupTeam, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.HostgroupTeam), args.Error(1)
 }
 
 func (m *MockHostgroupTeamsRepo) ListHostgroupTeams(ctx context.Context, tx repo.TX, filter *repo.HostgroupTeamsFilter) ([]*repo.HostgroupTeam, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.HostgroupTeam), args.Error(1)
 }
 
@@ -324,11 +360,17 @@ func (m *MockHostgroupsRepo) DeleteHostgroups(ctx context.Context, tx repo.TX, i
 
 func (m *MockHostgroupsRepo) GetHostgroups(ctx context.Context, id uint32) (*repo.Hostgroup, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.Hostgroup), args.Error(1)
 }
 
 func (m *MockHostgroupsRepo) ListHostgroups(ctx context.Context, tx repo.TX, filter *repo.HostgroupsFilter) ([]*repo.Hostgroup, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.Hostgroup), args.Error(1)
 }
 
@@ -363,11 +405,17 @@ func (m *MockFeaturesRepo) DeleteFeatures(ctx context.Context, tx repo.TX, ids [
 
 func (m *MockFeaturesRepo) GetFeatures(ctx context.Context, id uint32) (*repo.Feature, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.Feature), args.Error(1)
 }
 
 func (m *MockFeaturesRepo) ListFeatures(ctx context.Context, tx repo.TX, filter *repo.FeaturesFilter) ([]*repo.Feature, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.Feature), args.Error(1)
 }
 
@@ -402,11 +450,17 @@ func (m *MockEnvsRepo) DeleteEnvs(ctx context.Context, tx repo.TX, ids []uint32)
 
 func (m *MockEnvsRepo) GetEnvs(ctx context.Context, id uint32) (*repo.Env, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.Env), args.Error(1)
 }
 
 func (m *MockEnvsRepo) ListEnvs(ctx context.Context, tx repo.TX, filter *repo.EnvsFilter) ([]*repo.Env, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.Env), args.Error(1)
 }
 
@@ -441,11 +495,17 @@ func (m *MockDatacentersRepo) DeleteDatacenters(ctx context.Context, tx repo.TX,
 
 func (m *MockDatacentersRepo) GetDatacenters(ctx context.Context, id uint32) (*repo.Datacenter, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.Datacenter), args.Error(1)
 }
 
 func (m *MockDatacentersRepo) ListDatacenters(ctx context.Context, tx repo.TX, filter *repo.DatacentersFilter) ([]*repo.Datacenter, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.Datacenter), args.Error(1)
 }
 
@@ -480,11 +540,17 @@ func (m *MockClustersRepo) DeleteClusters(ctx context.Context, tx repo.TX, ids [
 
 func (m *MockClustersRepo) GetClusters(ctx context.Context, id uint32) (*repo.Cluster, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.Cluster), args.Error(1)
 }
 
 func (m *MockClustersRepo) ListClusters(ctx context.Context, tx repo.TX, filter *repo.ClustersFilter) ([]*repo.Cluster, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.Cluster), args.Error(1)
 }
 
@@ -519,11 +585,17 @@ func (m *MockAppHostgroupsRepo) DeleteAppHostgroups(ctx context.Context, tx repo
 
 func (m *MockAppHostgroupsRepo) GetAppHostgroups(ctx context.Context, id uint32) (*repo.AppHostgroup, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.AppHostgroup), args.Error(1)
 }
 
 func (m *MockAppHostgroupsRepo) ListAppHostgroups(ctx context.Context, tx repo.TX, filter *repo.AppHostgroupsFilter) ([]*repo.AppHostgroup, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.AppHostgroup), args.Error(1)
 }
 
@@ -563,11 +635,17 @@ func (m *MockAppFeaturesRepo) DeleteAppFeatures(ctx context.Context, tx repo.TX,
 
 func (m *MockAppFeaturesRepo) GetAppFeatures(ctx context.Context, id uint32) (*repo.AppFeature, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.AppFeature), args.Error(1)
 }
 
 func (m *MockAppFeaturesRepo) ListAppFeatures(ctx context.Context, tx repo.TX, filter *repo.AppFeaturesFilter) ([]*repo.AppFeature, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.AppFeature), args.Error(1)
 }
 
@@ -607,11 +685,17 @@ func (m *MockAppTagsRepo) DeleteAppTags(ctx context.Context, tx repo.TX, ids []u
 
 func (m *MockAppTagsRepo) GetAppTags(ctx context.Context, id uint32) (*repo.AppTag, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.AppTag), args.Error(1)
 }
 
 func (m *MockAppTagsRepo) ListAppTags(ctx context.Context, tx repo.TX, filter *repo.AppTagsFilter) ([]*repo.AppTag, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.AppTag), args.Error(1)
 }
 
@@ -651,10 +735,16 @@ func (m *MockApplicationsRepo) DeleteApplications(ctx context.Context, tx repo.T
 }
 func (m *MockApplicationsRepo) GetApplications(ctx context.Context, id uint32) (*repo.Application, error) {
 	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*repo.Application), args.Error(1)
 }
 func (m *MockApplicationsRepo) ListApplications(ctx context.Context, tx repo.TX, filter *repo.ApplicationsFilter) ([]*repo.Application, error) {
 	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]*repo.Application), args.Error(1)
 }
 func (m *MockApplicationsRepo) CountApplications(ctx context.Context, tx repo.TX, filter repo.CountFilter) (int64, error) {

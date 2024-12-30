@@ -15,11 +15,13 @@ type ProductsUsecase struct {
 	required []requiredBy
 }
 
-func NewProductsUsecase(repo repo.ProductsRepo,
+func NewProductsUsecase(
+	repo repo.ProductsRepo,
 	hostgrouprepo repo.HostgroupsRepo,
 	apprepo repo.ApplicationsRepo,
 	hprepo repo.HostgroupProductsRepo,
-	logger log.Logger, txm repo.TxManager) *ProductsUsecase {
+	logger log.Logger,
+	txm repo.TxManager) *ProductsUsecase {
 	return &ProductsUsecase{
 		repo: repo,
 		log:  log.NewHelper(logger),
@@ -72,7 +74,7 @@ func (s *ProductsUsecase) DeleteProducts(ctx context.Context, ids []uint32) erro
 	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
 		for _, r := range s.required {
-			c, err := r.inst.CountRequire(ctx, nil, repo.RequireProduct, ids)
+			c, err := r.inst.CountRequire(ctx, tx, repo.RequireProduct, ids)
 			if err != nil {
 				return err
 			}

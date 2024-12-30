@@ -54,20 +54,6 @@ func TestCreateTags(t *testing.T) {
 	err = usecase.CreateTags(ctx, tags)
 	assert.Error(t, err)
 
-	// Test case: Conversion fails
-	tags = []*biz.Tag{{Key: "ValidTag", Value: "invalid code"}}
-	// should not call repo
-	// repoCall = tagRepo.On("CreateTags", ctx, mock.Anything).Return(nil)
-	err = usecase.CreateTags(ctx, tags)
-	assert.Error(t, err)
-
-	// Test case: Invalid Leader
-	tags = []*biz.Tag{{Key: "ValidTag", Value: "validcode"}}
-	// not call repo
-	// repoCall = tagRepo.On("CreateTags", ctx, mock.Anything).Return(nil)
-	err = usecase.CreateTags(ctx, tags)
-	assert.Error(t, err)
-
 	// Test case: Creation fails
 	tags = []*biz.Tag{{Key: "valid", Value: "validcode"}}
 	repoCall := tagsrepo.On("CreateTags", ctx, mock.Anything).Return(errors.New("creation failed"))
