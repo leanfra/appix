@@ -182,7 +182,8 @@ func (m *MockHostgroupFeaturesRepo) GetHostgroupFeatures(ctx context.Context, id
 	return args.Get(0).(*repo.HostgroupFeature), args.Error(1)
 }
 
-func (m *MockHostgroupFeaturesRepo) ListHostgroupFeatures(ctx context.Context, tx repo.TX, filter *repo.HostgroupFeaturesFilter) ([]*repo.HostgroupFeature, error) {
+func (m *MockHostgroupFeaturesRepo) ListHostgroupFeatures(
+	ctx context.Context, tx repo.TX, filter *repo.HostgroupFeaturesFilter) ([]*repo.HostgroupFeature, error) {
 	args := m.Called(ctx, tx, filter)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -205,12 +206,12 @@ type MockHostgroupTagsRepo struct {
 }
 
 func (m *MockHostgroupTagsRepo) CreateHostgroupTags(ctx context.Context, tx repo.TX, hgt []*repo.HostgroupTag) error {
-	args := m.Called(ctx, hgt)
+	args := m.Called(ctx, tx, hgt)
 	return args.Error(0)
 }
 
 func (m *MockHostgroupTagsRepo) UpdateHostgroupTags(ctx context.Context, tx repo.TX, hgt []*repo.HostgroupTag) error {
-	args := m.Called(ctx, hgt)
+	args := m.Called(ctx, tx, hgt)
 	return args.Error(0)
 }
 

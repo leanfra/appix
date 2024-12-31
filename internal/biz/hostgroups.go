@@ -206,7 +206,7 @@ func (s *HostgroupsUsecase) createM2MProps(
 
 	switch prop {
 	case hgPropTag:
-		_hg_tags := make([]*repo.HostgroupTag, 0, len(ids))
+		_hg_tags := make([]*repo.HostgroupTag, len(ids))
 		for i, id := range ids {
 			_hg_tags[i] = &repo.HostgroupTag{
 				HostgroupID: hgid,
@@ -215,7 +215,7 @@ func (s *HostgroupsUsecase) createM2MProps(
 		}
 		return s.htagrepo.CreateHostgroupTags(ctx, tx, _hg_tags)
 	case hgPropFeature:
-		_hg_features := make([]*repo.HostgroupFeature, 0, len(ids))
+		_hg_features := make([]*repo.HostgroupFeature, len(ids))
 		for i, id := range ids {
 			_hg_features[i] = &repo.HostgroupFeature{
 				HostgroupID: hgid,
@@ -224,7 +224,7 @@ func (s *HostgroupsUsecase) createM2MProps(
 		}
 		return s.hfrepo.CreateHostgroupFeatures(ctx, tx, _hg_features)
 	case hgPropShareProduct:
-		_hg_products := make([]*repo.HostgroupProduct, 0, len(ids))
+		_hg_products := make([]*repo.HostgroupProduct, len(ids))
 		for i, id := range ids {
 			_hg_products[i] = &repo.HostgroupProduct{
 				HostgroupID: hgid,
@@ -233,7 +233,7 @@ func (s *HostgroupsUsecase) createM2MProps(
 		}
 		return s.hprepo.CreateHostgroupProducts(ctx, tx, _hg_products)
 	case hgPropShareTeam:
-		_hg_teams := make([]*repo.HostgroupTeam, 0, len(ids))
+		_hg_teams := make([]*repo.HostgroupTeam, len(ids))
 		for i, id := range ids {
 			_hg_teams[i] = &repo.HostgroupTeam{
 				HostgroupID: hgid,
@@ -337,7 +337,9 @@ func (s *HostgroupsUsecase) deleteM2MPropsByHostgroup(
 	return fmt.Errorf("deleteProps invalid prop %s", prop)
 }
 
-func (s *HostgroupsUsecase) handleM2MProps(
+// HandleM2MProps is public for unitest
+func (s *HostgroupsUsecase) HandleM2MProps(
+
 	ctx context.Context, tx repo.TX, hgid uint32, ids []uint32, prop string) error {
 
 	oldItems, err := s.listM2MProps(ctx, tx, []uint32{hgid}, prop)
@@ -347,15 +349,19 @@ func (s *HostgroupsUsecase) handleM2MProps(
 	var oldIds []uint32
 
 	switch items := oldItems.(type) {
-	case []*repo.AppTag:
+	case []*repo.HostgroupTag:
 		for _, item := range items {
 			oldIds = append(oldIds, item.Id)
 		}
-	case []*repo.AppFeature:
+	case []*repo.HostgroupFeature:
 		for _, item := range items {
 			oldIds = append(oldIds, item.Id)
 		}
-	case []*repo.AppHostgroup:
+	case []*repo.HostgroupProduct:
+		for _, item := range items {
+			oldIds = append(oldIds, item.Id)
+		}
+	case []*repo.HostgroupTeam:
 		for _, item := range items {
 			oldIds = append(oldIds, item.Id)
 		}
@@ -388,7 +394,7 @@ func (s *HostgroupsUsecase) UpdateHostgroups(ctx context.Context, hgs []*Hostgro
 	}
 
 	return s.txm.RunInTX(func(tx repo.TX) error {
-		if s.validateProps(ctx, tx, hgs); err != nil {
+		if err := s.validateProps(ctx, tx, hgs); err != nil {
 			return err
 		}
 		if err := s.hgrepo.UpdateHostgroups(ctx, tx, _hgs); err != nil {
@@ -396,19 +402,19 @@ func (s *HostgroupsUsecase) UpdateHostgroups(ctx context.Context, hgs []*Hostgro
 		}
 
 		for _, hg := range hgs {
-			if err := s.handleM2MProps(ctx, tx,
+			if err := s.HandleM2MProps(ctx, tx,
 				hg.Id, hg.TagsId, hgPropTag); err != nil {
 				return err
 			}
-			if err := s.handleM2MProps(ctx, tx,
+			if err := s.HandleM2MProps(ctx, tx,
 				hg.Id, hg.FeaturesId, hgPropFeature); err != nil {
 				return err
 			}
-			if err := s.handleM2MProps(ctx, tx,
+			if err := s.HandleM2MProps(ctx, tx,
 				hg.Id, hg.ShareProductsId, hgPropShareProduct); err != nil {
 				return err
 			}
-			if err := s.handleM2MProps(ctx, tx,
+			if err := s.HandleM2MProps(ctx, tx,
 				hg.Id, hg.ShareTeamsId, hgPropShareTeam); err != nil {
 				return err
 			}
@@ -523,45 +529,47 @@ func (s *HostgroupsUsecase) ListHostgroups(
 		if len(filterIds) == 0 {
 			return nil
 		}
-		var items interface{}
-		var err error
+		var hg_ids []uint32
+
 		switch prop {
 		case hgPropTag:
-			items, err = s.htagrepo.ListHostgroupTags(ctx, nil, &repo.HostgroupTagsFilter{
+			items, err := s.htagrepo.ListHostgroupTags(ctx, nil, &repo.HostgroupTagsFilter{
 				Ids: filter.TagsId})
+			if err != nil {
+				return err
+			}
+			for _, item := range items {
+				hg_ids = append(hg_ids, item.HostgroupID)
+			}
 		case hgPropFeature:
-			items, err = s.hfrepo.ListHostgroupFeatures(ctx, nil, &repo.HostgroupFeaturesFilter{
+			items, err := s.hfrepo.ListHostgroupFeatures(ctx, nil, &repo.HostgroupFeaturesFilter{
 				Ids: filter.FeaturesId})
+			if err != nil {
+				return err
+			}
+			for _, item := range items {
+				hg_ids = append(hg_ids, item.HostgroupID)
+			}
 		case hgPropShareProduct:
-			items, err = s.hprepo.ListHostgroupProducts(ctx, nil, &repo.HostgroupProductsFilter{
+			items, err := s.hprepo.ListHostgroupProducts(ctx, nil, &repo.HostgroupProductsFilter{
 				Ids: filter.ShareProductsId})
+			if err != nil {
+				return err
+			}
+			for _, item := range items {
+				hg_ids = append(hg_ids, item.HostgroupID)
+			}
 		case hgPropShareTeam:
-			items, err = s.hteamrepo.ListHostgroupTeams(ctx, nil, &repo.HostgroupTeamsFilter{
+			items, err := s.hteamrepo.ListHostgroupTeams(ctx, nil, &repo.HostgroupTeamsFilter{
 				Ids: filter.ShareTeamsId})
-		}
-		if err != nil {
-			return err
+			if err != nil {
+				return err
+			}
+			for _, item := range items {
+				hg_ids = append(hg_ids, item.HostgroupID)
+			}
 		}
 
-		var hg_ids []uint32
-		switch v := items.(type) {
-		case []*repo.HostgroupTag:
-			for _, item := range v {
-				hg_ids = append(hg_ids, item.HostgroupID)
-			}
-		case []*repo.HostgroupFeature:
-			for _, item := range v {
-				hg_ids = append(hg_ids, item.HostgroupID)
-			}
-		case []*repo.HostgroupProduct:
-			for _, item := range v {
-				hg_ids = append(hg_ids, item.HostgroupID)
-			}
-		case []*repo.HostgroupTeam:
-			for _, item := range v {
-				hg_ids = append(hg_ids, item.HostgroupID)
-			}
-		}
 		if len(hg_ids) == 0 {
 			return fmt.Errorf("ListHostgroups no hostgroup with %s", prop)
 		}
