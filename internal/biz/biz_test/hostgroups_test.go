@@ -780,3 +780,252 @@ func TestDeleteHostgroups(t *testing.T) {
 	t.Logf("delete hostgroup: %v", err)
 
 }
+
+func TestListHostgroup(t *testing.T) {
+	ctx := context.Background()
+	txm := new(MockTXManager)
+	hgrepo := new(MockHostgroupsRepo)
+	htrepo := new(MockHostgroupTeamsRepo)
+	htagrepo := new(MockHostgroupTagsRepo)
+	hprepo := new(MockHostgroupProductsRepo)
+	hfrepo := new(MockHostgroupFeaturesRepo)
+	clsrepo := new(MockClustersRepo)
+	dcrepo := new(MockDatacentersRepo)
+	envrepo := new(MockEnvsRepo)
+	ftrepo := new(MockFeaturesRepo)
+	tagrepo := new(MockTagsRepo)
+	teamrepo := new(MockTeamsRepo)
+	prdrepo := new(MockProductsRepo)
+	ahrepo := new(MockAppHostgroupsRepo)
+
+	usecase := biz.NewHostgroupsUsecase(
+		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
+		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
+		prdrepo, ahrepo, nil, txm)
+
+	// fail
+	query := &biz.ListHostgroupsFilter{
+		Page:            1,
+		PageSize:        100,
+		TagsId:          []uint32{1},
+		FeaturesId:      []uint32{1},
+		ShareProductsId: []uint32{1},
+		ShareTeamsId:    []uint32{1},
+	}
+
+	// hostgroup-tag filter empty
+	htagcall := htagrepo.On("ListHostgroupTags", ctx, mock.Anything, &repo.HostgroupTagsFilter{
+		Ids: []uint32{1},
+	}).Return([]*repo.HostgroupTag{}, nil)
+	_, err := usecase.ListHostgroups(ctx, query)
+	htagcall.Unset()
+	t.Logf("tag filter empty: %v", err)
+	assert.Error(t, err)
+
+	// hostgroup-feature filter empty
+	htagcall = htagrepo.On("ListHostgroupTags", ctx, mock.Anything, &repo.HostgroupTagsFilter{
+		Ids: []uint32{1},
+	}).Return([]*repo.HostgroupTag{
+		{HostgroupID: 1, TagID: 1, Id: 1},
+	}, nil)
+	hfcall := hfrepo.On("ListHostgroupFeatures", ctx, mock.Anything, &repo.HostgroupFeaturesFilter{
+		Ids: []uint32{1},
+	}).Return([]*repo.HostgroupFeature{}, nil)
+	_, err = usecase.ListHostgroups(ctx, query)
+	htagcall.Unset()
+	hfcall.Unset()
+	t.Logf("feature filter empty: %v", err)
+	assert.Error(t, err)
+
+	// hostgroup-share-product filter empty
+	htagcall = htagrepo.On("ListHostgroupTags", ctx, mock.Anything, &repo.HostgroupTagsFilter{
+		Ids: []uint32{1},
+	}).Return([]*repo.HostgroupTag{
+		{HostgroupID: 1, TagID: 1, Id: 1},
+	}, nil)
+	hfcall = hfrepo.On("ListHostgroupFeatures", ctx, mock.Anything,
+		&repo.HostgroupFeaturesFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupFeature{
+		{HostgroupID: 1, FeatureID: 1, Id: 1},
+	}, nil)
+	hpcall := hprepo.On("ListHostgroupProducts", ctx, mock.Anything,
+		&repo.HostgroupProductsFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupProduct{}, nil)
+	_, err = usecase.ListHostgroups(ctx, query)
+	htagcall.Unset()
+	hfcall.Unset()
+	hpcall.Unset()
+	t.Logf("share-product filter empty: %v", err)
+	assert.Error(t, err)
+
+	// hostgroup-share-team filter empty
+	htagcall = htagrepo.On("ListHostgroupTags", ctx, mock.Anything, &repo.HostgroupTagsFilter{
+		Ids: []uint32{1},
+	}).Return([]*repo.HostgroupTag{
+		{HostgroupID: 1, TagID: 1, Id: 1},
+	}, nil)
+	hfcall = hfrepo.On("ListHostgroupFeatures", ctx, mock.Anything,
+		&repo.HostgroupFeaturesFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupFeature{
+		{HostgroupID: 1, FeatureID: 1, Id: 1},
+	}, nil)
+	hpcall = hprepo.On("ListHostgroupProducts", ctx, mock.Anything,
+		&repo.HostgroupProductsFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupProduct{
+		{HostgroupID: 1, ProductID: 1, Id: 1},
+	}, nil)
+	htcall := htrepo.On("ListHostgroupTeams", ctx, mock.Anything,
+		&repo.HostgroupTeamsFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupTeam{}, nil)
+	_, err = usecase.ListHostgroups(ctx, query)
+	htagcall.Unset()
+	hfcall.Unset()
+	hpcall.Unset()
+	htcall.Unset()
+	t.Logf("share-team filter empty: %v", err)
+	assert.Error(t, err)
+
+	// hostgroup repo fail
+	htagcall = htagrepo.On("ListHostgroupTags", ctx, mock.Anything, &repo.HostgroupTagsFilter{
+		Ids: []uint32{1},
+	}).Return([]*repo.HostgroupTag{
+		{HostgroupID: 1, TagID: 1, Id: 1},
+	}, nil)
+	hfcall = hfrepo.On("ListHostgroupFeatures", ctx, mock.Anything,
+		&repo.HostgroupFeaturesFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupFeature{
+		{HostgroupID: 1, FeatureID: 1, Id: 1},
+	}, nil)
+	hpcall = hprepo.On("ListHostgroupProducts", ctx, mock.Anything,
+		&repo.HostgroupProductsFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupProduct{
+		{HostgroupID: 1, ProductID: 1, Id: 1},
+	}, nil)
+	htcall = htrepo.On("ListHostgroupTeams", ctx, mock.Anything,
+		&repo.HostgroupTeamsFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupTeam{
+		{HostgroupID: 1, TeamID: 1, Id: 1},
+	}, nil)
+	hgcall := hgrepo.On("ListHostgroups", ctx, mock.Anything, &repo.HostgroupsFilter{
+		Ids: []uint32{1},
+	}).Return([]*repo.Hostgroup{}, errors.New("mock repo fail"))
+	_, err = usecase.ListHostgroups(ctx, query)
+	htagcall.Unset()
+	hfcall.Unset()
+	hpcall.Unset()
+	htcall.Unset()
+	hgcall.Unset()
+	t.Logf("hostgroup repo fail: %v", err)
+	assert.Error(t, err)
+
+	// repo find zero
+	htagcall = htagrepo.On("ListHostgroupTags", ctx, mock.Anything,
+		&repo.HostgroupTagsFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupTag{
+		{HostgroupID: 1, TagID: 1, Id: 1},
+	}, nil)
+	hfcall = hfrepo.On("ListHostgroupFeatures", ctx, mock.Anything,
+		&repo.HostgroupFeaturesFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupFeature{
+		{HostgroupID: 1, FeatureID: 1, Id: 1},
+	}, nil)
+	hpcall = hprepo.On("ListHostgroupProducts", ctx, mock.Anything,
+		&repo.HostgroupProductsFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupProduct{
+		{HostgroupID: 1, ProductID: 1, Id: 1},
+	}, nil)
+	htcall = htrepo.On("ListHostgroupTeams", ctx, mock.Anything,
+		&repo.HostgroupTeamsFilter{
+			Ids: []uint32{1},
+		}).Return([]*repo.HostgroupTeam{
+		{HostgroupID: 1, TeamID: 1, Id: 1},
+	}, nil)
+	hgcall = hgrepo.On("ListHostgroups", ctx, mock.Anything, &repo.HostgroupsFilter{
+		Ids: []uint32{1},
+	}).Return([]*repo.Hostgroup{}, nil)
+	r, err := usecase.ListHostgroups(ctx, query)
+	htagcall.Unset()
+	hfcall.Unset()
+	hpcall.Unset()
+	htcall.Unset()
+	hgcall.Unset()
+	assert.NoError(t, err)
+	assert.Equal(t, 0, len(r))
+
+	// empty return all
+	want_hg_biz := []*biz.Hostgroup{
+		{
+			Id:              1,
+			Name:            "test",
+			Description:     "test",
+			ClusterId:       uint32(1),
+			DatacenterId:    uint32(1),
+			EnvId:           uint32(1),
+			ProductId:       uint32(1),
+			TeamId:          uint32(1),
+			FeaturesId:      []uint32{1, 2},
+			TagsId:          []uint32{1, 2},
+			ShareProductsId: []uint32{1, 2},
+			ShareTeamsId:    []uint32{1, 2},
+		},
+	}
+
+	want_hg_repo := []*repo.Hostgroup{
+		{
+			Id:           1,
+			Name:         "test",
+			Description:  "test",
+			ClusterId:    uint32(1),
+			DatacenterId: uint32(1),
+			EnvId:        uint32(1),
+			ProductId:    uint32(1),
+			TeamId:       uint32(1),
+		},
+	}
+
+	htagcall = htagrepo.On("ListHostgroupTags", ctx, mock.Anything, mock.Anything).
+		Return(
+			[]*repo.HostgroupTag{
+				{HostgroupID: 1, TagID: 1, Id: 1},
+				{HostgroupID: 1, TagID: 2, Id: 2},
+			}, nil)
+	hfcall = hfrepo.On("ListHostgroupFeatures", ctx, mock.Anything, mock.Anything).
+		Return([]*repo.HostgroupFeature{
+			{HostgroupID: 1, FeatureID: 1, Id: 1},
+			{HostgroupID: 1, FeatureID: 2, Id: 2},
+		}, nil)
+	hpcall = hprepo.On("ListHostgroupProducts", ctx, mock.Anything, mock.Anything).
+		Return([]*repo.HostgroupProduct{
+			{HostgroupID: 1, ProductID: 1, Id: 1},
+			{HostgroupID: 1, ProductID: 2, Id: 2},
+		}, nil)
+	htcall = htrepo.On("ListHostgroupTeams", ctx, mock.Anything, mock.Anything).
+		Return([]*repo.HostgroupTeam{
+			{HostgroupID: 1, TeamID: 1, Id: 1},
+			{HostgroupID: 1, TeamID: 2, Id: 2},
+		}, nil)
+	hgcall = hgrepo.On("ListHostgroups", ctx, mock.Anything, &repo.HostgroupsFilter{
+		Ids: []uint32{1},
+	}).Return(want_hg_repo, nil)
+
+	r, err = usecase.ListHostgroups(ctx, query)
+	htagcall.Unset()
+	hfcall.Unset()
+	hpcall.Unset()
+	htcall.Unset()
+	hgcall.Unset()
+	assert.NoError(t, err)
+	assert.Equal(t, want_hg_biz, r)
+
+}

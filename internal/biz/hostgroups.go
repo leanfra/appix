@@ -481,7 +481,7 @@ func (s *HostgroupsUsecase) attachM2MProps(ctx context.Context, hg *Hostgroup) e
 	if err != nil {
 		return err
 	}
-	for _, tag := range _tags.([]*repo.AppTag) {
+	for _, tag := range _tags.([]*repo.HostgroupTag) {
 		hg.TagsId = append(hg.TagsId, tag.Id)
 	}
 	// features id
@@ -489,7 +489,7 @@ func (s *HostgroupsUsecase) attachM2MProps(ctx context.Context, hg *Hostgroup) e
 	if err != nil {
 		return err
 	}
-	for _, ft := range _fts.([]*repo.AppFeature) {
+	for _, ft := range _fts.([]*repo.HostgroupFeature) {
 		hg.FeaturesId = append(hg.FeaturesId, ft.Id)
 	}
 
@@ -498,7 +498,7 @@ func (s *HostgroupsUsecase) attachM2MProps(ctx context.Context, hg *Hostgroup) e
 	if err != nil {
 		return err
 	}
-	for _, prd := range _prds.([]*repo.AppHostgroup) {
+	for _, prd := range _prds.([]*repo.HostgroupProduct) {
 		hg.ShareProductsId = append(hg.ShareProductsId, prd.Id)
 	}
 	// share teams id
@@ -506,7 +506,7 @@ func (s *HostgroupsUsecase) attachM2MProps(ctx context.Context, hg *Hostgroup) e
 	if err != nil {
 		return err
 	}
-	for _, team := range _teams.([]*repo.AppHostgroup) {
+	for _, team := range _teams.([]*repo.HostgroupTeam) {
 		hg.ShareTeamsId = append(hg.ShareTeamsId, team.Id)
 	}
 
@@ -534,7 +534,7 @@ func (s *HostgroupsUsecase) ListHostgroups(
 		switch prop {
 		case hgPropTag:
 			items, err := s.htagrepo.ListHostgroupTags(ctx, nil, &repo.HostgroupTagsFilter{
-				Ids: filter.TagsId})
+				Ids: filterIds})
 			if err != nil {
 				return err
 			}
@@ -543,7 +543,7 @@ func (s *HostgroupsUsecase) ListHostgroups(
 			}
 		case hgPropFeature:
 			items, err := s.hfrepo.ListHostgroupFeatures(ctx, nil, &repo.HostgroupFeaturesFilter{
-				Ids: filter.FeaturesId})
+				Ids: filterIds})
 			if err != nil {
 				return err
 			}
@@ -552,7 +552,7 @@ func (s *HostgroupsUsecase) ListHostgroups(
 			}
 		case hgPropShareProduct:
 			items, err := s.hprepo.ListHostgroupProducts(ctx, nil, &repo.HostgroupProductsFilter{
-				Ids: filter.ShareProductsId})
+				Ids: filterIds})
 			if err != nil {
 				return err
 			}
@@ -561,7 +561,7 @@ func (s *HostgroupsUsecase) ListHostgroups(
 			}
 		case hgPropShareTeam:
 			items, err := s.hteamrepo.ListHostgroupTeams(ctx, nil, &repo.HostgroupTeamsFilter{
-				Ids: filter.ShareTeamsId})
+				Ids: filterIds})
 			if err != nil {
 				return err
 			}
