@@ -75,7 +75,7 @@ func DiffSliceUint32(s1 []uint32, s2 []uint32) []uint32 {
 // IntersectSliceUint32 返回两个 []uint32 切片的交集
 func IntersectSliceUint32(slice1, slice2 []uint32) []uint32 {
 	if len(slice1) == 0 || len(slice2) == 0 {
-		return nil
+		return []uint32{}
 	}
 
 	elemMap := make(map[uint32]struct{})
@@ -83,7 +83,7 @@ func IntersectSliceUint32(slice1, slice2 []uint32) []uint32 {
 		elemMap[num] = struct{}{}
 	}
 
-	var intersection []uint32
+	intersection := []uint32{}
 	for _, num := range slice2 {
 		if _, exists := elemMap[num]; exists {
 			intersection = append(intersection, num)
