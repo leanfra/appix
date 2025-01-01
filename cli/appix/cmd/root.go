@@ -4,7 +4,9 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -30,7 +32,29 @@ var serverAddr string
 
 func init() {
 
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "~/.appix/config.yaml", "config file (default is $HOME/.appix/config.yaml)")
-	rootCmd.PersistentFlags().StringVarP(&serverAddr, "server", "s", "127.0.0.1:8080", "Appix server address. default 127.0.0.1:8080")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "~/.appix/config.yaml", "config file")
+	rootCmd.PersistentFlags().StringVarP(&serverAddr, "server", "s", "127.0.0.1:9000", "Appix server address")
 
+}
+
+// 辅助函数：转换 []uint 到 []uint32
+func toUint32Slice(slice []uint) []uint32 {
+	result := make([]uint32, len(slice))
+	for i, v := range slice {
+		result[i] = uint32(v)
+	}
+	return result
+}
+
+// 添加辅助函数
+func joinUint32(ids []uint32) string {
+	if len(ids) == 0 {
+		return ""
+	}
+
+	strs := make([]string, len(ids))
+	for i, id := range ids {
+		strs[i] = fmt.Sprint(id)
+	}
+	return strings.Join(strs, ",")
 }

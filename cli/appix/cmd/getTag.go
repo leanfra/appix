@@ -24,27 +24,18 @@ var getTagCmd = &cobra.Command{
 	Short: "Get tags",
 	Long: `Get tags resources from the system.
 
-This command allows you to retrieve and list tags with various filtering options:
-  - Filter by tag keys (-K, --keys)
-  - Filter by key-value pairs (-V, --kvs)
-  - Filter by tag IDs (-I, --ids)
-
-Output formats available:
-  - table: Displays results in a formatted table
-  - yaml: Outputs in YAML format
-  - text: Simple text output format
-
 Examples:
-  appix get tag                     # List all tags
-  appix get tag -K env,project      # Filter tags by keys
-  appix get tag -V env=prod         # Filter tags by key-value pair
-  appix get tag -I 1,2,3            # Filter tags by IDs`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+  appix get tag                              # List all
+  appix get tag --keys env,project           # Filter by keys
+  appix get tag --kvs env=prod               # Filter by key-value
+  appix get tag --ids 1,2,3                 # Filter by IDs
+  appix get tag --keys env --format yaml     # Custom format`,
+	Run: func(cmd *cobra.Command, args []string) {
 		// 建立 gRPC 连接
 		ctx := context.Background()
 		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
-			log.Fatalf("连接失败: %v", err)
+			log.Fatalf("connect to server failed: %v", err)
 		}
 		defer conn.Close()
 
@@ -74,7 +65,14 @@ Examples:
 
 			resp, err := client.ListTags(ctx, req)
 			if err != nil {
-				log.Fatalf("获取标签失败: %v", err)
+				fmt.Printf("Error: %v\n", err)
+				if resp != nil {
+					fmt.Printf("Response details:\n")
+					fmt.Printf("  Message: %s\n", resp.Message)
+					fmt.Printf("  Code: %d\n", resp.Code)
+					fmt.Printf("  Action: %s\n", resp.Action)
+				}
+				return
 			}
 
 			// 添加当前页的标签到结果集
@@ -92,7 +90,7 @@ Examples:
 		case "yaml":
 			data, err := yaml.Marshal(allTags)
 			if err != nil {
-				log.Fatalf("序列化YAML失败: %v", err)
+				log.Fatalf("serialize yaml failed: %v", err)
 			}
 			fmt.Println(string(data))
 		case "table":
@@ -109,7 +107,7 @@ Examples:
 		case "text":
 			if len(allTags) == 0 {
 				fmt.Println("No tags found")
-				return nil
+				return
 			}
 			for _, tag := range allTags {
 				fmt.Printf("ID: %d \t Key: %s \t Value: %s\n", tag.Id, tag.Key, tag.Value)
@@ -117,14 +115,15 @@ Examples:
 		default: // text format
 			fmt.Println("unknown format")
 		}
-		return nil
 	},
 }
 
 func init() {
 	getCmd.AddCommand(getTagCmd)
 
-	getTagCmd.Flags().StringSliceP("keys", "K", []string{}, "Filter by key names, can specify multiple")
-	getTagCmd.Flags().StringSliceP("kvs", "V", []string{}, "Filter by key-value pairs, can specify multiple")
-	getTagCmd.Flags().UintSliceP("ids", "I", []uint{}, "Filter by IDs, can specify multiple")
+	getTagCmd.Flags().StringSlice("keys", []string{}, "Filter by key names, can specify multiple")
+
+	getTagCmd.Flags().StringSlice("kvs", []string{}, "Filter by key-value pairs, can specify multiple")
+
+	getTagCmd.Flags().UintSlice("ids", []uint{}, "Filter by IDs, can specify multiple")
 }

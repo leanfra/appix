@@ -49,5 +49,8 @@ func init() {
 	getCmd.PersistentFlags().StringVarP(&GetFormat, "format", "f", "table", "Output format. table or yaml or text")
 	getCmd.PersistentFlags().Uint32VarP(&GetPageSize, "page-size", "p", GetPageSize, "Page size")
 	getCmd.PersistentFlags().Uint32VarP(&GetPage, "page", "P", GetPage, "Page")
+	// hide PageSize and Page
+	getCmd.PersistentFlags().MarkHidden("page-size")
+	getCmd.PersistentFlags().MarkHidden("page")
 
 }
