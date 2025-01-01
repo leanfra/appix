@@ -175,7 +175,7 @@ func (s *ApplicationsUsecase) validateProps(
 
 // CreateApplications is
 func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Application) error {
-	if err := s.validate(true, nil); err != nil {
+	if err := s.validate(true, apps); err != nil {
 		return err
 	}
 	_apps, err := ToDBApplications(apps)
@@ -268,7 +268,7 @@ func (s *ApplicationsUsecase) createProps(
 
 	switch prop {
 	case appPropTag:
-		_app_tags := make([]*repo.AppTag, 0, len(ids))
+		_app_tags := make([]*repo.AppTag, len(ids))
 		for i, id := range ids {
 			_app_tags[i] = &repo.AppTag{
 				AppID: appid,
@@ -277,7 +277,7 @@ func (s *ApplicationsUsecase) createProps(
 		}
 		return s.atagrepo.CreateAppTags(ctx, tx, _app_tags)
 	case appPropFeature:
-		_app_features := make([]*repo.AppFeature, 0, len(ids))
+		_app_features := make([]*repo.AppFeature, len(ids))
 		for i, id := range ids {
 			_app_features[i] = &repo.AppFeature{
 				AppID:     appid,
@@ -286,7 +286,7 @@ func (s *ApplicationsUsecase) createProps(
 		}
 		return s.afrepo.CreateAppFeatures(ctx, tx, _app_features)
 	case appPropHostgroup:
-		_app_hostgroups := make([]*repo.AppHostgroup, 0, len(ids))
+		_app_hostgroups := make([]*repo.AppHostgroup, len(ids))
 		for i, id := range ids {
 			_app_hostgroups[i] = &repo.AppHostgroup{
 				AppID:       appid,

@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestCreateApp(t *testing.T) {
+func TestCreateHostgroup(t *testing.T) {
 	ctx := context.Background()
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
@@ -398,7 +398,7 @@ func TestCreateApp(t *testing.T) {
 	htmcall.Unset()
 }
 
-func TestUpdateApp(t *testing.T) {
+func TestUpdateHostgroup(t *testing.T) {
 	ctx := context.Background()
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
