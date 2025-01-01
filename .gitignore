@@ -25,3 +25,4 @@ go.work.sum
 .env
 database/*
 bin/*
+cli/appix/appix
