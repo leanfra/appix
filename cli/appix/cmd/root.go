@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -57,4 +58,20 @@ func joinUint32(ids []uint32) string {
 		strs[i] = fmt.Sprint(id)
 	}
 	return strings.Join(strs, ",")
+}
+
+func findEditor() string {
+	editor := os.Getenv("EDITOR")
+	if editor != "" {
+		return editor
+	}
+
+	// Fallback editors in order of preference
+	editors := []string{"vim", "nano", "notepad", "notepad.exe"}
+	for _, e := range editors {
+		if _, err := exec.LookPath(e); err == nil {
+			return e
+		}
+	}
+	return ""
 }
