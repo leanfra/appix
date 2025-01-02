@@ -66,10 +66,10 @@ func (s *TagsService) CreateTags(ctx context.Context, req *pb.CreateTagsRequest)
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 
-	return reply, err
+	return reply, nil
 }
 
 func (s *TagsService) UpdateTags(ctx context.Context, req *pb.UpdateTagsRequest) (*pb.UpdateTagsReply, error) {
@@ -90,7 +90,7 @@ func (s *TagsService) UpdateTags(ctx context.Context, req *pb.UpdateTagsRequest)
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 
 	return reply, nil
@@ -111,7 +111,7 @@ func (s *TagsService) DeleteTags(ctx context.Context, req *pb.DeleteTagsRequest)
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 
 	return reply, nil
@@ -139,7 +139,7 @@ func (s *TagsService) GetTags(ctx context.Context, req *pb.GetTagsRequest) (*pb.
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func (s *TagsService) ListTags(ctx context.Context, req *pb.ListTagsRequest) (*pb.ListTagsReply, error) {
@@ -186,5 +186,5 @@ func (s *TagsService) ListTags(ctx context.Context, req *pb.ListTagsRequest) (*p
 	reply.Code = 1
 	reply.Message = err.Error()
 
-	return reply, err
+	return reply, nil
 }

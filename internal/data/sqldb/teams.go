@@ -55,7 +55,7 @@ func (d *TeamsRepoGorm) DeleteTeams(ctx context.Context,
 	tx repo.TX,
 	ids []uint32) error {
 
-	r := d.data.DB.WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Team{})
+	r := d.data.WithTX(tx).WithContext(ctx).Where("id in (?)", ids).Delete(&repo.Team{})
 	if r.Error != nil {
 		return r.Error
 	}

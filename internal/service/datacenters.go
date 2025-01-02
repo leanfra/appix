@@ -63,7 +63,7 @@ func (s *DatacentersService) CreateDatacenters(ctx context.Context, req *pb.Crea
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -86,7 +86,7 @@ func (s *DatacentersService) UpdateDatacenters(ctx context.Context,
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -106,7 +106,7 @@ func (s *DatacentersService) DeleteDatacenters(ctx context.Context,
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -128,7 +128,7 @@ func (s *DatacentersService) GetDatacenters(ctx context.Context,
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func (s *DatacentersService) ListDatacenters(ctx context.Context,
@@ -164,7 +164,7 @@ func (s *DatacentersService) ListDatacenters(ctx context.Context,
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func toPbDatacenter(d *biz.Datacenter) *pb.Datacenter {

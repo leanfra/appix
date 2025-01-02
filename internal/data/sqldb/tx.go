@@ -3,6 +3,8 @@ package sqldb
 import (
 	"appix/internal/data/repo"
 
+	"fmt"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 )
@@ -19,7 +21,7 @@ func NewTxManagerGorm(data *DataGorm, logger log.Logger) repo.TxManager {
 	}
 }
 
-func (tm *TxManagerGorm) RunInTX(fn func(tx repo.TX) error) error {
+func (tm *TxManagerGorm) RunInTX(fn func(tx repo.TX) error) (err error) {
 	tx := tm.data.DB.Begin()
 	if tx.Error != nil {
 		tm.log.Errorf("failed to begin transaction: %v", tx.Error)
@@ -30,14 +32,18 @@ func (tm *TxManagerGorm) RunInTX(fn func(tx repo.TX) error) error {
 		if r := recover(); r != nil {
 			tx.Rollback()
 			tm.log.Errorf("panic occurred, rolling back transaction: %v", r)
-		} else if err := tx.Commit().Error; err != nil {
-			tm.log.Errorf("failed to commit transaction: %v", err)
+			err = fmt.Errorf("panic in transaction: %v", r)
 		}
 	}()
 
 	gtx := &TxGorm{tx: tx, log: tm.log}
 	if err := fn(gtx); err != nil {
 		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tm.log.Errorf("failed to commit transaction: %v", err)
 		return err
 	}
 

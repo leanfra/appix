@@ -74,7 +74,7 @@ func (s *HostgroupsService) CreateHostgroups(ctx context.Context, req *pb.Create
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -95,7 +95,7 @@ func (s *HostgroupsService) UpdateHostgroups(ctx context.Context, req *pb.Update
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -111,9 +111,9 @@ func (s *HostgroupsService) DeleteHostgroups(ctx context.Context, req *pb.Delete
 		Message: "success",
 	}
 	if err != nil {
-		reply.Code = 500
+		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -131,7 +131,7 @@ func (s *HostgroupsService) GetHostgroups(ctx context.Context, req *pb.GetHostgr
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	reply.Hostgroup = toPbHostgroup(bizhostgroups)
 	return reply, nil
@@ -174,7 +174,7 @@ func (s *HostgroupsService) ListHostgroups(ctx context.Context, req *pb.ListHost
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	reply.Hostgroups = toPbHostgroups(hgs)
 	return reply, nil

@@ -64,10 +64,10 @@ func (s *TeamsService) CreateTeams(ctx context.Context, req *pb.CreateTeamsReque
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 
-	return reply, err
+	return reply, nil
 }
 
 func (s *TeamsService) UpdateTeams(ctx context.Context, req *pb.UpdateTeamsRequest) (*pb.UpdateTeamsReply, error) {
@@ -86,9 +86,9 @@ func (s *TeamsService) UpdateTeams(ctx context.Context, req *pb.UpdateTeamsReque
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
-	return reply, err
+	return reply, nil
 }
 
 func (s *TeamsService) DeleteTeams(ctx context.Context, req *pb.DeleteTeamsRequest) (*pb.DeleteTeamsReply, error) {
@@ -104,9 +104,9 @@ func (s *TeamsService) DeleteTeams(ctx context.Context, req *pb.DeleteTeamsReque
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
-	return reply, err
+	return reply, nil
 }
 
 func (s *TeamsService) GetTeams(ctx context.Context, req *pb.GetTeamsRequest) (*pb.GetTeamsReply, error) {
@@ -125,7 +125,7 @@ func (s *TeamsService) GetTeams(ctx context.Context, req *pb.GetTeamsRequest) (*
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func (s *TeamsService) ListTeams(ctx context.Context, req *pb.ListTeamsRequest) (*pb.ListTeamsReply, error) {
@@ -162,7 +162,7 @@ func (s *TeamsService) ListTeams(ctx context.Context, req *pb.ListTeamsRequest) 
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func toPbTeam(t *biz.Team) *pb.Team {

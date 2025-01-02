@@ -67,7 +67,7 @@ func (s *ProductsService) CreateProducts(ctx context.Context, req *pb.CreateProd
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -89,7 +89,7 @@ func (s *ProductsService) UpdateProducts(ctx context.Context, req *pb.UpdateProd
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -107,7 +107,7 @@ func (s *ProductsService) DeleteProducts(ctx context.Context, req *pb.DeleteProd
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -125,7 +125,7 @@ func (s *ProductsService) GetProducts(ctx context.Context, req *pb.GetProductsRe
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	reply.Product = toPbProduct(p)
 	return reply, nil
@@ -158,7 +158,7 @@ func (s *ProductsService) ListProducts(ctx context.Context, req *pb.ListProducts
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	reply.Products = toPbProducts(ps)
 	return reply, nil

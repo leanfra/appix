@@ -71,7 +71,7 @@ func (s *ApplicationsService) CreateApplications(ctx context.Context, req *pb.Cr
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -92,7 +92,7 @@ func (s *ApplicationsService) UpdateApplications(ctx context.Context, req *pb.Up
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -110,7 +110,7 @@ func (s *ApplicationsService) DeleteApplications(ctx context.Context, req *pb.De
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -142,7 +142,7 @@ func (s *ApplicationsService) GetApplications(ctx context.Context, req *pb.GetAp
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.ListApplicationsRequest) (*pb.ListApplicationsReply, error) {
@@ -200,5 +200,5 @@ func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.List
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }

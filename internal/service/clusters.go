@@ -64,7 +64,7 @@ func (s *ClustersService) CreateClusters(ctx context.Context, req *pb.CreateClus
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 
 	return reply, nil
@@ -86,7 +86,7 @@ func (s *ClustersService) UpdateClusters(ctx context.Context, req *pb.UpdateClus
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -104,7 +104,7 @@ func (s *ClustersService) DeleteClusters(ctx context.Context, req *pb.DeleteClus
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -129,7 +129,7 @@ func (s *ClustersService) GetClusters(ctx context.Context, req *pb.GetClustersRe
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func (s *ClustersService) ListClusters(ctx context.Context, req *pb.ListClustersRequest) (*pb.ListClustersReply, error) {
@@ -170,5 +170,5 @@ func (s *ClustersService) ListClusters(ctx context.Context, req *pb.ListClusters
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }

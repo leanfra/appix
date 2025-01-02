@@ -66,7 +66,7 @@ func (s *EnvsService) CreateEnvs(ctx context.Context, req *pb.CreateEnvsRequest)
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 
 	return reply, nil
@@ -88,7 +88,7 @@ func (s *EnvsService) UpdateEnvs(ctx context.Context, req *pb.UpdateEnvsRequest)
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -127,7 +127,7 @@ func (s *EnvsService) GetEnvs(ctx context.Context, req *pb.GetEnvsRequest) (*pb.
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func (s *EnvsService) ListEnvs(ctx context.Context, req *pb.ListEnvsRequest) (*pb.ListEnvsReply, error) {
@@ -161,7 +161,7 @@ func (s *EnvsService) ListEnvs(ctx context.Context, req *pb.ListEnvsRequest) (*p
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func toPbEnv(env *biz.Env) *pb.Env {

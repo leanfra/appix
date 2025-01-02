@@ -67,7 +67,7 @@ func (s *FeaturesService) CreateFeatures(ctx context.Context, req *pb.CreateFeat
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 
 	return reply, nil
@@ -91,7 +91,7 @@ func (s *FeaturesService) UpdateFeatures(ctx context.Context, req *pb.UpdateFeat
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 	return reply, nil
 }
@@ -110,7 +110,7 @@ func (s *FeaturesService) DeleteFeatures(ctx context.Context, req *pb.DeleteFeat
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()
-		return reply, err
+		return reply, nil
 	}
 
 	return reply, nil
@@ -138,7 +138,7 @@ func (s *FeaturesService) GetFeatures(ctx context.Context, req *pb.GetFeaturesRe
 	}
 	reply.Code = 1
 	reply.Message = err.Error()
-	return reply, err
+	return reply, nil
 }
 
 func (s *FeaturesService) ListFeatures(ctx context.Context,
@@ -184,6 +184,6 @@ func (s *FeaturesService) ListFeatures(ctx context.Context,
 	reply.Code = 1
 	reply.Message = err.Error()
 
-	return reply, err
+	return reply, nil
 
 }
