@@ -105,12 +105,14 @@ var updateFeatureCmd = &cobra.Command{
 			}
 			name, _ := cmd.Flags().GetString("name")
 			value, _ := cmd.Flags().GetString("value")
+			desc, _ := cmd.Flags().GetString("desc")
 
 			features = []*pb.Feature{
 				{
-					Id:    id,
-					Name:  name,
-					Value: value,
+					Id:          id,
+					Name:        name,
+					Value:       value,
+					Description: desc,
 				},
 			}
 		}
@@ -139,4 +141,5 @@ func init() {
 	updateFeatureCmd.Flags().Uint32("id", 0, "Feature ID to update")
 	updateFeatureCmd.Flags().String("name", "", "New feature name")
 	updateFeatureCmd.Flags().String("value", "", "New feature value")
+	updateFeatureCmd.Flags().String("desc", "", "New feature description")
 }

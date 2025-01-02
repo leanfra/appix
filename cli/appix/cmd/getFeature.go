@@ -91,12 +91,13 @@ Examples:
 			fmt.Println(string(data))
 		case "table":
 			table := tablewriter.NewWriter(os.Stdout)
-			table.SetHeader([]string{"ID", "Name", "Value"})
+			table.SetHeader([]string{"ID", "Name", "Value", "Description"})
 			for _, feature := range allFeatures {
 				table.Append([]string{
 					fmt.Sprintf("%d", feature.Id),
 					feature.Name,
 					feature.Value,
+					feature.Description,
 				})
 			}
 			table.Render()
@@ -106,7 +107,7 @@ Examples:
 				return
 			}
 			for _, feature := range allFeatures {
-				fmt.Printf("ID: %d \t Name: %s \t Value: %s\n", feature.Id, feature.Name, feature.Value)
+				fmt.Printf("ID: %d \t Name: %s \t Value: %s \t Description: %s\n", feature.Id, feature.Name, feature.Value, feature.Description)
 			}
 		default:
 			fmt.Println("unknown format")

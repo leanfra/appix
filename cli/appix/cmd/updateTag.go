@@ -109,12 +109,14 @@ var updateTagCmd = &cobra.Command{
 			}
 			key, _ := cmd.Flags().GetString("key")
 			value, _ := cmd.Flags().GetString("value")
+			desc, _ := cmd.Flags().GetString("desc")
 
 			tags = []*pb.Tag{
 				{
-					Id:    id,
-					Key:   key,
-					Value: value,
+					Id:          id,
+					Key:         key,
+					Value:       value,
+					Description: desc,
 				},
 			}
 		}
@@ -143,4 +145,5 @@ func init() {
 	updateTagCmd.Flags().Uint32("id", 0, "Tag ID to update")
 	updateTagCmd.Flags().String("key", "", "New tag key")
 	updateTagCmd.Flags().String("value", "", "New tag value")
+	updateTagCmd.Flags().String("desc", "", "New tag description")
 }

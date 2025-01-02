@@ -78,12 +78,14 @@ Examples:
 			// Create from command line flags
 			name, _ := cmd.Flags().GetString("name")
 			value, _ := cmd.Flags().GetString("value")
+			desc, _ := cmd.Flags().GetString("desc")
 
 			req = &pb.CreateFeaturesRequest{
 				Features: []*pb.Feature{
 					{
-						Name:  name,
-						Value: value,
+						Name:        name,
+						Value:       value,
+						Description: desc,
 					},
 				},
 			}
@@ -106,4 +108,5 @@ func init() {
 	createCmd.AddCommand(createFeatureCmd)
 	createFeatureCmd.Flags().String("name", "", "Name of the feature")
 	createFeatureCmd.Flags().String("value", "", "Value of the feature")
+	createFeatureCmd.Flags().String("desc", "", "Description of the feature")
 }

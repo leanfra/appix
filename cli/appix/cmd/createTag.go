@@ -78,12 +78,13 @@ Examples:
 			// Create from command line flags
 			key, _ := cmd.Flags().GetString("key")
 			value, _ := cmd.Flags().GetString("value")
-
+			desc, _ := cmd.Flags().GetString("desc")
 			req = &pb.CreateTagsRequest{
 				Tags: []*pb.Tag{
 					{
-						Key:   key,
-						Value: value,
+						Key:         key,
+						Value:       value,
+						Description: desc,
 					},
 				},
 			}
@@ -106,4 +107,5 @@ func init() {
 	createCmd.AddCommand(createTagCmd)
 	createTagCmd.Flags().String("key", "", "Key of the tag")
 	createTagCmd.Flags().String("value", "", "Value of the tag")
+	createTagCmd.Flags().String("desc", "", "Description of the tag")
 }
