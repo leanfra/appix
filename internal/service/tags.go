@@ -29,10 +29,20 @@ func toBizTag(t *pb.Tag) (*biz.Tag, error) {
 		return nil, nil
 	}
 	return &biz.Tag{
-		Id:    t.Id,
-		Key:   t.Key,
-		Value: t.Value,
+		Id:          t.Id,
+		Key:         t.Key,
+		Value:       t.Value,
+		Description: t.Description,
 	}, nil
+}
+
+func toPbTag(t *biz.Tag) *pb.Tag {
+	return &pb.Tag{
+		Id:          t.Id,
+		Key:         t.Key,
+		Value:       t.Value,
+		Description: t.Description,
+	}
 }
 
 func toBizTags(ts []*pb.Tag) ([]*biz.Tag, error) {
@@ -130,11 +140,7 @@ func (s *TagsService) GetTags(ctx context.Context, req *pb.GetTagsRequest) (*pb.
 		Message: "success",
 	}
 	if err == nil {
-		reply.Tag = &pb.Tag{
-			Id:    tag.Id,
-			Key:   tag.Key,
-			Value: tag.Value,
-		}
+		reply.Tag = toPbTag(tag)
 		return reply, nil
 	}
 	reply.Code = 1
@@ -174,11 +180,7 @@ func (s *TagsService) ListTags(ctx context.Context, req *pb.ListTagsRequest) (*p
 	if err == nil {
 		reply.Tags = make([]*pb.Tag, len(tags))
 		for i, tag := range tags {
-			reply.Tags[i] = &pb.Tag{
-				Id:    tag.Id,
-				Key:   tag.Key,
-				Value: tag.Value,
-			}
+			reply.Tags[i] = toPbTag(tag)
 		}
 		return reply, nil
 	}

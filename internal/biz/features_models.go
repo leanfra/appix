@@ -1,9 +1,10 @@
 package biz
 
 type Feature struct {
-	Id    uint32
-	Name  string
-	Value string
+	Id          uint32
+	Name        string
+	Value       string
+	Description string
 }
 
 type ListFeaturesFilter struct {

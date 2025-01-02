@@ -30,11 +30,20 @@ func toBizFeature(feature *pb.Feature) (*biz.Feature, error) {
 	}
 
 	return &biz.Feature{
-		Id:    feature.Id,
-		Name:  feature.Name,
-		Value: feature.Value,
+		Id:          feature.Id,
+		Name:        feature.Name,
+		Value:       feature.Value,
+		Description: feature.Description,
 	}, nil
+}
 
+func toPbFeature(feature *biz.Feature) *pb.Feature {
+	return &pb.Feature{
+		Id:          feature.Id,
+		Name:        feature.Name,
+		Value:       feature.Value,
+		Description: feature.Description,
+	}
 }
 
 func toBizFeatures(features []*pb.Feature) ([]*biz.Feature, error) {
@@ -129,11 +138,7 @@ func (s *FeaturesService) GetFeatures(ctx context.Context, req *pb.GetFeaturesRe
 		Message: "success",
 	}
 	if err == nil {
-		reply.Feature = &pb.Feature{
-			Id:    feature.Id,
-			Name:  feature.Name,
-			Value: feature.Value,
-		}
+		reply.Feature = toPbFeature(feature)
 		return reply, nil
 	}
 	reply.Code = 1
@@ -172,11 +177,7 @@ func (s *FeaturesService) ListFeatures(ctx context.Context,
 	if err == nil {
 		reply.Features = make([]*pb.Feature, len(features))
 		for i, tag := range features {
-			reply.Features[i] = &pb.Feature{
-				Id:    tag.Id,
-				Name:  tag.Name,
-				Value: tag.Value,
-			}
+			reply.Features[i] = toPbFeature(tag)
 		}
 		return reply, nil
 	}

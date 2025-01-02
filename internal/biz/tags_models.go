@@ -1,9 +1,10 @@
 package biz
 
 type Tag struct {
-	Id    uint32
-	Key   string
-	Value string
+	Id          uint32
+	Key         string
+	Value       string
+	Description string
 }
 
 type ListTagsFilter struct {
