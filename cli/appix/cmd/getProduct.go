@@ -71,12 +71,13 @@ Examples:
 
 			if err != nil {
 				fmt.Printf("Error: %v\n", err)
-				if reply != nil {
-					fmt.Printf("Response details:\n")
-					fmt.Printf("  Message: %s\n", reply.Message)
-					fmt.Printf("  Code: %d\n", reply.Code)
-					fmt.Printf("  Action: %s\n", reply.Action)
-				}
+				return
+			}
+			if reply.Code != 0 {
+				fmt.Printf("Response details:\n")
+				fmt.Printf("  Message: %s\n", reply.Message)
+				fmt.Printf("  Code: %d\n", reply.Code)
+				fmt.Printf("  Action: %s\n", reply.Action)
 				return
 			}
 

@@ -29,15 +29,16 @@ func toBizApp(a *pb.Application) (*biz.Application, error) {
 		return nil, nil
 	}
 	return &biz.Application{
-		Id:          a.Id,
-		Name:        a.Name,
-		Owner:       a.Owner,
-		Description: a.Description,
-		IsStateful:  a.IsStateful,
-		ProductId:   a.ProductId,
-		TeamId:      a.TeamId,
-		FeaturesId:  a.FeaturesId,
-		TagsId:      a.TagsId,
+		Id:           a.Id,
+		Name:         a.Name,
+		Owner:        a.Owner,
+		Description:  a.Description,
+		IsStateful:   a.IsStateful,
+		ProductId:    a.ProductId,
+		TeamId:       a.TeamId,
+		FeaturesId:   a.FeaturesId,
+		TagsId:       a.TagsId,
+		HostgroupsId: a.HostgroupsId,
 	}, nil
 }
 
@@ -124,15 +125,16 @@ func (s *ApplicationsService) GetApplications(ctx context.Context, req *pb.GetAp
 	}
 	if err == nil {
 		reply.App = &pb.Application{
-			Id:          bizApp.Id,
-			Name:        bizApp.Name,
-			Owner:       bizApp.Owner,
-			Description: bizApp.Description,
-			IsStateful:  bizApp.IsStateful,
-			ProductId:   bizApp.ProductId,
-			TeamId:      bizApp.TeamId,
-			FeaturesId:  bizApp.FeaturesId,
-			TagsId:      bizApp.TagsId,
+			Id:           bizApp.Id,
+			Name:         bizApp.Name,
+			Owner:        bizApp.Owner,
+			Description:  bizApp.Description,
+			IsStateful:   bizApp.IsStateful,
+			ProductId:    bizApp.ProductId,
+			TeamId:       bizApp.TeamId,
+			FeaturesId:   bizApp.FeaturesId,
+			TagsId:       bizApp.TagsId,
+			HostgroupsId: bizApp.HostgroupsId,
 		}
 		return reply, nil
 	}

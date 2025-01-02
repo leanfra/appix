@@ -59,12 +59,13 @@ Examples:
 			resp, err := client.ListEnvs(ctx, req)
 			if err != nil {
 				fmt.Printf("Error: %v\n", err)
-				if resp != nil {
-					fmt.Printf("Response details:\n")
-					fmt.Printf("  Message: %s\n", resp.Message)
-					fmt.Printf("  Code: %d\n", resp.Code)
-					fmt.Printf("  Action: %s\n", resp.Action)
-				}
+				return
+			}
+			if resp.Code != 0 {
+				fmt.Printf("Response details:\n")
+				fmt.Printf("  Message: %s\n", resp.Message)
+				fmt.Printf("  Code: %d\n", resp.Code)
+				fmt.Printf("  Action: %s\n", resp.Action)
 				return
 			}
 
