@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
 package cmd
 
@@ -14,15 +14,15 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// deleteTagCmd represents the deleteTag command
-var deleteTagCmd = &cobra.Command{
-	Use:   "tag [ids...]",
-	Short: "Delete one or more tags by their IDs",
-	Long: `Delete one or more tags by providing their IDs as arguments.
+// deleteAppCmd represents the deleteApp command
+var deleteAppCmd = &cobra.Command{
+	Use:   "app [ids...]",
+	Short: "Delete one or more apps by their IDs",
+	Long: `Delete one or more apps by providing their IDs as arguments.
 For example:
-  appix delete tag 1 2 3`,
+  appix delete app 1 2 3`,
 	Args:    cobra.MinimumNArgs(1),
-	Aliases: []string{"tag", "tags", "tg"},
+	Aliases: []string{"app", "apps", "ap"},
 	Run: func(cmd *cobra.Command, args []string) {
 		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
@@ -30,10 +30,10 @@ For example:
 			return
 		}
 		defer conn.Close()
-		client := pb.NewTagsClient(conn)
+		client := pb.NewApplicationsClient(conn)
 
 		if len(args) == 0 {
-			fmt.Println("Please provide at least one tag ID")
+			fmt.Println("Please provide at least one app ID")
 			return
 		}
 
@@ -41,19 +41,19 @@ For example:
 		for _, arg := range args {
 			id, err := strconv.ParseUint(arg, 10, 32)
 			if err != nil {
-				fmt.Printf("Invalid tag ID '%s': %v\n", arg, err)
+				fmt.Printf("Invalid app ID '%s': %v\n", arg, err)
 				return
 			}
 			ids = append(ids, uint32(id))
 		}
 
-		req := &pb.DeleteTagsRequest{
+		req := &pb.DeleteApplicationsRequest{
 			Ids: ids,
 		}
 
-		reply, err := client.DeleteTags(cmd.Context(), req)
+		reply, err := client.DeleteApplications(cmd.Context(), req)
 		if err != nil {
-			fmt.Printf("Error deleting tags: %v\n", err)
+			fmt.Printf("Error deleting apps: %v\n", err)
 			return
 		}
 
@@ -66,15 +66,15 @@ For example:
 }
 
 func init() {
-	deleteCmd.AddCommand(deleteTagCmd)
+	deleteCmd.AddCommand(deleteAppCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// deleteTagCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// deleteAppCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// deleteTagCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// deleteAppCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

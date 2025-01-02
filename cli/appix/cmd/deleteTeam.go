@@ -5,35 +5,69 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	pb "appix/api/appix/v1"
 )
 
 // deleteTeamCmd represents the deleteTeam command
 var deleteTeamCmd = &cobra.Command{
-	Use:   "deleteTeam",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "team [ids...]",
+	Short: "Delete one or more teams by their IDs",
+	Long: `Delete one or more teams by providing their IDs as arguments.
+For example:
+  appix delete team 1 2 3`,
+	Args:    cobra.MinimumNArgs(1),
+	Aliases: []string{"team", "teams", "tm"},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("deleteTeam called")
+		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		if err != nil {
+			fmt.Printf("Failed to connect: %v\n", err)
+			return
+		}
+		defer conn.Close()
+		client := pb.NewTeamsClient(conn)
+
+		if len(args) == 0 {
+			fmt.Println("Please provide at least one team ID")
+			return
+		}
+
+		ids := make([]uint32, 0, len(args))
+		for _, arg := range args {
+			var id uint64
+			id, err := strconv.ParseUint(arg, 10, 32)
+			if err != nil {
+				fmt.Printf("Invalid team ID '%s': %v\n", arg, err)
+				return
+			}
+			ids = append(ids, uint32(id))
+		}
+
+		req := &pb.DeleteTeamsRequest{
+			Ids: ids,
+		}
+
+		reply, err := client.DeleteTeams(cmd.Context(), req)
+		if err != nil {
+			fmt.Printf("Error deleting teams: %v\n", err)
+			return
+		}
+
+		// print reply code, message, and so on
+		if reply != nil {
+			fmt.Printf("Action: %s\n", reply.Action)
+			fmt.Printf("Code: %d\n", reply.Code)
+			fmt.Printf("Message: %s\n", reply.Message)
+		}
+
 	},
 }
 
 func init() {
 	deleteCmd.AddCommand(deleteTeamCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// deleteTeamCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// deleteTeamCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
