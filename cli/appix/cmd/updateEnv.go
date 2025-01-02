@@ -32,10 +32,8 @@ var updateEnvCmd = &cobra.Command{
 		defer conn.Close()
 		client := pb.NewEnvsClient(conn)
 
-		yamlFile, _ := cmd.Flags().GetString("yaml")
-		editOnline, _ := cmd.Flags().GetBool("edit")
 		var envs []*pb.Env
-		if editOnline {
+		if updateOnline {
 			// Get existing environment data
 			id, _ := cmd.Flags().GetUint32("id")
 			if id == 0 {
@@ -91,9 +89,9 @@ var updateEnvCmd = &cobra.Command{
 				log.Fatalf("failed to parse updated yaml: %v", err)
 			}
 
-		} else if yamlFile != "" {
+		} else if updateFile != "" {
 			// Read and parse YAML file
-			data, err := os.ReadFile(yamlFile)
+			data, err := os.ReadFile(updateFile)
 			if err != nil {
 				log.Fatalf("failed to read yaml file: %v", err)
 			}

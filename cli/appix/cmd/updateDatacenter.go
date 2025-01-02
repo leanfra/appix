@@ -1,40 +1,144 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"os/exec"
+
+	pb "appix/api/appix/v1"
 
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"gopkg.in/yaml.v2"
 )
 
 // updateDatacenterCmd represents the updateDatacenter command
 var updateDatacenterCmd = &cobra.Command{
-	Use:   "updateDatacenter",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:     "datacenter",
+	Short:   "Update datacenter",
+	Long:    `Update one or more datacenters with the specified ID and fields.`,
+	Aliases: []string{"datacenter", "datacenters", "dc"},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("updateDatacenter called")
+		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		if err != nil {
+			fmt.Printf("Failed to connect: %v\n", err)
+			return
+		}
+		defer conn.Close()
+		client := pb.NewDatacentersClient(conn)
+
+		var datacenters []*pb.Datacenter
+		if updateOnline {
+			// Get existing datacenter data
+			id, _ := cmd.Flags().GetUint32("id")
+			if id == 0 {
+				log.Fatal("id is required for online editing")
+			}
+
+			// Get the datacenter data
+			getReq := &pb.GetDatacentersRequest{Id: id}
+			getResp, err := client.GetDatacenters(cmd.Context(), getReq)
+			if err != nil {
+				log.Fatalf("failed to get datacenter: %v", err)
+			}
+
+			// Convert to YAML
+			data, err := yaml.Marshal([]*pb.Datacenter{getResp.Datacenter})
+			if err != nil {
+				log.Fatalf("failed to marshal datacenter: %v", err)
+			}
+
+			// Create temp file
+			tmpfile, err := os.CreateTemp("", "datacenter-*.yaml")
+			if err != nil {
+				log.Fatalf("failed to create temp file: %v", err)
+			}
+			defer os.Remove(tmpfile.Name())
+
+			if _, err := tmpfile.Write(data); err != nil {
+				log.Fatalf("failed to write temp file: %v", err)
+			}
+			tmpfile.Close()
+
+			editor := findEditor()
+			if editor == "" {
+				log.Fatal("no suitable editor found - please set EDITOR environment variable")
+			}
+
+			cmd := exec.Command(editor, tmpfile.Name())
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err := cmd.Run(); err != nil {
+				log.Fatalf("failed to run editor: %v", err)
+			}
+
+			// Read updated content
+			updatedData, err := os.ReadFile(tmpfile.Name())
+			if err != nil {
+				log.Fatalf("failed to read updated file: %v", err)
+			}
+
+			// Parse updated YAML
+			if err := yaml.Unmarshal(updatedData, &datacenters); err != nil {
+				log.Fatalf("failed to parse updated yaml: %v", err)
+			}
+
+		} else if updateFile != "" {
+			// Read and parse YAML file
+			data, err := os.ReadFile(updateFile)
+			if err != nil {
+				log.Fatalf("failed to read yaml file: %v", err)
+			}
+
+			if err := yaml.Unmarshal(data, &datacenters); err != nil {
+				log.Fatalf("failed to parse yaml: %v", err)
+			}
+		} else {
+			// Command line update
+			id, _ := cmd.Flags().GetUint32("id")
+			if id == 0 {
+				log.Fatal("id is required for command line update")
+			}
+			name, _ := cmd.Flags().GetString("name")
+			desc, _ := cmd.Flags().GetString("desc")
+
+			datacenters = []*pb.Datacenter{
+				{
+					Id:          id,
+					Name:        name,
+					Description: desc,
+				},
+			}
+		}
+
+		req := &pb.UpdateDatacentersRequest{
+			Datacenters: datacenters,
+		}
+
+		reply, err := client.UpdateDatacenters(cmd.Context(), req)
+		if err != nil {
+			fmt.Printf("Error updating datacenter: %v\n", err)
+			return
+		}
+
+		if reply != nil {
+			fmt.Printf("Action: %s\n", reply.Action)
+			fmt.Printf("Code: %d\n", reply.Code)
+			fmt.Printf("Message: %s\n", reply.Message)
+		}
 	},
 }
 
 func init() {
 	updateCmd.AddCommand(updateDatacenterCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// updateDatacenterCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// updateDatacenterCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	updateDatacenterCmd.Flags().Uint32("id", 0, "Datacenter ID to update")
+	updateDatacenterCmd.Flags().String("name", "", "New datacenter name")
+	updateDatacenterCmd.Flags().String("desc", "", "New datacenter description")
 }

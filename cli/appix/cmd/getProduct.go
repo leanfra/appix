@@ -20,8 +20,8 @@ import (
 
 // getProductCmd represents the getProduct command
 var getProductCmd = &cobra.Command{
-	Use:   "getProduct",
-	Short: "A brief description of your command",
+	Use:   "product",
+	Short: "Get products resources from the system",
 	Long: `Get products resources from the system.
 
 Examples:

@@ -20,8 +20,8 @@ import (
 // updateTagCmd represents the updateTag command
 var updateTagCmd = &cobra.Command{
 	Use:     "tag",
-	Short:   "Update a tag",
-	Long:    `Update a tag with the specified ID and fields.`,
+	Short:   "Update tag",
+	Long:    `Update one or more tags with the specified ID and fields.`,
 	Aliases: []string{"tag", "tags"},
 	Run: func(cmd *cobra.Command, args []string) {
 		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
