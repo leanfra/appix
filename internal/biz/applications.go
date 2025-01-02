@@ -63,8 +63,6 @@ func (s *ApplicationsUsecase) validate(isNew bool, apps []*Application) error {
 	return nil
 }
 
-const appPropCluster = "cluster"
-const appPropDatacenter = "datacenter"
 const appPropProduct = "product"
 const appPropTeam = "team"
 const appPropFeature = "feature"
@@ -154,10 +152,6 @@ func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Ap
 	if err := s.validate(true, apps); err != nil {
 		return err
 	}
-	_apps, err := ToDBApplications(apps)
-	if err != nil {
-		return err
-	}
 
 	return s.txm.RunInTX(func(tx repo.TX) error {
 
@@ -165,25 +159,30 @@ func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Ap
 			return err
 		}
 
-		// create app and get id
-		if err := s.apprepo.CreateApplications(ctx, tx, _apps); err != nil {
-			return err
-		}
-
 		// insert
-		for _, a := range apps {
+		for _, app := range apps {
+
+			dbapp, err := ToDBApplication(app)
+			if err != nil {
+				return err
+			}
+			// create app and get id
+			if err := s.apprepo.CreateApplications(ctx, tx, []*repo.Application{dbapp}); err != nil {
+				return err
+			}
+
 			// create app-tags
-			if err := s.createProps(ctx, tx, a.Id, a.TagsId, appPropTag); err != nil {
+			if err := s.createProps(ctx, tx, dbapp.Id, app.TagsId, appPropTag); err != nil {
 				return err
 			}
 
 			// create app-features
-			if err := s.createProps(ctx, tx, a.Id, a.FeaturesId, appPropFeature); err != nil {
+			if err := s.createProps(ctx, tx, dbapp.Id, app.FeaturesId, appPropFeature); err != nil {
 				return err
 			}
 
 			// create app-hostgroups
-			if err := s.createProps(ctx, tx, a.Id, a.HostgroupsId, appPropHostgroup); err != nil {
+			if err := s.createProps(ctx, tx, dbapp.Id, app.HostgroupsId, appPropHostgroup); err != nil {
 				return err
 			}
 		}

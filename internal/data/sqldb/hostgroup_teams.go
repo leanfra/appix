@@ -31,7 +31,7 @@ func (d *HostgroupTeamsRepoGorm) CreateHostgroupTeams(ctx context.Context,
 	if len(hostgroups) == 0 {
 		return nil
 	}
-	return d.data.DB.WithContext(ctx).Create(hostgroups).Error
+	return d.data.WithTX(tx).WithContext(ctx).Create(hostgroups).Error
 }
 
 func (d *HostgroupTeamsRepoGorm) UpdateHostgroupTeams(ctx context.Context,
@@ -40,7 +40,7 @@ func (d *HostgroupTeamsRepoGorm) UpdateHostgroupTeams(ctx context.Context,
 	if len(hostgroups) == 0 {
 		return nil
 	}
-	return d.data.DB.WithContext(ctx).Updates(hostgroups).Error
+	return d.data.WithTX(tx).WithContext(ctx).Updates(hostgroups).Error
 }
 
 func (d *HostgroupTeamsRepoGorm) DeleteHostgroupTeams(ctx context.Context,
@@ -49,7 +49,7 @@ func (d *HostgroupTeamsRepoGorm) DeleteHostgroupTeams(ctx context.Context,
 	if len(ids) == 0 {
 		return nil
 	}
-	return d.data.DB.WithContext(ctx).Delete(&repo.HostgroupTeam{}, ids).Error
+	return d.data.WithTX(tx).WithContext(ctx).Delete(&repo.HostgroupTeam{}, ids).Error
 }
 func (d *HostgroupTeamsRepoGorm) ListHostgroupTeams(ctx context.Context,
 	tx repo.TX,

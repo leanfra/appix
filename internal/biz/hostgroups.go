@@ -190,11 +190,13 @@ func (s *HostgroupsUsecase) validateProps(
 		if count, err := counter.countFn(ctx, tx, counter.ids); err != nil {
 			return err
 		} else {
-			if count == 0 {
-				return fmt.Errorf("lack all %s", counter.name)
-			}
-			if count != int64(len(counter.ids.GetIds())) {
-				return fmt.Errorf("lack some %s", counter.name)
+			if len(counter.ids.GetIds()) > 0 {
+				if count == 0 {
+					return fmt.Errorf("lack all %s", counter.name)
+				}
+				if count != int64(len(counter.ids.GetIds())) {
+					return fmt.Errorf("lack some %s", counter.name)
+				}
 			}
 		}
 	}
@@ -250,30 +252,30 @@ func (s *HostgroupsUsecase) CreateHostgroups(ctx context.Context, hgs []*Hostgro
 	if err := s.validate(true, hgs); err != nil {
 		return err
 	}
-	dbhgs, err := ToDBHostgroups(hgs)
-	if err != nil {
-		return err
-	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
 		if err := s.validateProps(ctx, tx, hgs); err != nil {
 			return err
 		}
 
-		if err := s.hgrepo.CreateHostgroups(ctx, tx, dbhgs); err != nil {
-			return err
-		}
-
 		for _, hg := range hgs {
-			if err := s.createM2MProps(ctx, tx, hg.Id, hg.TagsId, hgPropTag); err != nil {
+			dbhg, err := ToDBHostgroup(hg)
+			if err != nil {
 				return err
 			}
-			if err := s.createM2MProps(ctx, tx, hg.Id, hg.FeaturesId, hgPropFeature); err != nil {
+
+			if err := s.hgrepo.CreateHostgroups(ctx, tx, []*repo.Hostgroup{dbhg}); err != nil {
 				return err
 			}
-			if err := s.createM2MProps(ctx, tx, hg.Id, hg.ShareProductsId, hgPropShareProduct); err != nil {
+			if err := s.createM2MProps(ctx, tx, dbhg.Id, hg.TagsId, hgPropTag); err != nil {
 				return err
 			}
-			if err := s.createM2MProps(ctx, tx, hg.Id, hg.ShareTeamsId, hgPropShareTeam); err != nil {
+			if err := s.createM2MProps(ctx, tx, dbhg.Id, hg.FeaturesId, hgPropFeature); err != nil {
+				return err
+			}
+			if err := s.createM2MProps(ctx, tx, dbhg.Id, hg.ShareProductsId, hgPropShareProduct); err != nil {
+				return err
+			}
+			if err := s.createM2MProps(ctx, tx, dbhg.Id, hg.ShareTeamsId, hgPropShareTeam); err != nil {
 				return err
 			}
 		}

@@ -31,7 +31,7 @@ func (d *AppFeaturesRepoGorm) CreateAppFeatures(ctx context.Context,
 	if len(apps) == 0 {
 		return nil
 	}
-	return d.data.DB.WithContext(ctx).Create(apps).Error
+	return d.data.WithTX(tx).WithContext(ctx).Create(apps).Error
 }
 
 func (d *AppFeaturesRepoGorm) UpdateAppFeatures(ctx context.Context,
@@ -40,7 +40,7 @@ func (d *AppFeaturesRepoGorm) UpdateAppFeatures(ctx context.Context,
 	if len(apps) == 0 {
 		return nil
 	}
-	return d.data.DB.WithContext(ctx).Updates(apps).Error
+	return d.data.WithTX(tx).WithContext(ctx).Updates(apps).Error
 }
 
 func (d *AppFeaturesRepoGorm) DeleteAppFeatures(ctx context.Context,
@@ -49,7 +49,7 @@ func (d *AppFeaturesRepoGorm) DeleteAppFeatures(ctx context.Context,
 	if len(ids) == 0 {
 		return nil
 	}
-	return d.data.DB.WithContext(ctx).Delete(&repo.AppFeature{}, ids).Error
+	return d.data.WithTX(tx).WithContext(ctx).Delete(&repo.AppFeature{}, ids).Error
 }
 func (d *AppFeaturesRepoGorm) ListAppFeatures(ctx context.Context,
 	tx repo.TX,

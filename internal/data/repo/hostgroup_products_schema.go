@@ -1,6 +1,6 @@
 package repo
 
-const HostgroupProductTable = "hostgroup_tags"
+const HostgroupProductTable = "hostgroup_products"
 
 type HostgroupProduct struct {
 	Id          uint32 `gorm:"primaryKey;autoIncrement"`

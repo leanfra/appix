@@ -31,7 +31,7 @@ func (d *AppHostgroupsRepoGorm) CreateAppHostgroups(ctx context.Context,
 	if len(apps) == 0 {
 		return nil
 	}
-	return d.data.DB.WithContext(ctx).Create(apps).Error
+	return d.data.WithTX(tx).WithContext(ctx).Create(apps).Error
 }
 
 func (d *AppHostgroupsRepoGorm) UpdateAppHostgroups(ctx context.Context,
@@ -40,7 +40,7 @@ func (d *AppHostgroupsRepoGorm) UpdateAppHostgroups(ctx context.Context,
 	if len(apps) == 0 {
 		return nil
 	}
-	return d.data.DB.WithContext(ctx).Updates(apps).Error
+	return d.data.WithTX(tx).WithContext(ctx).Updates(apps).Error
 }
 
 func (d *AppHostgroupsRepoGorm) DeleteAppHostgroups(ctx context.Context,
@@ -49,7 +49,7 @@ func (d *AppHostgroupsRepoGorm) DeleteAppHostgroups(ctx context.Context,
 	if len(ids) == 0 {
 		return nil
 	}
-	return d.data.DB.WithContext(ctx).Delete(&repo.AppHostgroup{}, ids).Error
+	return d.data.WithTX(tx).WithContext(ctx).Delete(&repo.AppHostgroup{}, ids).Error
 }
 func (d *AppHostgroupsRepoGorm) ListAppHostgroups(ctx context.Context,
 	tx repo.TX,
