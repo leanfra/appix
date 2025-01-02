@@ -249,20 +249,6 @@ func (s *ApplicationsUsecase) deleteProps(
 	return fmt.Errorf("deleteProps invalid prop %s", prop)
 }
 
-func (s *ApplicationsUsecase) deletePropsByApp(
-	ctx context.Context, tx repo.TX, appid uint32, prop string) error {
-
-	switch prop {
-	case appPropTag:
-		return s.atagrepo.DeleteAppTagsByAppId(ctx, tx, []uint32{appid})
-	case appPropFeature:
-		return s.afrepo.DeleteAppFeaturesByAppId(ctx, tx, []uint32{appid})
-	case appPropHostgroup:
-		return s.ahgrepo.DeleteAppHostgroupsByAppId(ctx, tx, []uint32{appid})
-	}
-	return fmt.Errorf("deleteProps invalid prop %s", prop)
-}
-
 func (s *ApplicationsUsecase) createProps(
 	ctx context.Context, tx repo.TX, appid uint32, ids []uint32, prop string) error {
 
@@ -298,7 +284,7 @@ func (s *ApplicationsUsecase) createProps(
 	return fmt.Errorf("createProps invalid prop %s", prop)
 }
 
-func (s *ApplicationsUsecase) handleM2MProps(
+func (s *ApplicationsUsecase) HandleM2MProps(
 	ctx context.Context, tx repo.TX, appid uint32, ids []uint32, prop string) error {
 
 	oldItems, err := s.listProps(ctx, tx, []uint32{appid}, prop)
@@ -340,7 +326,7 @@ func (s *ApplicationsUsecase) handleM2MProps(
 
 // UpdateApplications is
 func (s *ApplicationsUsecase) UpdateApplications(ctx context.Context, apps []*Application) error {
-	if err := s.validate(false, nil); err != nil {
+	if err := s.validate(false, apps); err != nil {
 		return err
 	}
 	_apps, err := ToDBApplications(apps)
@@ -360,17 +346,17 @@ func (s *ApplicationsUsecase) UpdateApplications(ctx context.Context, apps []*Ap
 
 		for _, a := range apps {
 			// tags
-			if err := s.handleM2MProps(ctx, tx, a.Id, a.TagsId, appPropTag); err != nil {
+			if err := s.HandleM2MProps(ctx, tx, a.Id, a.TagsId, appPropTag); err != nil {
 				return err
 			}
 
 			// features
-			if err := s.handleM2MProps(ctx, tx, a.Id, a.FeaturesId, appPropFeature); err != nil {
+			if err := s.HandleM2MProps(ctx, tx, a.Id, a.FeaturesId, appPropFeature); err != nil {
 				return err
 			}
 
 			// hostgroups
-			if err := s.handleM2MProps(ctx, tx, a.Id, a.HostgroupsId, appPropHostgroup); err != nil {
+			if err := s.HandleM2MProps(ctx, tx, a.Id, a.HostgroupsId, appPropHostgroup); err != nil {
 				return err
 			}
 		}
@@ -387,16 +373,15 @@ func (s *ApplicationsUsecase) DeleteApplications(ctx context.Context, ids []uint
 	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
 		// delete props
-		for _, id := range ids {
-			if err := s.deletePropsByApp(ctx, tx, id, appPropTag); err != nil {
-				return err
-			}
-			if err := s.deletePropsByApp(ctx, tx, id, appPropFeature); err != nil {
-				return err
-			}
-			if err := s.deletePropsByApp(ctx, tx, id, appPropHostgroup); err != nil {
-				return err
-			}
+
+		if err := s.atagrepo.DeleteAppTagsByAppId(ctx, tx, ids); err != nil {
+			return err
+		}
+		if err := s.afrepo.DeleteAppFeaturesByAppId(ctx, tx, ids); err != nil {
+			return err
+		}
+		if err := s.ahgrepo.DeleteAppHostgroupsByAppId(ctx, tx, ids); err != nil {
+			return err
 		}
 		// delete app
 		return s.apprepo.DeleteApplications(ctx, tx, ids)
@@ -472,39 +457,37 @@ func (s *ApplicationsUsecase) ListApplications(
 		}
 		var items interface{}
 		var err error
+		var app_ids []uint32
 		switch prop {
 		case appPropTag:
 			items, err = s.atagrepo.ListAppTags(ctx, nil, &repo.AppTagsFilter{
-				Ids: filter.TagsId})
+				Ids: filterIds})
+			if err != nil {
+				return fmt.Errorf("ListApplications listAppTags error. %w", err)
+			}
+			for _, item := range items.([]*repo.AppTag) {
+				app_ids = append(app_ids, item.AppID)
+			}
 		case appPropFeature:
 			items, err = s.afrepo.ListAppFeatures(ctx, nil, &repo.AppFeaturesFilter{
-				Ids: filter.FeaturesId})
+				Ids: filterIds})
+			if err != nil {
+				return fmt.Errorf("ListApplications listAppFeatures error. %w", err)
+			}
+			for _, item := range items.([]*repo.AppFeature) {
+				app_ids = append(app_ids, item.AppID)
+			}
 		case appPropHostgroup:
 			items, err = s.ahgrepo.ListAppHostgroups(ctx, nil, &repo.AppHostgroupsFilter{
-				Ids: filter.HostgroupsId})
+				Ids: filterIds})
+			if err != nil {
+				return fmt.Errorf("ListApplications listAppHostgroups error. %w", err)
+			}
+			for _, item := range items.([]*repo.AppHostgroup) {
+				app_ids = append(app_ids, item.AppID)
+			}
 		default:
 			return fmt.Errorf("ListApplications invalid prop %s", prop)
-		}
-
-		if err != nil {
-			return fmt.Errorf("ListApplications listAppHostgroups error. %w", err)
-		}
-
-		var app_ids []uint32
-
-		switch v := items.(type) {
-		case []*repo.AppTag:
-			for _, item := range v {
-				app_ids = append(app_ids, item.AppID)
-			}
-		case []*repo.AppFeature:
-			for _, item := range v {
-				app_ids = append(app_ids, item.AppID)
-			}
-		case []*repo.AppHostgroup:
-			for _, item := range v {
-				app_ids = append(app_ids, item.AppID)
-			}
 		}
 
 		if len(app_ids) == 0 {

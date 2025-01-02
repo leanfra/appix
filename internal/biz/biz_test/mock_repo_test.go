@@ -570,7 +570,7 @@ type MockAppHostgroupsRepo struct {
 }
 
 func (m *MockAppHostgroupsRepo) CreateAppHostgroups(ctx context.Context, tx repo.TX, a []*repo.AppHostgroup) error {
-	args := m.Called(ctx, a)
+	args := m.Called(ctx, tx, a)
 	return args.Error(0)
 }
 
@@ -670,12 +670,12 @@ type MockAppTagsRepo struct {
 }
 
 func (m *MockAppTagsRepo) CreateAppTags(ctx context.Context, tx repo.TX, a []*repo.AppTag) error {
-	args := m.Called(ctx, a)
+	args := m.Called(ctx, tx, a)
 	return args.Error(0)
 }
 
 func (m *MockAppTagsRepo) UpdateAppTags(ctx context.Context, tx repo.TX, a []*repo.AppTag) error {
-	args := m.Called(ctx, a)
+	args := m.Called(ctx, tx, a)
 	return args.Error(0)
 }
 

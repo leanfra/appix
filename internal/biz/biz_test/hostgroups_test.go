@@ -646,7 +646,7 @@ func TestUpdateHostgroup(t *testing.T) {
 	// handle team in TestHandleM2MProps
 }
 
-func TestHandleM2MProps(t *testing.T) {
+func TestHostgroupsHandleM2MProps(t *testing.T) {
 	ctx := context.Background()
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)

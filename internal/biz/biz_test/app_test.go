@@ -240,3 +240,429 @@ func TestCreateApp(t *testing.T) {
 	afcall.Unset()
 	ahgcall.Unset()
 }
+
+func TestUpdateApp(t *testing.T) {
+	ctx := context.Background()
+	txm := new(MockTXManager)
+	apprepo := new(MockApplicationsRepo)
+	atagrepo := new(MockAppTagsRepo)
+	afrepo := new(MockAppFeaturesRepo)
+	ahgrepo := new(MockAppHostgroupsRepo)
+	clsrepo := new(MockClustersRepo)
+	dcrepo := new(MockDatacentersRepo)
+	prdrepo := new(MockProductsRepo)
+	teamrepo := new(MockTeamsRepo)
+	ftrepo := new(MockFeaturesRepo)
+	tagrepo := new(MockTagsRepo)
+	hgrepo := new(MockHostgroupsRepo)
+
+	usecase := biz.NewApplicationsUsecase(
+		apprepo, atagrepo, afrepo, ahgrepo, clsrepo,
+		dcrepo, prdrepo, teamrepo, ftrepo, tagrepo,
+		hgrepo, nil, txm)
+
+	// bad field
+	bad_field := []*biz.Application{
+		{0, "name", "desc", "web", false, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "", "desc", "web", false, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "name", "desc", "", false, 0, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "name", "desc", "web", false, 1, 0, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "name", "desc", "web", false, 1, 1, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "name", "desc", "web", false, 1, 1, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+	}
+
+	for _, bc := range bad_field {
+		err := usecase.UpdateApplications(ctx, []*biz.Application{bc})
+		t.Logf("bad field: %v", err)
+		assert.Error(t, err)
+	}
+
+	app := []*biz.Application{
+		{0, "test-app", "desc", "web", false, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+	}
+
+	// 测试集群验证
+	clscall := clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	err := usecase.CreateApplications(ctx, app)
+	assert.Error(t, err)
+	clscall.Unset()
+
+	// 测试数据中心验证
+	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	dccall := dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	err = usecase.CreateApplications(ctx, app)
+	assert.Error(t, err)
+	clscall.Unset()
+	dccall.Unset()
+
+	// 测试产品验证
+	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	prdcall := prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	err = usecase.CreateApplications(ctx, app)
+	assert.Error(t, err)
+	clscall.Unset()
+	dccall.Unset()
+	prdcall.Unset()
+
+	// 测试团队验证
+	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	tcall := teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	err = usecase.CreateApplications(ctx, app)
+	assert.Error(t, err)
+	clscall.Unset()
+	dccall.Unset()
+	prdcall.Unset()
+	tcall.Unset()
+
+	// 测试特性验证
+	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	fcall := ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	err = usecase.CreateApplications(ctx, app)
+	assert.Error(t, err)
+	clscall.Unset()
+	dccall.Unset()
+	prdcall.Unset()
+	tcall.Unset()
+	fcall.Unset()
+
+	// 测试标签验证
+	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	tgcall := tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	err = usecase.CreateApplications(ctx, app)
+	assert.Error(t, err)
+	clscall.Unset()
+	dccall.Unset()
+	prdcall.Unset()
+	tcall.Unset()
+	fcall.Unset()
+	tgcall.Unset()
+
+	// 测试主机组验证
+	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	hgcall := hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	err = usecase.CreateApplications(ctx, app)
+	assert.Error(t, err)
+	clscall.Unset()
+	dccall.Unset()
+	prdcall.Unset()
+	tcall.Unset()
+	fcall.Unset()
+	tgcall.Unset()
+	hgcall.Unset()
+
+	// 测试创建应用失败
+	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, &repo.ProductsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
+	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, &repo.TeamsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
+	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	appcall := apprepo.On("CreateApplications", ctx, mock.Anything, mock.Anything).
+		Return(errors.New("create application fail"))
+
+	err = usecase.CreateApplications(ctx, app)
+	assert.Error(t, err)
+	clscall.Unset()
+	dccall.Unset()
+	prdcall.Unset()
+	tcall.Unset()
+	fcall.Unset()
+	tgcall.Unset()
+	hgcall.Unset()
+	appcall.Unset()
+
+}
+
+func TestAppHandleM2MProps(t *testing.T) {
+	ctx := context.Background()
+	txm := new(MockTXManager)
+	apprepo := new(MockApplicationsRepo)
+	atagrepo := new(MockAppTagsRepo)
+	afrepo := new(MockAppFeaturesRepo)
+	ahgrepo := new(MockAppHostgroupsRepo)
+	clsrepo := new(MockClustersRepo)
+	dcrepo := new(MockDatacentersRepo)
+	prdrepo := new(MockProductsRepo)
+	teamrepo := new(MockTeamsRepo)
+	ftrepo := new(MockFeaturesRepo)
+	tagrepo := new(MockTagsRepo)
+	hgrepo := new(MockHostgroupsRepo)
+
+	usecase := biz.NewApplicationsUsecase(
+		apprepo, atagrepo, afrepo, ahgrepo, clsrepo,
+		dcrepo, prdrepo, teamrepo, ftrepo, tagrepo,
+		hgrepo, nil, txm)
+
+	// app-tag
+	atagFilter := &repo.AppTagsFilter{
+		AppIds: []uint32{1},
+	}
+	newAppTagIds := []uint32{2, 3}
+	oldAppTag := []*repo.AppTag{
+		{Id: 1, AppID: 1, TagID: 1},
+		{Id: 2, AppID: 1, TagID: 2},
+	}
+	toCreateAppTag := []*repo.AppTag{
+		{AppID: 1, TagID: 3},
+	}
+	atagrepo.On("ListAppTags", ctx, mock.Anything, atagFilter).Return(oldAppTag, nil)
+	atagrepo.On("DeleteAppTags", ctx, mock.Anything, []uint32{1}).Return(nil)
+	atagrepo.On("CreateAppTags", ctx, mock.Anything, toCreateAppTag).Return(nil)
+
+	err := usecase.HandleM2MProps(
+		ctx, nil, uint32(1), newAppTagIds, "tag")
+	assert.NoError(t, err)
+
+	// app-feature
+	afFilter := &repo.AppFeaturesFilter{
+		AppIds: []uint32{1},
+	}
+	newAppFeatureIds := []uint32{2, 3}
+	oldAppFeatures := []*repo.AppFeature{
+		{Id: 1, AppID: 1, FeatureID: 1},
+		{Id: 2, AppID: 1, FeatureID: 2},
+	}
+	toCreateAppFeature := []*repo.AppFeature{
+		{AppID: 1, FeatureID: 3},
+	}
+	afrepo.On("ListAppFeatures", ctx, mock.Anything, afFilter).Return(oldAppFeatures, nil)
+	afrepo.On("DeleteAppFeatures", ctx, mock.Anything, []uint32{1}).Return(nil)
+	afrepo.On("CreateAppFeatures", ctx, mock.Anything, toCreateAppFeature).Return(nil)
+
+	err = usecase.HandleM2MProps(
+		ctx, nil, uint32(1), newAppFeatureIds, "feature")
+	assert.NoError(t, err)
+
+	// app-hostgroup
+	ahFilter := &repo.AppHostgroupsFilter{
+		AppIds: []uint32{1},
+	}
+	newAppHostgroupIds := []uint32{2, 3}
+	oldAppHostgroups := []*repo.AppHostgroup{
+		{Id: 1, AppID: 1, HostgroupID: 1},
+		{Id: 2, AppID: 1, HostgroupID: 2},
+	}
+	toCreateAppHostgroup := []*repo.AppHostgroup{
+		{AppID: 1, HostgroupID: 3},
+	}
+	ahgrepo.On("ListAppHostgroups", ctx, mock.Anything, ahFilter).Return(oldAppHostgroups, nil)
+	ahgrepo.On("DeleteAppHostgroups", ctx, mock.Anything, []uint32{1}).Return(nil)
+	ahgrepo.On("CreateAppHostgroups", ctx, mock.Anything, toCreateAppHostgroup).Return(nil)
+
+	err = usecase.HandleM2MProps(
+		ctx, nil, uint32(1), newAppHostgroupIds, "hostgroup")
+	assert.NoError(t, err)
+
+}
+
+func TestDeleteApplications(t *testing.T) {
+	ctx := context.Background()
+	txm := new(MockTXManager)
+	apprepo := new(MockApplicationsRepo)
+	atagrepo := new(MockAppTagsRepo)
+	afrepo := new(MockAppFeaturesRepo)
+	ahgrepo := new(MockAppHostgroupsRepo)
+	clsrepo := new(MockClustersRepo)
+	dcrepo := new(MockDatacentersRepo)
+	prdrepo := new(MockProductsRepo)
+	teamrepo := new(MockTeamsRepo)
+	ftrepo := new(MockFeaturesRepo)
+	tagrepo := new(MockTagsRepo)
+	hgrepo := new(MockHostgroupsRepo)
+
+	usecase := biz.NewApplicationsUsecase(
+		apprepo, atagrepo, afrepo, ahgrepo, clsrepo,
+		dcrepo, prdrepo, teamrepo, ftrepo, tagrepo,
+		hgrepo, nil, txm)
+
+	ids := []uint32{1, 2}
+
+	rerr := errors.New("delete relations error")
+	atagcall := atagrepo.On("DeleteAppTagsByAppId", ctx, mock.Anything, ids).Return(rerr)
+	err := usecase.DeleteApplications(ctx, ids)
+	assert.Error(t, err)
+	atagcall.Unset()
+
+	atagrepo.On("DeleteAppTagsByAppId", ctx, mock.Anything, ids).Return(nil)
+	afcall := afrepo.On("DeleteAppFeaturesByAppId", ctx, mock.Anything, ids).Return(rerr)
+	err = usecase.DeleteApplications(ctx, ids)
+	assert.Error(t, err)
+	afcall.Unset()
+
+	atagrepo.On("DeleteAppTagsByAppId", ctx, mock.Anything, ids).Return(nil)
+	afrepo.On("DeleteAppFeaturesByAppId", ctx, mock.Anything, ids).Return(nil)
+	ahcall := ahgrepo.On("DeleteAppHostgroupsByAppId", ctx, mock.Anything, ids).Return(rerr)
+	err = usecase.DeleteApplications(ctx, ids)
+	assert.Error(t, err)
+	ahcall.Unset()
+
+	// Delete related records
+	atagrepo.On("DeleteAppTagsByAppId", ctx, mock.Anything, ids).Return(nil)
+	afrepo.On("DeleteAppFeaturesByAppId", ctx, mock.Anything, ids).Return(nil)
+	ahgrepo.On("DeleteAppHostgroupsByAppId", ctx, mock.Anything, ids).Return(nil)
+
+	// Delete apps
+	apprepo.On("DeleteApplications", ctx, mock.Anything, ids).Return(nil)
+
+	err = usecase.DeleteApplications(ctx, ids)
+	assert.NoError(t, err)
+
+}
+
+func TestListApplications(t *testing.T) {
+	ctx := context.Background()
+	txm := new(MockTXManager)
+	txm.On("RunInTX", mock.Anything).Return(nil).Run(func(args mock.Arguments) {
+		fn := args.Get(0).(func(repo.TX) error)
+		fn(nil)
+	})
+
+	apprepo := new(MockApplicationsRepo)
+	atagrepo := new(MockAppTagsRepo)
+	afrepo := new(MockAppFeaturesRepo)
+	ahgrepo := new(MockAppHostgroupsRepo)
+	clsrepo := new(MockClustersRepo)
+	dcrepo := new(MockDatacentersRepo)
+	prdrepo := new(MockProductsRepo)
+	teamrepo := new(MockTeamsRepo)
+	ftrepo := new(MockFeaturesRepo)
+	tagrepo := new(MockTagsRepo)
+	hgrepo := new(MockHostgroupsRepo)
+
+	usecase := biz.NewApplicationsUsecase(
+		apprepo, atagrepo, afrepo, ahgrepo, clsrepo,
+		dcrepo, prdrepo, teamrepo, ftrepo, tagrepo,
+		hgrepo, nil, txm)
+
+	// Empty filter
+	//filter := &biz.ListApplicationsFilter{}
+	_apps := []*repo.Application{
+		{
+			Id:           1,
+			Name:         "app1",
+			Description:  "desc1",
+			TeamId:       1,
+			ProductId:    1,
+			ClusterId:    1,
+			DatacenterId: 1,
+			IsStateful:   true,
+			Owner:        "owner1",
+		},
+		{
+			Id:           2,
+			Name:         "app2",
+			Description:  "desc2",
+			TeamId:       2,
+			ProductId:    2,
+			ClusterId:    2,
+			DatacenterId: 2,
+			IsStateful:   false,
+			Owner:        "owner2",
+		},
+	}
+	biz_apps := []*biz.Application{
+		{
+			Id:           1,
+			Name:         "app1",
+			Description:  "desc1",
+			Owner:        "owner1",
+			IsStateful:   true,
+			TeamId:       1,
+			ProductId:    1,
+			ClusterId:    1,
+			DatacenterId: 1,
+			TagsId:       []uint32{1, 2},
+			FeaturesId:   []uint32{1, 2},
+			HostgroupsId: []uint32{1, 2},
+		},
+		{
+			Id:           2,
+			Name:         "app2",
+			Description:  "desc2",
+			Owner:        "owner2",
+			IsStateful:   false,
+			TeamId:       2,
+			ProductId:    2,
+			ClusterId:    2,
+			DatacenterId: 2,
+			TagsId:       []uint32{1, 2},
+			FeaturesId:   []uint32{1, 2},
+			HostgroupsId: []uint32{1, 2},
+		},
+	}
+
+	apprepo.On("ListApplications", ctx, mock.Anything, mock.Anything).Return(_apps, nil)
+	atagcall := atagrepo.On("ListAppTags", ctx, mock.Anything, mock.Anything).Return([]*repo.AppTag{
+		{Id: 1, AppID: 1, TagID: 1},
+		{Id: 2, AppID: 1, TagID: 2},
+	}, nil)
+	afcall := afrepo.On("ListAppFeatures", ctx, mock.Anything, mock.Anything).Return([]*repo.AppFeature{
+		{Id: 1, AppID: 1, FeatureID: 1},
+		{Id: 2, AppID: 1, FeatureID: 2},
+	}, nil)
+	ahcall := ahgrepo.On("ListAppHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.AppHostgroup{
+		{Id: 1, AppID: 1, HostgroupID: 1},
+		{Id: 2, AppID: 1, HostgroupID: 2},
+	}, nil)
+	apps, err := usecase.ListApplications(ctx, nil)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, len(apps))
+	assert.Equal(t, biz_apps[0], apps[0])
+	assert.Equal(t, biz_apps[1], apps[1])
+
+	filter := &biz.ListApplicationsFilter{
+		Page:         1,
+		PageSize:     10,
+		TagsId:       []uint32{1, 2},
+		FeaturesId:   []uint32{1, 2},
+		HostgroupsId: []uint32{1, 2},
+	}
+
+	// app-tag filter nil
+	atagcall.Unset()
+	atagrepo.On("ListAppTags", ctx, mock.Anything, mock.Anything).Return([]*repo.AppTag{}, nil)
+	_, err = usecase.ListApplications(ctx, filter)
+	t.Logf("err: %v", err)
+	assert.Error(t, err)
+
+	// app-feature filter nil
+	atagcall.Unset()
+	atagrepo.On("ListAppTags", ctx, mock.Anything, mock.Anything).Return([]*repo.AppTag{
+		{Id: 1, AppID: 1, TagID: 1},
+		{Id: 2, AppID: 1, TagID: 2},
+	}, nil)
+	afcall.Unset()
+	afcall = afrepo.On("ListAppFeatures", ctx, mock.Anything, mock.Anything).Return([]*repo.AppFeature{}, nil)
+	_, err = usecase.ListApplications(ctx, filter)
+	t.Logf("err: %v", err)
+	assert.Error(t, err)
+
+	// app-hostgroup filter nil
+	afcall.Unset()
+	afrepo.On("ListAppFeatures", ctx, mock.Anything, mock.Anything).Return([]*repo.AppFeature{
+		{Id: 1, AppID: 1, FeatureID: 1},
+		{Id: 2, AppID: 1, FeatureID: 2},
+	}, nil)
+	ahcall.Unset()
+	ahgrepo.On("ListAppHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.AppHostgroup{}, nil)
+	_, err = usecase.ListApplications(ctx, filter)
+	t.Logf("err: %v", err)
+	assert.Error(t, err)
+
+}
