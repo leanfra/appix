@@ -56,9 +56,10 @@ func ToDBTag(t *Tag) (*repo.Tag, error) {
 		return nil, nil
 	}
 	return &repo.Tag{
-		ID:    t.Id,
-		Key:   t.Key,
-		Value: t.Value,
+		ID:          t.Id,
+		Key:         t.Key,
+		Value:       t.Value,
+		Description: t.Description,
 	}, nil
 }
 
@@ -76,20 +77,17 @@ func ToDBTags(ts []*Tag) ([]*repo.Tag, error) {
 
 func ToBizTag(t *repo.Tag) (*Tag, error) {
 	return &Tag{
-		Id:    t.ID,
-		Key:   t.Key,
-		Value: t.Value,
+		Id:          t.ID,
+		Key:         t.Key,
+		Value:       t.Value,
+		Description: t.Description,
 	}, nil
 }
 
 func ToBizTags(tags []*repo.Tag) ([]*Tag, error) {
 	var biz_tags = make([]*Tag, len(tags))
 	for i, t := range tags {
-		biz_tags[i] = &Tag{
-			Id:    t.ID,
-			Key:   t.Key,
-			Value: t.Value,
-		}
+		biz_tags[i], _ = ToBizTag(t)
 	}
 	return biz_tags, nil
 }

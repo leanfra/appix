@@ -60,9 +60,10 @@ func DefaultFeaturesFilter() *ListFeaturesFilter {
 
 func ToDBFeature(t *Feature) (*repo.Feature, error) {
 	return &repo.Feature{
-		Id:    t.Id,
-		Name:  t.Name,
-		Value: t.Value,
+		Id:          t.Id,
+		Name:        t.Name,
+		Value:       t.Value,
+		Description: t.Description,
 	}, nil
 }
 
@@ -80,20 +81,17 @@ func ToDBFeatures(fs []*Feature) ([]*repo.Feature, error) {
 
 func ToBizFeature(t *repo.Feature) (*Feature, error) {
 	return &Feature{
-		Id:    t.Id,
-		Name:  t.Name,
-		Value: t.Value,
+		Id:          t.Id,
+		Name:        t.Name,
+		Value:       t.Value,
+		Description: t.Description,
 	}, nil
 }
 
 func ToBizFeatures(fs []*repo.Feature) ([]*Feature, error) {
 	var biz_fts = make([]*Feature, len(fs))
 	for i, f := range fs {
-		biz_fts[i] = &Feature{
-			Id:    f.Id,
-			Name:  f.Name,
-			Value: f.Value,
-		}
+		biz_fts[i], _ = ToBizFeature(f)
 	}
 	return biz_fts, nil
 }

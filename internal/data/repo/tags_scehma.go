@@ -3,9 +3,10 @@ package repo
 const TagTable = "tags"
 
 type Tag struct {
-	ID    uint32 `gorm:"primaryKey;autoIncrement"`
-	Key   string `gorm:"type:varchar(255);index:idx_key_value,unique"`
-	Value string `gorm:"type:varchar(255);index:idx_key_value"`
+	ID          uint32 `gorm:"primaryKey;autoIncrement"`
+	Key         string `gorm:"type:varchar(255);index:idx_key_value,unique"`
+	Value       string `gorm:"type:varchar(255);index:idx_key_value"`
+	Description string `gorm:"type:text"`
 }
 
 type TagsFilter struct {

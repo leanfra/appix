@@ -3,9 +3,10 @@ package repo
 const FeatureTable = "features"
 
 type Feature struct {
-	Id    uint32 `gorm:"primaryKey;autoIncrement"`
-	Name  string `gorm:"type:varchar(255);index:idx_feature_name_value,unique"`
-	Value string `gorm:"type:varchar(255);index:idx_feature_name_value"`
+	Id          uint32 `gorm:"primaryKey;autoIncrement"`
+	Name        string `gorm:"type:varchar(255);index:idx_feature_name_value,unique"`
+	Value       string `gorm:"type:varchar(255);index:idx_feature_name_value"`
+	Description string `gorm:"type:text"`
 }
 
 type FeaturesFilter struct {
