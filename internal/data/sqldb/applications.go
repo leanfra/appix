@@ -111,12 +111,6 @@ func (d *ApplicationsRepoGorm) ListApplications(ctx context.Context,
 		if len(filter.ProductsId) > 0 {
 			query = query.Where("product_id in (?)", filter.ProductsId)
 		}
-		if len(filter.DatacentersId) > 0 {
-			query = query.Where("datacenter_id in (?)", filter.DatacentersId)
-		}
-		if len(filter.ClustersId) > 0 {
-			query = query.Where("cluster_id in (?)", filter.ClustersId)
-		}
 		if len(filter.TeamsId) > 0 {
 			query = query.Where("team_id in (?)", filter.TeamsId)
 		}

@@ -15,15 +15,13 @@ type Application struct {
 }
 
 type ApplicationsFilter struct {
-	Page          uint32
-	PageSize      uint32
-	Ids           []uint32
-	Names         []string
-	IsStateful    string
-	ClustersId    []uint32
-	DatacentersId []uint32
-	ProductsId    []uint32
-	TeamsId       []uint32
+	Page       uint32
+	PageSize   uint32
+	Ids        []uint32
+	Names      []string
+	IsStateful string
+	ProductsId []uint32
+	TeamsId    []uint32
 }
 
 const IsStatefulTrue = "true"

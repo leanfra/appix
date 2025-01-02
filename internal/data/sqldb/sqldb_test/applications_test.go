@@ -93,8 +93,6 @@ func TestApplicationsRepoGorm(t *testing.T) {
 		{"ListApplications_page_partial", testListApplications_page_partial},
 		{"ListApplications_name_partial", testListApplications_name_partial},
 		{"ListApplications_productId_partial", testListApplications_productid_partial},
-		{"ListApplications_datacenterId_partial", testListApplications_dcId_partial},
-		{"ListApplications_clusterId_partial", testListApplications_clsId_partial},
 		{"ListApplications_teamId_partial", testListApplications_teamId_partial},
 		{"ListApplications_statefulTrue_partial", testListApplications_stTrue_partial},
 		{"ListApplications_statefulFalse_partial", testListApplications_stFalse_partial},
@@ -213,22 +211,6 @@ func testListApplications_productid_partial(t *testing.T) {
 	createBaseApps(t, nil)
 	_data, err := appRepo.ListApplications(
 		context.Background(), nil, &repo.ApplicationsFilter{ProductsId: []uint32{101}})
-	assert.Nil(t, err)
-	assert.Equal(t, fakeApps[:2], _data)
-}
-
-func testListApplications_dcId_partial(t *testing.T) {
-	createBaseApps(t, nil)
-	_data, err := appRepo.ListApplications(
-		context.Background(), nil, &repo.ApplicationsFilter{DatacentersId: []uint32{201}})
-	assert.Nil(t, err)
-	assert.Equal(t, fakeApps[:2], _data)
-}
-
-func testListApplications_clsId_partial(t *testing.T) {
-	createBaseApps(t, nil)
-	_data, err := appRepo.ListApplications(
-		context.Background(), nil, &repo.ApplicationsFilter{ClustersId: []uint32{301}})
 	assert.Nil(t, err)
 	assert.Equal(t, fakeApps[:2], _data)
 }

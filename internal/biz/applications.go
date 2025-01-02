@@ -17,8 +17,6 @@ type ApplicationsUsecase struct {
 	atagrepo repo.AppTagsRepo
 	afrepo   repo.AppFeaturesRepo
 	ahgrepo  repo.AppHostgroupsRepo
-	clsrepo  repo.ClustersRepo
-	dcrepo   repo.DatacentersRepo
 	prdrepo  repo.ProductsRepo
 	teamrepo repo.TeamsRepo
 	ftrepo   repo.FeaturesRepo
@@ -33,8 +31,6 @@ func NewApplicationsUsecase(
 	atagrepo repo.AppTagsRepo,
 	afrepo repo.AppFeaturesRepo,
 	ahgrepo repo.AppHostgroupsRepo,
-	clsrepo repo.ClustersRepo,
-	dcrepo repo.DatacentersRepo,
 	prdrepo repo.ProductsRepo,
 	teamrepo repo.TeamsRepo,
 	ftrepo repo.FeaturesRepo,
@@ -48,8 +44,6 @@ func NewApplicationsUsecase(
 		atagrepo: atagrepo,
 		afrepo:   afrepo,
 		ahgrepo:  ahgrepo,
-		clsrepo:  clsrepo,
-		dcrepo:   dcrepo,
 		prdrepo:  prdrepo,
 		teamrepo: teamrepo,
 		ftrepo:   ftrepo,
@@ -80,22 +74,6 @@ const appPropHostgroup = "hostgroup"
 func appPropFilter(apps []*Application, prop string) repo.CountFilter {
 	var ids []uint32
 	switch prop {
-	case appPropCluster:
-		for _, a := range apps {
-			ids = append(ids, a.ClusterId)
-		}
-		ids = DedupSliceUint32(ids)
-		return &repo.ClustersFilter{
-			Ids: ids,
-		}
-	case appPropDatacenter:
-		for _, a := range apps {
-			ids = append(ids, a.DatacenterId)
-		}
-		ids = DedupSliceUint32(ids)
-		return &repo.DatacentersFilter{
-			Ids: ids,
-		}
 	case appPropProduct:
 		for _, a := range apps {
 			ids = append(ids, a.ProductId)
@@ -150,8 +128,6 @@ func (s *ApplicationsUsecase) validateProps(
 		countFn func(context.Context, repo.TX, repo.CountFilter) (int64, error)
 	}
 	counters := []propsCount{
-		{appPropCluster, appPropFilter(apps, appPropCluster), s.clsrepo.CountClusters},
-		{appPropDatacenter, appPropFilter(apps, appPropDatacenter), s.dcrepo.CountDatacenters},
 		{appPropProduct, appPropFilter(apps, appPropProduct), s.prdrepo.CountProducts},
 		{appPropTeam, appPropFilter(apps, appPropTeam), s.teamrepo.CountTeams},
 		{appPropFeature, appPropFilter(apps, appPropFeature), s.ftrepo.CountFeatures},

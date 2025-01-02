@@ -18,8 +18,6 @@ func TestCreateApp(t *testing.T) {
 	atagrepo := new(MockAppTagsRepo)
 	afrepo := new(MockAppFeaturesRepo)
 	ahgrepo := new(MockAppHostgroupsRepo)
-	clsrepo := new(MockClustersRepo)
-	dcrepo := new(MockDatacentersRepo)
 	prdrepo := new(MockProductsRepo)
 	teamrepo := new(MockTeamsRepo)
 	ftrepo := new(MockFeaturesRepo)
@@ -27,17 +25,15 @@ func TestCreateApp(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 
 	usecase := biz.NewApplicationsUsecase(
-		apprepo, atagrepo, afrepo, ahgrepo, clsrepo,
-		dcrepo, prdrepo, teamrepo, ftrepo, tagrepo,
+		apprepo, atagrepo, afrepo, ahgrepo,
+		prdrepo, teamrepo, ftrepo, tagrepo,
 		hgrepo, nil, txm)
 
 	// 测试字段验证
 	bad_field := []*biz.Application{
-		{0, "", "desc", "web", false, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{0, "name", "desc", "", false, 0, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{0, "name", "desc", "web", false, 1, 0, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{0, "name", "desc", "web", false, 1, 1, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{0, "name", "desc", "web", false, 1, 1, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "name", "desc", "", false, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "name", "desc", "web", false, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
 
 	for _, bc := range bad_field {
@@ -47,78 +43,46 @@ func TestCreateApp(t *testing.T) {
 	}
 
 	app := []*biz.Application{
-		{0, "test-app", "desc", "web", false, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "test-app", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
 
-	// 测试集群验证
-	clscall := clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	// 测试产品验证
+	prdcall := prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err := usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-
-	// 测试数据中心验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall := dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err = usecase.CreateApplications(ctx, app)
-	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
-
-	// 测试产品验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	prdcall := prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err = usecase.CreateApplications(ctx, app)
-	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 
 	// 测试团队验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	tcall := teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 
 	// 测试特性验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	fcall := ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
 
 	// 测试标签验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	tgcall := tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
 	tgcall.Unset()
 
 	// 测试主机组验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
@@ -126,8 +90,6 @@ func TestCreateApp(t *testing.T) {
 	hgcall := hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
@@ -135,8 +97,6 @@ func TestCreateApp(t *testing.T) {
 	hgcall.Unset()
 
 	// 测试创建应用失败
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, &repo.ProductsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, &repo.TeamsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
@@ -147,8 +107,6 @@ func TestCreateApp(t *testing.T) {
 
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
@@ -157,8 +115,6 @@ func TestCreateApp(t *testing.T) {
 	appcall.Unset()
 
 	// 测试创建app-tag fail
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, &repo.ProductsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, &repo.TeamsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
@@ -171,8 +127,6 @@ func TestCreateApp(t *testing.T) {
 
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
@@ -182,8 +136,6 @@ func TestCreateApp(t *testing.T) {
 	atagcall.Unset()
 
 	// 测试创建app-feature fail
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, &repo.ProductsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, &repo.TeamsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
@@ -198,8 +150,6 @@ func TestCreateApp(t *testing.T) {
 
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
@@ -210,8 +160,6 @@ func TestCreateApp(t *testing.T) {
 	afcall.Unset()
 
 	// 测试创建app-hostgroup fail
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, &repo.ProductsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, &repo.TeamsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
@@ -228,8 +176,6 @@ func TestCreateApp(t *testing.T) {
 
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
@@ -248,8 +194,6 @@ func TestUpdateApp(t *testing.T) {
 	atagrepo := new(MockAppTagsRepo)
 	afrepo := new(MockAppFeaturesRepo)
 	ahgrepo := new(MockAppHostgroupsRepo)
-	clsrepo := new(MockClustersRepo)
-	dcrepo := new(MockDatacentersRepo)
 	prdrepo := new(MockProductsRepo)
 	teamrepo := new(MockTeamsRepo)
 	ftrepo := new(MockFeaturesRepo)
@@ -257,18 +201,15 @@ func TestUpdateApp(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 
 	usecase := biz.NewApplicationsUsecase(
-		apprepo, atagrepo, afrepo, ahgrepo, clsrepo,
-		dcrepo, prdrepo, teamrepo, ftrepo, tagrepo,
+		apprepo, atagrepo, afrepo, ahgrepo, prdrepo, teamrepo, ftrepo, tagrepo,
 		hgrepo, nil, txm)
 
 	// bad field
 	bad_field := []*biz.Application{
-		{0, "name", "desc", "web", false, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "", "desc", "web", false, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "name", "desc", "", false, 0, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "name", "desc", "web", false, 1, 0, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "name", "desc", "web", false, 1, 1, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "name", "desc", "web", false, 1, 1, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "name", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "name", "desc", "", false, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "name", "desc", "web", false, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
 
 	for _, bc := range bad_field {
@@ -278,78 +219,46 @@ func TestUpdateApp(t *testing.T) {
 	}
 
 	app := []*biz.Application{
-		{0, "test-app", "desc", "web", false, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "test-app", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
 
-	// 测试集群验证
-	clscall := clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	// 测试产品验证
+	prdcall := prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err := usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-
-	// 测试数据中心验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall := dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err = usecase.CreateApplications(ctx, app)
-	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
-
-	// 测试产品验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	prdcall := prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err = usecase.CreateApplications(ctx, app)
-	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 
 	// 测试团队验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	tcall := teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 
 	// 测试特性验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	fcall := ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
 
 	// 测试标签验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	tgcall := tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
 	tgcall.Unset()
 
 	// 测试主机组验证
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
@@ -357,8 +266,6 @@ func TestUpdateApp(t *testing.T) {
 	hgcall := hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
@@ -366,8 +273,6 @@ func TestUpdateApp(t *testing.T) {
 	hgcall.Unset()
 
 	// 测试创建应用失败
-	clscall = clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
-	dccall = dcrepo.On("CountDatacenters", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, &repo.ProductsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, &repo.TeamsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
@@ -378,8 +283,6 @@ func TestUpdateApp(t *testing.T) {
 
 	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
-	clscall.Unset()
-	dccall.Unset()
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
@@ -396,8 +299,6 @@ func TestAppHandleM2MProps(t *testing.T) {
 	atagrepo := new(MockAppTagsRepo)
 	afrepo := new(MockAppFeaturesRepo)
 	ahgrepo := new(MockAppHostgroupsRepo)
-	clsrepo := new(MockClustersRepo)
-	dcrepo := new(MockDatacentersRepo)
 	prdrepo := new(MockProductsRepo)
 	teamrepo := new(MockTeamsRepo)
 	ftrepo := new(MockFeaturesRepo)
@@ -405,8 +306,8 @@ func TestAppHandleM2MProps(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 
 	usecase := biz.NewApplicationsUsecase(
-		apprepo, atagrepo, afrepo, ahgrepo, clsrepo,
-		dcrepo, prdrepo, teamrepo, ftrepo, tagrepo,
+		apprepo, atagrepo, afrepo, ahgrepo,
+		prdrepo, teamrepo, ftrepo, tagrepo,
 		hgrepo, nil, txm)
 
 	// app-tag
@@ -478,8 +379,6 @@ func TestDeleteApplications(t *testing.T) {
 	atagrepo := new(MockAppTagsRepo)
 	afrepo := new(MockAppFeaturesRepo)
 	ahgrepo := new(MockAppHostgroupsRepo)
-	clsrepo := new(MockClustersRepo)
-	dcrepo := new(MockDatacentersRepo)
 	prdrepo := new(MockProductsRepo)
 	teamrepo := new(MockTeamsRepo)
 	ftrepo := new(MockFeaturesRepo)
@@ -487,8 +386,7 @@ func TestDeleteApplications(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 
 	usecase := biz.NewApplicationsUsecase(
-		apprepo, atagrepo, afrepo, ahgrepo, clsrepo,
-		dcrepo, prdrepo, teamrepo, ftrepo, tagrepo,
+		apprepo, atagrepo, afrepo, ahgrepo, prdrepo, teamrepo, ftrepo, tagrepo,
 		hgrepo, nil, txm)
 
 	ids := []uint32{1, 2}
@@ -537,8 +435,6 @@ func TestListApplications(t *testing.T) {
 	atagrepo := new(MockAppTagsRepo)
 	afrepo := new(MockAppFeaturesRepo)
 	ahgrepo := new(MockAppHostgroupsRepo)
-	clsrepo := new(MockClustersRepo)
-	dcrepo := new(MockDatacentersRepo)
 	prdrepo := new(MockProductsRepo)
 	teamrepo := new(MockTeamsRepo)
 	ftrepo := new(MockFeaturesRepo)
@@ -546,8 +442,8 @@ func TestListApplications(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 
 	usecase := biz.NewApplicationsUsecase(
-		apprepo, atagrepo, afrepo, ahgrepo, clsrepo,
-		dcrepo, prdrepo, teamrepo, ftrepo, tagrepo,
+		apprepo, atagrepo, afrepo, ahgrepo,
+		prdrepo, teamrepo, ftrepo, tagrepo,
 		hgrepo, nil, txm)
 
 	// Empty filter
@@ -585,8 +481,6 @@ func TestListApplications(t *testing.T) {
 			IsStateful:   true,
 			TeamId:       1,
 			ProductId:    1,
-			ClusterId:    1,
-			DatacenterId: 1,
 			TagsId:       []uint32{1, 2},
 			FeaturesId:   []uint32{1, 2},
 			HostgroupsId: []uint32{1, 2},
@@ -599,8 +493,6 @@ func TestListApplications(t *testing.T) {
 			IsStateful:   false,
 			TeamId:       2,
 			ProductId:    2,
-			ClusterId:    2,
-			DatacenterId: 2,
 			TagsId:       []uint32{1, 2},
 			FeaturesId:   []uint32{1, 2},
 			HostgroupsId: []uint32{1, 2},

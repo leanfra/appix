@@ -129,7 +129,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	}
 	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, hostgroupTeamsRepo, hostgroupProductsRepo, hostgroupTagsRepo, hostgroupFeaturesRepo, clustersRepo, datacentersRepo, envsRepo, featuresRepo, tagsRepo, teamsRepo, productsRepo, appHostgroupsRepo, logger, txManager)
 	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
-	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, appTagsRepo, appFeaturesRepo, appHostgroupsRepo, clustersRepo, datacentersRepo, productsRepo, teamsRepo, featuresRepo, tagsRepo, hostgroupsRepo, logger, txManager)
+	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, appTagsRepo, appFeaturesRepo, appHostgroupsRepo, productsRepo, teamsRepo, featuresRepo, tagsRepo, hostgroupsRepo, logger, txManager)
 	applicationsService := service.NewApplicationsService(applicationsUsecase, logger)
 	grpcServer := server.NewGRPCServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
 	httpServer := server.NewHTTPServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)

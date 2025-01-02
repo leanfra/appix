@@ -23,12 +23,6 @@ func (m *Application) Validate(isNew bool) error {
 	if len(m.Owner) == 0 {
 		return fmt.Errorf("InvalidOwnerValue")
 	}
-	if m.ClusterId <= 0 {
-		return fmt.Errorf("InvalidClusterId")
-	}
-	if m.DatacenterId <= 0 {
-		return fmt.Errorf("InvalidDatacenterId")
-	}
 	if m.ProductId <= 0 {
 		return fmt.Errorf("InvalidProductId")
 	}
@@ -44,8 +38,6 @@ func (m *ListApplicationsFilter) Validate() error {
 	}
 	if len(m.Ids) > MaxFilterValues ||
 		len(m.Names) > MaxFilterValues ||
-		len(m.ClustersId) > MaxFilterValues ||
-		len(m.DatacentersId) > MaxFilterValues ||
 		len(m.ProductsId) > MaxFilterValues ||
 		len(m.TeamsId) > MaxFilterValues ||
 		len(m.FeaturesId) > MaxFilterValues ||
@@ -82,15 +74,13 @@ func ToDBApplication(app *Application) (*repo.Application, error) {
 		return nil, nil
 	}
 	return &repo.Application{
-		Id:           app.Id,
-		Name:         app.Name,
-		Description:  app.Description,
-		Owner:        app.Owner,
-		IsStateful:   app.IsStateful,
-		ClusterId:    app.ClusterId,
-		DatacenterId: app.DatacenterId,
-		ProductId:    app.ProductId,
-		TeamId:       app.TeamId,
+		Id:          app.Id,
+		Name:        app.Name,
+		Description: app.Description,
+		Owner:       app.Owner,
+		IsStateful:  app.IsStateful,
+		ProductId:   app.ProductId,
+		TeamId:      app.TeamId,
 	}, nil
 }
 
@@ -111,15 +101,13 @@ func ToBizApplication(t *repo.Application) (*Application, error) {
 		return nil, nil
 	}
 	return &Application{
-		Id:           t.Id,
-		Name:         t.Name,
-		Description:  t.Description,
-		Owner:        t.Owner,
-		IsStateful:   t.IsStateful,
-		ClusterId:    t.ClusterId,
-		DatacenterId: t.DatacenterId,
-		ProductId:    t.ProductId,
-		TeamId:       t.TeamId,
+		Id:          t.Id,
+		Name:        t.Name,
+		Description: t.Description,
+		Owner:       t.Owner,
+		IsStateful:  t.IsStateful,
+		ProductId:   t.ProductId,
+		TeamId:      t.TeamId,
 	}, nil
 }
 
@@ -140,14 +128,12 @@ func ToDBApplicationsFilter(filter *ListApplicationsFilter) *repo.ApplicationsFi
 		return nil
 	}
 	return &repo.ApplicationsFilter{
-		Ids:           filter.Ids,
-		Names:         filter.Names,
-		ClustersId:    filter.ClustersId,
-		DatacentersId: filter.DatacentersId,
-		ProductsId:    filter.ProductsId,
-		TeamsId:       filter.TeamsId,
-		IsStateful:    filter.IsStateful,
-		Page:          filter.Page,
-		PageSize:      filter.PageSize,
+		Ids:        filter.Ids,
+		Names:      filter.Names,
+		ProductsId: filter.ProductsId,
+		TeamsId:    filter.TeamsId,
+		IsStateful: filter.IsStateful,
+		Page:       filter.Page,
+		PageSize:   filter.PageSize,
 	}
 }

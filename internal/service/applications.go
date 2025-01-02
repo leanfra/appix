@@ -29,17 +29,15 @@ func toBizApp(a *pb.Application) (*biz.Application, error) {
 		return nil, nil
 	}
 	return &biz.Application{
-		Id:           a.Id,
-		Name:         a.Name,
-		Owner:        a.Owner,
-		Description:  a.Description,
-		IsStateful:   a.IsStateful,
-		ClusterId:    a.ClusterId,
-		DatacenterId: a.DatacenterId,
-		ProductId:    a.ProductId,
-		TeamId:       a.TeamId,
-		FeaturesId:   a.FeaturesId,
-		TagsId:       a.TagsId,
+		Id:          a.Id,
+		Name:        a.Name,
+		Owner:       a.Owner,
+		Description: a.Description,
+		IsStateful:  a.IsStateful,
+		ProductId:   a.ProductId,
+		TeamId:      a.TeamId,
+		FeaturesId:  a.FeaturesId,
+		TagsId:      a.TagsId,
 	}, nil
 }
 
@@ -126,17 +124,15 @@ func (s *ApplicationsService) GetApplications(ctx context.Context, req *pb.GetAp
 	}
 	if err == nil {
 		reply.App = &pb.Application{
-			Id:           bizApp.Id,
-			Name:         bizApp.Name,
-			Owner:        bizApp.Owner,
-			Description:  bizApp.Description,
-			IsStateful:   bizApp.IsStateful,
-			ClusterId:    bizApp.ClusterId,
-			DatacenterId: bizApp.DatacenterId,
-			ProductId:    bizApp.ProductId,
-			TeamId:       bizApp.TeamId,
-			FeaturesId:   bizApp.FeaturesId,
-			TagsId:       bizApp.TagsId,
+			Id:          bizApp.Id,
+			Name:        bizApp.Name,
+			Owner:       bizApp.Owner,
+			Description: bizApp.Description,
+			IsStateful:  bizApp.IsStateful,
+			ProductId:   bizApp.ProductId,
+			TeamId:      bizApp.TeamId,
+			FeaturesId:  bizApp.FeaturesId,
+			TagsId:      bizApp.TagsId,
 		}
 		return reply, nil
 	}
@@ -152,18 +148,16 @@ func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.List
 	var filter = biz.DefaultApplicationFilter()
 	if req.Filter != nil {
 		filter = &biz.ListApplicationsFilter{
-			Ids:           req.Filter.Ids,
-			Names:         req.Filter.Names,
-			IsStateful:    req.Filter.IsStateful,
-			ClustersId:    req.Filter.ClustersId,
-			DatacentersId: req.Filter.DatacentersId,
-			ProductsId:    req.Filter.ProductsId,
-			TeamsId:       req.Filter.TeamsId,
-			FeaturesId:    req.Filter.FeaturesId,
-			TagsId:        req.Filter.TagsId,
-			HostgroupsId:  req.Filter.HostgroupsId,
-			Page:          req.Filter.Page,
-			PageSize:      req.Filter.PageSize,
+			Ids:          req.Filter.Ids,
+			Names:        req.Filter.Names,
+			IsStateful:   req.Filter.IsStateful,
+			ProductsId:   req.Filter.ProductsId,
+			TeamsId:      req.Filter.TeamsId,
+			FeaturesId:   req.Filter.FeaturesId,
+			TagsId:       req.Filter.TagsId,
+			HostgroupsId: req.Filter.HostgroupsId,
+			Page:         req.Filter.Page,
+			PageSize:     req.Filter.PageSize,
 		}
 		if req.Filter.PageSize > 0 {
 			filter.PageSize = req.Filter.PageSize
@@ -187,8 +181,6 @@ func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.List
 				Owner:        a.Owner,
 				Description:  a.Description,
 				IsStateful:   a.IsStateful,
-				ClusterId:    a.ClusterId,
-				DatacenterId: a.DatacenterId,
 				ProductId:    a.ProductId,
 				TeamId:       a.TeamId,
 				FeaturesId:   a.FeaturesId,
