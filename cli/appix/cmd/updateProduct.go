@@ -84,6 +84,10 @@ var updateProductCmd = &cobra.Command{
 			if err != nil {
 				log.Fatalf("failed to read updated file: %v", err)
 			}
+			if string(updatedData) == string(data) {
+				fmt.Println("No changes detected, skipping update")
+				return
+			}
 
 			// Parse updated YAML
 			if err := yaml.Unmarshal(updatedData, &products); err != nil {
