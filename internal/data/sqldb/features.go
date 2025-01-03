@@ -24,6 +24,15 @@ func NewFeaturesRepoGorm(data *DataGorm, logger log.Logger) (repo.FeaturesRepo, 
 		return nil, err
 	}
 
+	// add description column if not exists
+	exists, err := data.ColumnExists(repo.FeatureTable, "description")
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		data.DB.AutoMigrate(&repo.Feature{})
+	}
+
 	return &FeaturesRepoGorm{
 		data: data,
 		log:  log.NewHelper(logger),

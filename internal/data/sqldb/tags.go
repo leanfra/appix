@@ -24,6 +24,15 @@ func NewTagsRepoGorm(data *DataGorm, logger log.Logger) (repo.TagsRepo, error) {
 		return nil, err
 	}
 
+	// add description column if not exists
+	exists, err := data.ColumnExists(repo.TagTable, "description")
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		data.DB.AutoMigrate(&repo.Tag{})
+	}
+
 	return &TagsRepoGorm{
 		data: data,
 		log:  log.NewHelper(logger),
