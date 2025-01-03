@@ -25,3 +25,9 @@ type ListApplicationsFilter struct {
 	TagsId       []uint32
 	HostgroupsId []uint32
 }
+
+type MatchAppHostgroupsFilter struct {
+	FeaturesId []uint32
+	ProductId  uint32
+	TeamId     uint32
+}

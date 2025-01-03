@@ -22,6 +22,7 @@ type ApplicationsUsecase struct {
 	ftrepo   repo.FeaturesRepo
 	tagrepo  repo.TagsRepo
 	hgrepo   repo.HostgroupsRepo
+	hfrepo   repo.HostgroupFeaturesRepo
 	log      *log.Helper
 	txm      repo.TxManager
 }
@@ -36,6 +37,7 @@ func NewApplicationsUsecase(
 	ftrepo repo.FeaturesRepo,
 	tagrepo repo.TagsRepo,
 	hgrepo repo.HostgroupsRepo,
+	hfrepo repo.HostgroupFeaturesRepo,
 	logger log.Logger,
 	txm repo.TxManager) *ApplicationsUsecase {
 
@@ -49,6 +51,7 @@ func NewApplicationsUsecase(
 		ftrepo:   ftrepo,
 		tagrepo:  tagrepo,
 		hgrepo:   hgrepo,
+		hfrepo:   hfrepo,
 		log:      log.NewHelper(logger),
 		txm:      txm,
 	}
@@ -147,6 +150,67 @@ func (s *ApplicationsUsecase) validateProps(
 	return nil
 }
 
+// MatchHostgroups match hostgroups with application's features.
+// hostgroups's features must be a superset of application's features.
+// return hostgroup ids
+func (s *ApplicationsUsecase) MatchHostgroups(
+	ctx context.Context,
+	tx repo.TX,
+	filter *MatchAppHostgroupsFilter) (ids []uint32, err error) {
+
+	hfs, err := s.hfrepo.ListHostgroupMatchFeatures(ctx, tx, &repo.HostgroupMatchFeaturesFilter{
+		FeatureIds: filter.FeaturesId,
+	})
+	if err != nil {
+		return nil, err
+	}
+	hostgroupfilter := &repo.HostgroupsFilter{
+		Ids:        hfs,
+		ProductsId: []uint32{filter.ProductId},
+		TeamsId:    []uint32{filter.TeamId},
+	}
+	hgs, err := s.hgrepo.ListHostgroups(ctx, tx, hostgroupfilter)
+	if err != nil {
+		return nil, err
+	}
+	for _, hg := range hgs {
+		ids = append(ids, hg.Id)
+	}
+	return ids, nil
+}
+
+func (s *ApplicationsUsecase) validateHostgroupMatch(
+	ctx context.Context,
+	tx repo.TX,
+	app *Application) error {
+
+	matched_hgs, err := s.MatchHostgroups(ctx, tx, &MatchAppHostgroupsFilter{
+		FeaturesId: app.FeaturesId,
+		ProductId:  app.ProductId,
+		TeamId:     app.TeamId,
+	})
+	if err != nil {
+		return fmt.Errorf("MatchHostgroups error. %w", err)
+	}
+	if len(matched_hgs) == 0 {
+		return fmt.Errorf("no hostgroup matched application %s", app.Name)
+	}
+	// Convert matched_hgs to map for faster lookup
+	matchedMap := make(map[uint32]bool)
+	for _, id := range matched_hgs {
+		matchedMap[id] = true
+	}
+
+	// Check if all app hostgroups are in matched hostgroups
+	for _, hgid := range app.HostgroupsId {
+		if !matchedMap[hgid] {
+			return fmt.Errorf(
+				"hostgroup %d not match application %s", hgid, app.Name)
+		}
+	}
+	return nil
+}
+
 // CreateApplications is
 func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Application) error {
 	if err := s.validate(true, apps); err != nil {
@@ -161,6 +225,9 @@ func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Ap
 
 		// insert
 		for _, app := range apps {
+			if err := s.validateHostgroupMatch(ctx, tx, app); err != nil {
+				return err
+			}
 
 			dbapp, err := ToDBApplication(app)
 			if err != nil {

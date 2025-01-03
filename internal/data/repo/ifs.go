@@ -159,6 +159,8 @@ type HostgroupFeaturesRepo interface {
 	DeleteHostgroupFeatures(ctx context.Context, tx TX, ids []uint32) error
 	ListHostgroupFeatures(ctx context.Context, tx TX,
 		filter *HostgroupFeaturesFilter) ([]*HostgroupFeature, error)
+	ListHostgroupMatchFeatures(ctx context.Context, tx TX,
+		filter *HostgroupMatchFeaturesFilter) ([]uint32, error)
 }
 
 type ProductsRepo interface {

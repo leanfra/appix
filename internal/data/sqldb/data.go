@@ -90,6 +90,7 @@ var ErrMissingFeatures = errors.New("missing Feature")
 var ErrMissingEnvs = errors.New("missing Env")
 var ErrMissingDatacenters = errors.New("missing Datacenter")
 var ErrMissingClusters = errors.New("missing Cluster")
+var ErrRequireFeatureIds = errors.New("missing FeatureIds")
 
 func validateData(data *DataGorm) error {
 	if data == nil || data.DB == nil {

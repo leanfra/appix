@@ -23,6 +23,7 @@ const OperationApplicationsCreateApplications = "/api.appix.v1.Applications/Crea
 const OperationApplicationsDeleteApplications = "/api.appix.v1.Applications/DeleteApplications"
 const OperationApplicationsGetApplications = "/api.appix.v1.Applications/GetApplications"
 const OperationApplicationsListApplications = "/api.appix.v1.Applications/ListApplications"
+const OperationApplicationsMatchAppHostgroups = "/api.appix.v1.Applications/MatchAppHostgroups"
 const OperationApplicationsUpdateApplications = "/api.appix.v1.Applications/UpdateApplications"
 
 type ApplicationsHTTPServer interface {
@@ -30,6 +31,7 @@ type ApplicationsHTTPServer interface {
 	DeleteApplications(context.Context, *DeleteApplicationsRequest) (*DeleteApplicationsReply, error)
 	GetApplications(context.Context, *GetApplicationsRequest) (*GetApplicationsReply, error)
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsReply, error)
+	MatchAppHostgroups(context.Context, *MatchAppHostgroupsRequest) (*MatchAppHostgroupsReply, error)
 	UpdateApplications(context.Context, *UpdateApplicationsRequest) (*UpdateApplicationsReply, error)
 }
 
@@ -40,6 +42,7 @@ func RegisterApplicationsHTTPServer(s *http.Server, srv ApplicationsHTTPServer) 
 	r.POST("/api/v1/applications/delete", _Applications_DeleteApplications0_HTTP_Handler(srv))
 	r.GET("/api/v1/applications/{id}", _Applications_GetApplications0_HTTP_Handler(srv))
 	r.POST("/api/v1/applications/list", _Applications_ListApplications0_HTTP_Handler(srv))
+	r.POST("/api/v1/applications/match-hostgroups", _Applications_MatchAppHostgroups0_HTTP_Handler(srv))
 }
 
 func _Applications_CreateApplications0_HTTP_Handler(srv ApplicationsHTTPServer) func(ctx http.Context) error {
@@ -152,11 +155,34 @@ func _Applications_ListApplications0_HTTP_Handler(srv ApplicationsHTTPServer) fu
 	}
 }
 
+func _Applications_MatchAppHostgroups0_HTTP_Handler(srv ApplicationsHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in MatchAppHostgroupsRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationApplicationsMatchAppHostgroups)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.MatchAppHostgroups(ctx, req.(*MatchAppHostgroupsRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*MatchAppHostgroupsReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ApplicationsHTTPClient interface {
 	CreateApplications(ctx context.Context, req *CreateApplicationsRequest, opts ...http.CallOption) (rsp *CreateApplicationsReply, err error)
 	DeleteApplications(ctx context.Context, req *DeleteApplicationsRequest, opts ...http.CallOption) (rsp *DeleteApplicationsReply, err error)
 	GetApplications(ctx context.Context, req *GetApplicationsRequest, opts ...http.CallOption) (rsp *GetApplicationsReply, err error)
 	ListApplications(ctx context.Context, req *ListApplicationsRequest, opts ...http.CallOption) (rsp *ListApplicationsReply, err error)
+	MatchAppHostgroups(ctx context.Context, req *MatchAppHostgroupsRequest, opts ...http.CallOption) (rsp *MatchAppHostgroupsReply, err error)
 	UpdateApplications(ctx context.Context, req *UpdateApplicationsRequest, opts ...http.CallOption) (rsp *UpdateApplicationsReply, err error)
 }
 
@@ -212,6 +238,19 @@ func (c *ApplicationsHTTPClientImpl) ListApplications(ctx context.Context, in *L
 	pattern := "/api/v1/applications/list"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationApplicationsListApplications))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *ApplicationsHTTPClientImpl) MatchAppHostgroups(ctx context.Context, in *MatchAppHostgroupsRequest, opts ...http.CallOption) (*MatchAppHostgroupsReply, error) {
+	var out MatchAppHostgroupsReply
+	pattern := "/api/v1/applications/match-hostgroups"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationApplicationsMatchAppHostgroups))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {

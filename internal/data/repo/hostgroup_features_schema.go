@@ -16,3 +16,7 @@ type HostgroupFeaturesFilter struct {
 	Page         uint32
 	PageSize     uint32
 }
+
+type HostgroupMatchFeaturesFilter struct {
+	FeatureIds []uint32
+}

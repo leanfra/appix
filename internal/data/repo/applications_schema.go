@@ -3,15 +3,13 @@ package repo
 const ApplicationTable = "applications"
 
 type Application struct {
-	Id           uint32 `gorm:"primaryKey;autoIncrement"`
-	Name         string `gorm:"type:varchar(255);index:idx_app_name_env,unique"`
-	Description  string `gorm:"type:varchar(255);"`
-	Owner        string `gorm:"type:varchar(255);"`
-	IsStateful   bool   `gorm:"type:tinyint(1);"`
-	ClusterId    uint32
-	DatacenterId uint32
-	ProductId    uint32
-	TeamId       uint32
+	Id          uint32 `gorm:"primaryKey;autoIncrement"`
+	Name        string `gorm:"type:varchar(255);index:idx_app_name_env,unique"`
+	Description string `gorm:"type:varchar(255);"`
+	Owner       string `gorm:"type:varchar(255);"`
+	IsStateful  bool   `gorm:"type:tinyint(1);"`
+	ProductId   uint32
+	TeamId      uint32
 }
 
 type ApplicationsFilter struct {

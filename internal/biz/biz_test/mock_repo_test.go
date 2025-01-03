@@ -182,6 +182,15 @@ func (m *MockHostgroupFeaturesRepo) GetHostgroupFeatures(ctx context.Context, id
 	return args.Get(0).(*repo.HostgroupFeature), args.Error(1)
 }
 
+func (m *MockHostgroupFeaturesRepo) ListHostgroupMatchFeatures(
+	ctx context.Context, tx repo.TX, filter *repo.HostgroupMatchFeaturesFilter) ([]uint32, error) {
+	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]uint32), args.Error(1)
+}
+
 func (m *MockHostgroupFeaturesRepo) ListHostgroupFeatures(
 	ctx context.Context, tx repo.TX, filter *repo.HostgroupFeaturesFilter) ([]*repo.HostgroupFeature, error) {
 	args := m.Called(ctx, tx, filter)

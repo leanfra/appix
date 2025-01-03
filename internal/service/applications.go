@@ -196,3 +196,26 @@ func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.List
 	reply.Message = err.Error()
 	return reply, nil
 }
+
+func (s *ApplicationsService) MatchAppHostgroups(ctx context.Context, req *pb.MatchAppHostgroupsRequest) (*pb.MatchAppHostgroupsReply, error) {
+	if req == nil {
+		return nil, fmt.Errorf("req is nil")
+	}
+	if req.Filter == nil {
+		return nil, fmt.Errorf("filter is nil")
+	}
+	ids, err := s.usecase.MatchHostgroups(ctx, nil, &biz.MatchAppHostgroupsFilter{
+		FeaturesId: req.Filter.FeaturesId,
+		ProductId:  req.Filter.ProductId,
+		TeamId:     req.Filter.TeamId,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.MatchAppHostgroupsReply{
+		Action:       "MatchAppHostgroups",
+		Code:         0,
+		Message:      "success",
+		HostgroupsId: ids,
+	}, nil
+}

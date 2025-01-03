@@ -14,31 +14,25 @@ var appRepo repo.ApplicationsRepo
 
 var fakeApps = []*repo.Application{
 	{
-		Name:         "App1",
-		Description:  "First Application",
-		ProductId:    101,
-		DatacenterId: 201,
-		ClusterId:    301,
-		TeamId:       401,
-		IsStateful:   true,
+		Name:        "App1",
+		Description: "First Application",
+		ProductId:   101,
+		TeamId:      401,
+		IsStateful:  true,
 	},
 	{
-		Name:         "App2",
-		Description:  "Second Application",
-		ProductId:    101,
-		DatacenterId: 201,
-		ClusterId:    301,
-		TeamId:       401,
-		IsStateful:   false,
+		Name:        "App2",
+		Description: "Second Application",
+		ProductId:   101,
+		TeamId:      401,
+		IsStateful:  false,
 	},
 	{
-		Name:         "App3",
-		Description:  "Third Application",
-		ProductId:    103,
-		DatacenterId: 203,
-		ClusterId:    303,
-		TeamId:       403,
-		IsStateful:   true,
+		Name:        "App3",
+		Description: "Third Application",
+		ProductId:   103,
+		TeamId:      403,
+		IsStateful:  true,
 	},
 }
 
@@ -46,13 +40,11 @@ func getFakeApps() []*repo.Application {
 	data := make([]*repo.Application, len(fakeApps))
 	for i, app := range fakeApps {
 		data[i] = &repo.Application{
-			Name:         app.Name,
-			Description:  app.Description,
-			ProductId:    app.ProductId,
-			DatacenterId: app.DatacenterId,
-			ClusterId:    app.ClusterId,
-			TeamId:       app.TeamId,
-			IsStateful:   app.IsStateful,
+			Name:        app.Name,
+			Description: app.Description,
+			ProductId:   app.ProductId,
+			TeamId:      app.TeamId,
+			IsStateful:  app.IsStateful,
 		}
 	}
 	return data

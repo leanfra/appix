@@ -110,3 +110,27 @@ func (d *HostgroupFeaturesRepoGorm) CountRequire(ctx context.Context,
 	// require nothing
 	return count, nil
 }
+
+func (d *HostgroupFeaturesRepoGorm) ListHostgroupMatchFeatures(ctx context.Context,
+	tx repo.TX,
+	filter *repo.HostgroupMatchFeaturesFilter) ([]uint32, error) {
+
+	if len(filter.FeatureIds) == 0 {
+		return nil, ErrRequireFeatureIds
+	}
+
+	var hostgroupIds []uint32
+	query := d.data.WithTX(tx).WithContext(ctx).Model(&repo.HostgroupFeature{})
+	// Find hostgroups that have all the specified features
+	query = query.
+		Where("feature_id IN (?)", filter.FeatureIds).
+		Group("hostgroup_id").
+		Having("COUNT(DISTINCT feature_id) >= ?", len(filter.FeatureIds))
+
+	if err := query.Pluck("hostgroup_id", &hostgroupIds).Error; err != nil {
+		return nil, err
+	}
+
+	return hostgroupIds, nil
+
+}
