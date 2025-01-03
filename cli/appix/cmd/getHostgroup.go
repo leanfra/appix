@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -106,6 +107,198 @@ Examples:
 			page++
 		}
 
+		// convert to readableHostgroups
+		// Create clients for related services
+		clustersClient := pb.NewClustersClient(conn)
+		datacentersClient := pb.NewDatacentersClient(conn)
+		envsClient := pb.NewEnvsClient(conn)
+		productsClient := pb.NewProductsClient(conn)
+		teamsClient := pb.NewTeamsClient(conn)
+		featuresClient := pb.NewFeaturesClient(conn)
+		tagsClient := pb.NewTagsClient(conn)
+
+		// Create caches for related data
+		clusterCache := make(map[uint32]string)
+		datacenterCache := make(map[uint32]string)
+		envCache := make(map[uint32]string)
+		productCache := make(map[uint32]string)
+		teamCache := make(map[uint32]string)
+		featureCache := make(map[uint32]string)
+		tagCache := make(map[uint32]string)
+
+		// Collect all unique IDs that need to be looked up
+		clusterIDs := make(map[uint32]bool)
+		datacenterIDs := make(map[uint32]bool)
+		envIDs := make(map[uint32]bool)
+		productIDs := make(map[uint32]bool)
+		teamIDs := make(map[uint32]bool)
+		featureIDs := make(map[uint32]bool)
+		tagIDs := make(map[uint32]bool)
+		shareProductIDs := make(map[uint32]bool)
+		shareTeamIDs := make(map[uint32]bool)
+
+		for _, hg := range allHostgroups {
+			if hg.ClusterId > 0 {
+				clusterIDs[hg.ClusterId] = true
+			}
+			if hg.DatacenterId > 0 {
+				datacenterIDs[hg.DatacenterId] = true
+			}
+			if hg.EnvId > 0 {
+				envIDs[hg.EnvId] = true
+			}
+			if hg.ProductId > 0 {
+				productIDs[hg.ProductId] = true
+			}
+			if hg.TeamId > 0 {
+				teamIDs[hg.TeamId] = true
+			}
+			for _, fID := range hg.FeaturesId {
+				featureIDs[fID] = true
+			}
+			for _, tID := range hg.TagsId {
+				tagIDs[tID] = true
+			}
+			for _, pID := range hg.ShareProductsId {
+				shareProductIDs[pID] = true
+			}
+			for _, tID := range hg.ShareTeamsId {
+				shareTeamIDs[tID] = true
+			}
+		}
+
+		ctx := context.Background()
+		// Batch fetch clusters
+		for id := range clusterIDs {
+			resp, err := clustersClient.GetClusters(ctx, &pb.GetClustersRequest{Id: id})
+			if err == nil && resp.Cluster != nil {
+				clusterCache[id] = resp.Cluster.Name
+			} else {
+				clusterCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Batch fetch datacenters
+		for id := range datacenterIDs {
+			resp, err := datacentersClient.GetDatacenters(ctx, &pb.GetDatacentersRequest{Id: id})
+			if err == nil && resp.Datacenter != nil {
+				datacenterCache[id] = resp.Datacenter.Name
+			} else {
+				datacenterCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Batch fetch envs
+		for id := range envIDs {
+			resp, err := envsClient.GetEnvs(ctx, &pb.GetEnvsRequest{Id: id})
+			if err == nil && resp.Env != nil {
+				envCache[id] = resp.Env.Name
+			} else {
+				envCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Batch fetch products
+		for id := range productIDs {
+			resp, err := productsClient.GetProducts(ctx, &pb.GetProductsRequest{Id: id})
+			if err == nil && resp.Product != nil {
+				productCache[id] = resp.Product.Name
+			} else {
+				productCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Also fetch share products
+		for id := range shareProductIDs {
+			if _, exists := productCache[id]; !exists {
+				resp, err := productsClient.GetProducts(ctx, &pb.GetProductsRequest{Id: id})
+				if err == nil && resp.Product != nil {
+					productCache[id] = resp.Product.Name
+				} else {
+					productCache[id] = fmt.Sprint(id)
+				}
+			}
+		}
+
+		// Batch fetch teams
+		for id := range teamIDs {
+			resp, err := teamsClient.GetTeams(ctx, &pb.GetTeamsRequest{Id: id})
+			if err == nil && resp.Team != nil {
+				teamCache[id] = resp.Team.Name
+			} else {
+				teamCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Also fetch share teams
+		for id := range shareTeamIDs {
+			if _, exists := teamCache[id]; !exists {
+				resp, err := teamsClient.GetTeams(ctx, &pb.GetTeamsRequest{Id: id})
+				if err == nil && resp.Team != nil {
+					teamCache[id] = resp.Team.Name
+				} else {
+					teamCache[id] = fmt.Sprint(id)
+				}
+			}
+		}
+
+		// Batch fetch features
+		for id := range featureIDs {
+			resp, err := featuresClient.GetFeatures(ctx, &pb.GetFeaturesRequest{Id: id})
+			if err == nil && resp.Feature != nil {
+				featureCache[id] = fmt.Sprintf("%s:%s", resp.Feature.Name, resp.Feature.Value)
+			} else {
+				featureCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Batch fetch tags
+		for id := range tagIDs {
+			resp, err := tagsClient.GetTags(ctx, &pb.GetTagsRequest{Id: id})
+			if err == nil && resp.Tag != nil {
+				tagCache[id] = fmt.Sprintf("%s:%s", resp.Tag.Key, resp.Tag.Value)
+			} else {
+				tagCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		var readableHostgroups []*pb.HostgroupReadable
+		for _, hg := range allHostgroups {
+			readable := &pb.HostgroupReadable{
+				Id:            hg.Id,
+				Name:          hg.Name,
+				Description:   hg.Description,
+				Features:      make([]string, len(hg.FeaturesId)),
+				Tags:          make([]string, len(hg.TagsId)),
+				ShareProducts: make([]string, len(hg.ShareProductsId)),
+				ShareTeams:    make([]string, len(hg.ShareTeamsId)),
+			}
+
+			readable.Cluster = clusterCache[hg.ClusterId]
+			readable.Datacenter = datacenterCache[hg.DatacenterId]
+			readable.Env = envCache[hg.EnvId]
+			readable.Product = productCache[hg.ProductId]
+			readable.Team = teamCache[hg.TeamId]
+
+			for i, id := range hg.FeaturesId {
+				readable.Features[i] = featureCache[id]
+			}
+
+			for i, id := range hg.TagsId {
+				readable.Tags[i] = tagCache[id]
+			}
+
+			for i, id := range hg.ShareProductsId {
+				readable.ShareProducts[i] = productCache[id]
+			}
+
+			for i, id := range hg.ShareTeamsId {
+				readable.ShareTeams[i] = teamCache[id]
+			}
+
+			readableHostgroups = append(readableHostgroups, readable)
+		}
+
 		switch GetFormat {
 		case "yaml":
 			data, err := yaml.Marshal(allHostgroups)
@@ -115,21 +308,22 @@ Examples:
 			fmt.Println(string(data))
 		case "table":
 			table := tablewriter.NewWriter(os.Stdout)
-			table.SetHeader([]string{"ID", "Name", "Description", "Cluster", "DC", "Env", "Product", "Team", "Features", "Tags", "ShareProducts", "ShareTeams"})
-			for _, hg := range allHostgroups {
+			table.SetHeader([]string{"ID", "Name", "Description", "Cluster", "Datacenter", "Env", "Product", "Team", "Features", "Tags", "ShareProducts", "ShareTeams"})
+			table.SetAutoFormatHeaders(false)
+			for _, hg := range readableHostgroups {
 				table.Append([]string{
 					fmt.Sprint(hg.Id),
 					hg.Name,
 					hg.Description,
-					fmt.Sprint(hg.ClusterId),
-					fmt.Sprint(hg.DatacenterId),
-					fmt.Sprint(hg.EnvId),
-					fmt.Sprint(hg.ProductId),
-					fmt.Sprint(hg.TeamId),
-					joinUint32(hg.FeaturesId),
-					joinUint32(hg.TagsId),
-					joinUint32(hg.ShareProductsId),
-					joinUint32(hg.ShareTeamsId),
+					hg.Cluster,
+					hg.Datacenter,
+					hg.Env,
+					hg.Product,
+					hg.Team,
+					strings.Join(hg.Features, ", "),
+					strings.Join(hg.Tags, ", "),
+					strings.Join(hg.ShareProducts, ", "),
+					strings.Join(hg.ShareTeams, ", "),
 				})
 			}
 			table.Render()
@@ -138,13 +332,20 @@ Examples:
 				fmt.Println("No hostgroups found")
 				return
 			}
-			for _, hg := range allHostgroups {
-				fmt.Printf("ID: %d, Name: %s, Description: %s, Cluster: %d, DC: %d, Env: %d, Product: %d, Team: %d, Features: [%s], Tags: [%s], ShareProducts: [%s], ShareTeams: [%s]\n",
-					hg.Id, hg.Name, hg.Description, hg.ClusterId, hg.DatacenterId, hg.EnvId, hg.ProductId, hg.TeamId,
-					joinUint32(hg.FeaturesId),
-					joinUint32(hg.TagsId),
-					joinUint32(hg.ShareProductsId),
-					joinUint32(hg.ShareTeamsId))
+			for _, hg := range readableHostgroups {
+				fmt.Printf("ID:            %d\n", hg.Id)
+				fmt.Printf("Name:          %s\n", hg.Name)
+				fmt.Printf("Description:   %s\n", hg.Description)
+				fmt.Printf("Cluster:       %s\n", hg.Cluster)
+				fmt.Printf("Datacenter:    %s\n", hg.Datacenter)
+				fmt.Printf("Env:           %s\n", hg.Env)
+				fmt.Printf("Product:       %s\n", hg.Product)
+				fmt.Printf("Team:          %s\n", hg.Team)
+				fmt.Printf("Features:      [%s]\n", strings.Join(hg.Features, ", "))
+				fmt.Printf("Tags:          [%s]\n", strings.Join(hg.Tags, ", "))
+				fmt.Printf("ShareProducts: [%s]\n", strings.Join(hg.ShareProducts, ", "))
+				fmt.Printf("ShareTeams:    [%s]\n", strings.Join(hg.ShareTeams, ", "))
+				fmt.Println()
 			}
 		default:
 			fmt.Println("unknown format")

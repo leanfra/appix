@@ -60,6 +60,20 @@ message Application {
 	repeated uint32 hostgroups_id = 12;
 }
 
+// Application readable
+message ApplicationReadable {
+	uint32 id = 1;
+	string name = 2;
+	string description = 3;
+	string owner = 11;
+	bool is_stateful = 13;
+	string product = 7;
+	string team = 8;
+	repeated string features = 9;
+	repeated string tags = 10;
+	repeated string hostgroups = 12;
+}
+
 message CreateApplicationsRequest {
 	repeated Application apps = 1;
 }

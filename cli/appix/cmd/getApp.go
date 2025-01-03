@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -97,6 +98,133 @@ Examples:
 			page++
 		}
 
+		// 转换为ApplicationReadable
+		// Create clients for related services
+		productsClient := pb.NewProductsClient(conn)
+		teamsClient := pb.NewTeamsClient(conn)
+		hostgroupsClient := pb.NewHostgroupsClient(conn)
+		featuresClient := pb.NewFeaturesClient(conn)
+		tagsClient := pb.NewTagsClient(conn)
+
+		// Create caches for related data
+		productCache := make(map[uint32]string)
+		teamCache := make(map[uint32]string)
+		hostgroupCache := make(map[uint32]string)
+		featureCache := make(map[uint32]string)
+		tagCache := make(map[uint32]string)
+
+		// Collect all unique IDs that need to be looked up
+		productIDs := make(map[uint32]bool)
+		teamIDs := make(map[uint32]bool)
+		hostgroupIDs := make(map[uint32]bool)
+		featureIDs := make(map[uint32]bool)
+		tagIDs := make(map[uint32]bool)
+
+		for _, app := range allApps {
+			if app.ProductId > 0 {
+				productIDs[app.ProductId] = true
+			}
+			if app.TeamId > 0 {
+				teamIDs[app.TeamId] = true
+			}
+			for _, hgID := range app.HostgroupsId {
+				hostgroupIDs[hgID] = true
+			}
+			for _, fID := range app.FeaturesId {
+				featureIDs[fID] = true
+			}
+			for _, tID := range app.TagsId {
+				tagIDs[tID] = true
+			}
+		}
+
+		// Batch fetch products
+		for id := range productIDs {
+			resp, err := productsClient.GetProducts(ctx, &pb.GetProductsRequest{Id: id})
+			if err == nil && resp.Product != nil {
+				productCache[id] = resp.Product.Name
+			} else {
+				productCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Batch fetch teams
+		for id := range teamIDs {
+			resp, err := teamsClient.GetTeams(ctx, &pb.GetTeamsRequest{Id: id})
+			if err == nil && resp.Team != nil {
+				teamCache[id] = resp.Team.Name
+			} else {
+				teamCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Batch fetch hostgroups
+		for id := range hostgroupIDs {
+			resp, err := hostgroupsClient.GetHostgroups(ctx, &pb.GetHostgroupsRequest{Id: id})
+			if err == nil && resp.Hostgroup != nil {
+				hostgroupCache[id] = resp.Hostgroup.Name
+			} else {
+				hostgroupCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Batch fetch features
+		for id := range featureIDs {
+			resp, err := featuresClient.GetFeatures(ctx, &pb.GetFeaturesRequest{Id: id})
+			if err == nil && resp.Feature != nil {
+				featureCache[id] = fmt.Sprintf("%s:%s", resp.Feature.Name, resp.Feature.Value)
+			} else {
+				featureCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Batch fetch tags
+		for id := range tagIDs {
+			resp, err := tagsClient.GetTags(ctx, &pb.GetTagsRequest{Id: id})
+			if err == nil && resp.Tag != nil {
+				tagCache[id] = fmt.Sprintf("%s:%s", resp.Tag.Key, resp.Tag.Value)
+			} else {
+				tagCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		var readableApps []*pb.ApplicationReadable
+		for _, app := range allApps {
+			readable := &pb.ApplicationReadable{
+				Id:          app.Id,
+				Name:        app.Name,
+				Description: app.Description,
+				Owner:       app.Owner,
+				IsStateful:  app.IsStateful,
+				Features:    make([]string, len(app.FeaturesId)),
+				Tags:        make([]string, len(app.TagsId)),
+				Hostgroups:  make([]string, len(app.HostgroupsId)),
+			}
+
+			// Use cached product name
+			readable.Product = productCache[app.ProductId]
+
+			// Use cached team name
+			readable.Team = teamCache[app.TeamId]
+
+			// Use cached hostgroup names
+			for i, hgID := range app.HostgroupsId {
+				readable.Hostgroups[i] = hostgroupCache[hgID]
+			}
+
+			// Convert features to "name:value" format using cached names
+			for i, id := range app.FeaturesId {
+				readable.Features[i] = fmt.Sprintf("%s:%s", featureCache[id], fmt.Sprint(id))
+			}
+
+			// Convert tags to "name:value" format using cached names
+			for i, id := range app.TagsId {
+				readable.Tags[i] = fmt.Sprintf("%s:%s", tagCache[id], fmt.Sprint(id))
+			}
+
+			readableApps = append(readableApps, readable)
+		}
+
 		switch GetFormat {
 		case "yaml":
 			data, err := yaml.Marshal(allApps)
@@ -111,37 +239,44 @@ Examples:
 				"Product", "Team",
 				"Features", "Tags", "Hostgroups",
 			})
-
-			for _, app := range allApps {
+			table.SetAutoFormatHeaders(false)
+			for _, app := range readableApps {
 				table.Append([]string{
 					fmt.Sprint(app.Id),
 					app.Name,
 					app.Description,
 					app.Owner,
 					fmt.Sprint(app.IsStateful),
-					fmt.Sprint(app.ProductId),
-					fmt.Sprint(app.TeamId),
-					joinUint32(app.FeaturesId),
-					joinUint32(app.TagsId),
-					joinUint32(app.HostgroupsId),
+					app.Product,
+					app.Team,
+					strings.Join(app.Features, ", "),
+					strings.Join(app.Tags, ", "),
+					strings.Join(app.Hostgroups, ", "),
 				})
 			}
 			table.Render()
 
 		case "text":
-			if len(allApps) == 0 {
+			if len(readableApps) == 0 {
 				fmt.Println("No applications found")
 				return
 			}
-			for _, app := range allApps {
-				fmt.Printf("ID: %d\nName: %s\nDescription: %s\nOwner: %s\n"+
-					"Stateful: %v\nProduct ID: %d\nTeam ID: %d\n"+
-					"Feature IDs: %s\nTag IDs: %s\nHostgroup IDs: %s\n\n",
+			for _, app := range readableApps {
+				fmt.Printf("ID:          %d\n"+
+					"Name:        %s\n"+
+					"Description: %s\n"+
+					"Owner:       %s\n"+
+					"Stateful:    %v\n"+
+					"Product:     %s\n"+
+					"Team:        %s\n"+
+					"Features:    %s\n"+
+					"Tags:        %s\n"+
+					"Hostgroups:  %s\n\n",
 					app.Id, app.Name, app.Description, app.Owner,
-					app.IsStateful, app.ProductId, app.TeamId,
-					joinUint32(app.FeaturesId),
-					joinUint32(app.TagsId),
-					joinUint32(app.HostgroupsId))
+					app.IsStateful, app.Product, app.Team,
+					strings.Join(app.Features, ", "),
+					strings.Join(app.Tags, ", "),
+					strings.Join(app.Hostgroups, ", "))
 			}
 		default:
 			fmt.Println("unknown format")

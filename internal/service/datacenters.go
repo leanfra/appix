@@ -125,6 +125,7 @@ func (s *DatacentersService) GetDatacenters(ctx context.Context,
 	}
 	if err == nil {
 		reply.Datacenter = toPbDatacenter(datacenter)
+		return reply, nil
 	}
 	reply.Code = 1
 	reply.Message = err.Error()

@@ -58,6 +58,22 @@ message Hostgroup {
 	repeated uint32 share_teams_id = 12;
 }
 
+// Hostgroup readable
+message HostgroupReadable {
+	uint32 id = 1;
+	string name = 2;
+	string description = 3;
+	string cluster = 4;
+	string datacenter = 5;
+	string env = 6;
+	string product = 7;
+	string team = 8;
+	repeated string features = 9;
+	repeated string tags = 10;
+	repeated string share_products = 11;
+	repeated string share_teams = 12;
+}
+
 message CreateHostgroupsRequest {
 	repeated Hostgroup hostgroups = 1;
 }
