@@ -10,7 +10,6 @@ import (
 var ProviderSet = wire.NewSet(
 	sqldb.NewDataGorm,
 	sqldb.NewTxManagerGorm,
-	NewGreeterRepo,
 	sqldb.NewFeaturesRepoGorm,
 	sqldb.NewTagsRepoGorm,
 	sqldb.NewTeamsRepoGorm,

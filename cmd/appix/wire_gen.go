@@ -9,7 +9,6 @@ package main
 import (
 	"appix/internal/biz"
 	"appix/internal/conf"
-	"appix/internal/data"
 	"appix/internal/data/sqldb"
 	"appix/internal/server"
 	"appix/internal/service"
@@ -24,14 +23,11 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, logger log.Logger) (*kratos.App, func(), error) {
-	dataGorm, cleanup, err := sqldb.NewDataGorm(confData, logger)
+func wireApp(confServer *conf.Server, data *conf.Data, admin *conf.Admin, logger log.Logger) (*kratos.App, func(), error) {
+	dataGorm, cleanup, err := sqldb.NewDataGorm(data, logger)
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataGorm, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase)
 	tagsRepo, err := sqldb.NewTagsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
@@ -131,8 +127,8 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, lo
 	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
 	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, appTagsRepo, appFeaturesRepo, appHostgroupsRepo, productsRepo, teamsRepo, featuresRepo, tagsRepo, hostgroupsRepo, hostgroupFeaturesRepo, logger, txManager)
 	applicationsService := service.NewApplicationsService(applicationsUsecase, logger)
-	grpcServer := server.NewGRPCServer(confServer, admin, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
-	httpServer := server.NewHTTPServer(confServer, admin, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
+	grpcServer := server.NewGRPCServer(confServer, admin, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
+	httpServer := server.NewHTTPServer(confServer, admin, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()

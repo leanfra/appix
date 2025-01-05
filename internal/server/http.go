@@ -2,7 +2,6 @@ package server
 
 import (
 	appv1 "appix/api/appix/v1"
-	v1 "appix/api/helloworld/v1"
 	"appix/internal/conf"
 	"appix/internal/middleware"
 	"appix/internal/service"
@@ -15,7 +14,6 @@ import (
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Server,
 	admin *conf.Admin,
-	greeter *service.GreeterService,
 	tags *service.TagsService,
 	features *service.FeaturesService,
 	teams *service.TeamsService,
@@ -47,7 +45,6 @@ func NewHTTPServer(c *conf.Server,
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterGreeterHTTPServer(srv, greeter)
 	appv1.RegisterTagsHTTPServer(srv, tags)
 	appv1.RegisterFeaturesHTTPServer(srv, features)
 	appv1.RegisterTeamsHTTPServer(srv, teams)

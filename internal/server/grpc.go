@@ -2,7 +2,6 @@ package server
 
 import (
 	apiv1 "appix/api/appix/v1"
-	v1 "appix/api/helloworld/v1"
 	"appix/internal/conf"
 	"appix/internal/middleware"
 	"appix/internal/service"
@@ -15,7 +14,6 @@ import (
 // NewGRPCServer new a gRPC server.
 func NewGRPCServer(c *conf.Server,
 	admin *conf.Admin,
-	greeter *service.GreeterService,
 	tags *service.TagsService,
 	features *service.FeaturesService,
 	teams *service.TeamsService,
@@ -46,7 +44,6 @@ func NewGRPCServer(c *conf.Server,
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterGreeterServer(srv, greeter)
 	apiv1.RegisterTagsServer(srv, tags)
 	apiv1.RegisterFeaturesServer(srv, features)
 	apiv1.RegisterTeamsServer(srv, teams)

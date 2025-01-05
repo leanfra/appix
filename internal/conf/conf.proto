@@ -48,4 +48,5 @@ message Admin {
   bool strict_password_policy = 3;
   string jwt_secret = 4;
   string emergency_header = 5;
+  int64 jwt_expire_hours = 6;
 }
