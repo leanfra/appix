@@ -8,6 +8,7 @@ import "google/protobuf/duration.proto";
 message Bootstrap {
   Server server = 1;
   Data data = 2;
+  Admin admin = 3;
 }
 
 message Server {
@@ -39,4 +40,12 @@ message Data {
   }
   Database database = 1;
   Redis redis = 2;
+}
+
+message Admin {
+  string admin_user = 1;
+  string admin_password = 2;
+  bool strict_password_policy = 3;
+  string jwt_secret = 4;
+  string emergency_header = 5;
 }

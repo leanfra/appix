@@ -192,3 +192,19 @@ type TeamsRepo interface {
 	ListTeams(ctx context.Context, tx TX, filter *TeamsFilter) ([]*Team, error)
 	CountTeams(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }
+
+type AdminRepo interface {
+	CreateUsers(ctx context.Context, users []*User) error
+	UpdateUsers(ctx context.Context, users []*User) error
+	DeleteUsers(ctx context.Context, tx TX, ids []uint32) error
+	GetUsers(ctx context.Context, id uint32) (*User, error)
+	ListUsers(ctx context.Context, tx TX, filter *UsersFilter) ([]*User, error)
+	Login(ctx context.Context, username string, password string) (*User, error)
+	Logout(ctx context.Context, id uint32) error
+}
+
+type TokenRepo interface {
+	CreateToken(ctx context.Context, claims TokenClaims) (string, error)
+	DeleteToken(ctx context.Context, token string) error
+	ValidateToken(ctx context.Context, token string) (TokenClaims, error)
+}

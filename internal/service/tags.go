@@ -149,25 +149,24 @@ func (s *TagsService) GetTags(ctx context.Context, req *pb.GetTagsRequest) (*pb.
 }
 
 func (s *TagsService) ListTags(ctx context.Context, req *pb.ListTagsRequest) (*pb.ListTagsReply, error) {
-	if req == nil {
-		return nil, ErrRequestNil
+	filter := biz.DefaultTagsFilter()
+	if req != nil {
+		if req.Page > 0 {
+			filter.Page = req.Page
+		}
+		if req.PageSize > 0 {
+			filter.PageSize = req.PageSize
+		}
+		if len(req.Ids) > 0 {
+			filter.Ids = req.Ids
+		}
+		if len(req.Keys) > 0 {
+			filter.Keys = req.Keys
+		}
+		if len(req.Kvs) > 0 {
+			filter.Kvs = req.Kvs
+		}
 	}
-	var filter = biz.DefaultTagsFilter()
-	if req.Filter != nil {
-		filter = &biz.ListTagsFilter{
-			Ids:  req.Filter.Ids,
-			Keys: req.Filter.Keys,
-			Kvs:  req.Filter.Kvs,
-		}
-		if req.Filter.PageSize > 0 {
-			filter.PageSize = req.Filter.PageSize
-		}
-		if req.Filter.Page > 0 {
-			filter.Page = req.Filter.Page
-		}
-	}
-
-	s.log.Infow("function", "listTags", "filter", filter)
 
 	tags, err := s.usecase.ListTags(ctx, filter)
 

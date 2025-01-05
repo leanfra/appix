@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: Hostgroups API
+    title: Applications API
     version: 0.0.1
 paths:
-    /api/v1/hostgroups/create:
+    /api/v1/applications/create:
         post:
             tags:
-                - Hostgroups
-            operationId: Hostgroups_CreateHostgroups
+                - Applications
+            operationId: Applications_CreateApplications
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateHostgroupsRequest'
+                            $ref: '#/components/schemas/CreateApplicationsRequest'
                 required: true
             responses:
                 "200":
@@ -23,23 +23,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateHostgroupsReply'
+                                $ref: '#/components/schemas/CreateApplicationsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/hostgroups/delete:
+    /api/v1/applications/delete:
         post:
             tags:
-                - Hostgroups
-            operationId: Hostgroups_DeleteHostgroups
+                - Applications
+            operationId: Applications_DeleteApplications
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/DeleteHostgroupsRequest'
+                            $ref: '#/components/schemas/DeleteApplicationsRequest'
                 required: true
             responses:
                 "200":
@@ -47,23 +47,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/DeleteHostgroupsReply'
+                                $ref: '#/components/schemas/DeleteApplicationsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/hostgroups/list:
+    /api/v1/applications/list:
         post:
             tags:
-                - Hostgroups
-            operationId: Hostgroups_ListHostgroups
+                - Applications
+            operationId: Applications_ListApplications
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/ListHostgroupsRequest'
+                            $ref: '#/components/schemas/ListApplicationsRequest'
                 required: true
             responses:
                 "200":
@@ -71,23 +71,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ListHostgroupsReply'
+                                $ref: '#/components/schemas/ListApplicationsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/hostgroups/update:
+    /api/v1/applications/match-hostgroups:
         post:
             tags:
-                - Hostgroups
-            operationId: Hostgroups_UpdateHostgroups
+                - Applications
+            operationId: Applications_MatchAppHostgroups
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/UpdateHostgroupsRequest'
+                            $ref: '#/components/schemas/MatchAppHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -95,18 +95,42 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateHostgroupsReply'
+                                $ref: '#/components/schemas/MatchAppHostgroupsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/hostgroups/{id}:
+    /api/v1/applications/update:
+        post:
+            tags:
+                - Applications
+            operationId: Applications_UpdateApplications
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateApplicationsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateApplicationsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /api/v1/applications/{id}:
         get:
             tags:
-                - Hostgroups
-            operationId: Hostgroups_GetHostgroups
+                - Applications
+            operationId: Applications_GetApplications
             parameters:
                 - name: id
                   in: path
@@ -120,7 +144,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetHostgroupsReply'
+                                $ref: '#/components/schemas/GetApplicationsReply'
                 default:
                     description: Default error response
                     content:
@@ -129,62 +153,7 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateHostgroupsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        CreateHostgroupsRequest:
-            type: object
-            properties:
-                hostgroups:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Hostgroup'
-        DeleteHostgroupsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        DeleteHostgroupsRequest:
-            type: object
-            properties:
-                ids:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-        GetHostgroupsReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                hostgroup:
-                    $ref: '#/components/schemas/Hostgroup'
-        GoogleProtobufAny:
-            type: object
-            properties:
-                '@type':
-                    type: string
-                    description: The type of the serialized message.
-            additionalProperties: true
-            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        Hostgroup:
+        Application:
             type: object
             properties:
                 id:
@@ -194,15 +163,10 @@ components:
                     type: string
                 description:
                     type: string
-                clusterId:
-                    type: integer
-                    format: uint32
-                datacenterId:
-                    type: integer
-                    format: uint32
-                envId:
-                    type: integer
-                    format: uint32
+                owner:
+                    type: string
+                isStateful:
+                    type: boolean
                 productId:
                     type: integer
                     format: uint32
@@ -219,18 +183,82 @@ components:
                     items:
                         type: integer
                         format: uint32
-                shareProductsId:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-                shareTeamsId:
+                hostgroupsId:
                     type: array
                     items:
                         type: integer
                         format: uint32
             description: gratos::model
-        ListHostgroupsFilter:
+        CreateApplicationsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: integer
+                    format: int32
+                action:
+                    type: string
+        CreateApplicationsRequest:
+            type: object
+            properties:
+                apps:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Application'
+        DeleteApplicationsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: integer
+                    format: int32
+                action:
+                    type: string
+        DeleteApplicationsRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+        GetApplicationsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: integer
+                    format: int32
+                action:
+                    type: string
+                app:
+                    $ref: '#/components/schemas/Application'
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListApplicationsReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: integer
+                    format: int32
+                action:
+                    type: string
+                apps:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Application'
+        ListApplicationsRequest:
             type: object
             properties:
                 page:
@@ -248,21 +276,8 @@ components:
                     type: array
                     items:
                         type: string
-                clustersId:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-                datacentersId:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-                envsId:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
+                isStateful:
+                    type: string
                 productsId:
                     type: array
                     items:
@@ -283,18 +298,12 @@ components:
                     items:
                         type: integer
                         format: uint32
-                shareProductsId:
+                hostgroupsId:
                     type: array
                     items:
                         type: integer
                         format: uint32
-                shareTeamsId:
-                    type: array
-                    items:
-                        type: integer
-                        format: uint32
-            description: gratos::model
-        ListHostgroupsReply:
+        MatchAppHostgroupsReply:
             type: object
             properties:
                 message:
@@ -304,15 +313,25 @@ components:
                     format: int32
                 action:
                     type: string
-                hostgroups:
+                hostgroupsId:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Hostgroup'
-        ListHostgroupsRequest:
+                        type: integer
+                        format: uint32
+        MatchAppHostgroupsRequest:
             type: object
             properties:
-                filter:
-                    $ref: '#/components/schemas/ListHostgroupsFilter'
+                featuresId:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                productId:
+                    type: integer
+                    format: uint32
+                teamId:
+                    type: integer
+                    format: uint32
         Status:
             type: object
             properties:
@@ -329,7 +348,7 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        UpdateHostgroupsReply:
+        UpdateApplicationsReply:
             type: object
             properties:
                 message:
@@ -339,12 +358,12 @@ components:
                     format: int32
                 action:
                     type: string
-        UpdateHostgroupsRequest:
+        UpdateApplicationsRequest:
             type: object
             properties:
-                hostgroups:
+                apps:
                     type: array
                     items:
-                        $ref: '#/components/schemas/Hostgroup'
+                        $ref: '#/components/schemas/Application'
 tags:
-    - name: Hostgroups
+    - name: Applications

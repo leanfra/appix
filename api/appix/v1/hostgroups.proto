@@ -111,27 +111,22 @@ message GetHostgroupsReply {
 	Hostgroup hostgroup = 4;
 }
 
-
-// gratos::model
-message ListHostgroupsFilter {
+message ListHostgroupsRequest {
 	uint32 page = 1;
 	uint32 page_size = 2;
-	repeated uint32 ids = 13;
-	repeated string names = 3;
-	repeated uint32 clusters_id = 22;
-	repeated uint32 datacenters_id = 14;
-	repeated uint32 envs_id = 15;
-	repeated uint32 products_id = 16;
-	repeated uint32 teams_id = 17;
-	repeated uint32 features_id = 18;
-	repeated uint32 tags_id = 19;
-	repeated uint32 share_products_id = 20;
-	repeated uint32 share_teams_id = 21;
+	repeated uint32 ids = 3;
+	repeated string names = 4;
+	repeated uint32 clusters_id = 5;
+	repeated uint32 datacenters_id = 6;
+	repeated uint32 envs_id = 7;
+	repeated uint32 products_id = 8;
+	repeated uint32 teams_id = 9;
+	repeated uint32 features_id = 10;
+	repeated uint32 tags_id = 11;
+	repeated uint32 share_products_id = 12;
+	repeated uint32 share_teams_id = 13;
 }
 
-message ListHostgroupsRequest {
-	ListHostgroupsFilter filter = 1;
-}
 message ListHostgroupsReply {
 	string message = 1;
 	int32 code = 2;

@@ -48,12 +48,10 @@ Examples:
 		var allDatacenters []*pb.Datacenter
 		for {
 			req := &pb.ListDatacentersRequest{
-				Filter: &pb.ListDatacentersFilter{
-					Page:     page,
-					PageSize: pageSize,
-					Names:    names,
-					Ids:      ids,
-				},
+				Page:     page,
+				PageSize: pageSize,
+				Names:    names,
+				Ids:      ids,
 			}
 
 			resp, err := client.ListDatacenters(ctx, req)

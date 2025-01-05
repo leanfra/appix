@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.8.2
 // - protoc             v3.12.4
-// source: appix/v1/clusters.proto
+// source: api/appix/v1/clusters.proto
 
 package v1
 

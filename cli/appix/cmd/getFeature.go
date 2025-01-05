@@ -49,13 +49,11 @@ Examples:
 		var allFeatures []*pb.Feature
 		for {
 			req := &pb.ListFeaturesRequest{
-				Filter: &pb.ListFeaturesFilter{
-					Page:     page,
-					PageSize: pageSize,
-					Names:    names,
-					Kvs:      kvs,
-					Ids:      ids,
-				},
+				Page:     page,
+				PageSize: pageSize,
+				Names:    names,
+				Kvs:      kvs,
+				Ids:      ids,
 			}
 
 			resp, err := client.ListFeatures(ctx, req)

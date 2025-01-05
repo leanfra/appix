@@ -144,33 +144,43 @@ func (s *ApplicationsService) GetApplications(ctx context.Context, req *pb.GetAp
 }
 
 func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.ListApplicationsRequest) (*pb.ListApplicationsReply, error) {
-	if req == nil {
-		return nil, fmt.Errorf("req is nil")
+	filter := biz.DefaultApplicationFilter()
+	if req != nil {
+		if len(req.Ids) > 0 {
+			filter.Ids = req.Ids
+		}
+		if len(req.Names) > 0 {
+			filter.Names = req.Names
+		}
+		if req.PageSize > 0 {
+			filter.PageSize = req.PageSize
+		}
+		if req.Page > 0 {
+			filter.Page = req.Page
+		}
+		if req.IsStateful != biz.IsStatefulNone {
+			filter.IsStateful = req.IsStateful
+		}
+		if len(req.ProductsId) > 0 {
+			filter.ProductsId = req.ProductsId
+		}
+		if len(req.TeamsId) > 0 {
+			filter.TeamsId = req.TeamsId
+		}
+		if len(req.FeaturesId) > 0 {
+			filter.FeaturesId = req.FeaturesId
+		}
+		if len(req.TagsId) > 0 {
+			filter.TagsId = req.TagsId
+		}
+		if len(req.HostgroupsId) > 0 {
+			filter.HostgroupsId = req.HostgroupsId
+		}
 	}
-	var filter = biz.DefaultApplicationFilter()
-	if req.Filter != nil {
-		filter = &biz.ListApplicationsFilter{
-			Ids:          req.Filter.Ids,
-			Names:        req.Filter.Names,
-			IsStateful:   req.Filter.IsStateful,
-			ProductsId:   req.Filter.ProductsId,
-			TeamsId:      req.Filter.TeamsId,
-			FeaturesId:   req.Filter.FeaturesId,
-			TagsId:       req.Filter.TagsId,
-			HostgroupsId: req.Filter.HostgroupsId,
-			Page:         req.Filter.Page,
-			PageSize:     req.Filter.PageSize,
-		}
-		if req.Filter.PageSize > 0 {
-			filter.PageSize = req.Filter.PageSize
-		}
-		if req.Filter.Page > 0 {
-			filter.Page = req.Filter.Page
-		}
-	}
+
 	apps, err := s.usecase.ListApplications(ctx, filter)
 	reply := &pb.ListApplicationsReply{
-		Action:  "ListApplications",
+		Action:  "listApplications",
 		Code:    0,
 		Message: "success",
 	}
@@ -201,13 +211,10 @@ func (s *ApplicationsService) MatchAppHostgroups(ctx context.Context, req *pb.Ma
 	if req == nil {
 		return nil, fmt.Errorf("req is nil")
 	}
-	if req.Filter == nil {
-		return nil, fmt.Errorf("filter is nil")
-	}
 	ids, err := s.usecase.MatchHostgroups(ctx, nil, &biz.MatchAppHostgroupsFilter{
-		FeaturesId: req.Filter.FeaturesId,
-		ProductId:  req.Filter.ProductId,
-		TeamId:     req.Filter.TeamId,
+		FeaturesId: req.FeaturesId,
+		ProductId:  req.ProductId,
+		TeamId:     req.TeamId,
 	})
 	if err != nil {
 		return nil, err

@@ -4,6 +4,7 @@ import (
 	apiv1 "appix/api/appix/v1"
 	v1 "appix/api/helloworld/v1"
 	"appix/internal/conf"
+	"appix/internal/middleware"
 	"appix/internal/service"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -13,6 +14,7 @@ import (
 
 // NewGRPCServer new a gRPC server.
 func NewGRPCServer(c *conf.Server,
+	admin *conf.Admin,
 	greeter *service.GreeterService,
 	tags *service.TagsService,
 	features *service.FeaturesService,
@@ -28,6 +30,10 @@ func NewGRPCServer(c *conf.Server,
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
+			middleware.JWTMiddleware(
+				admin.GetJwtSecret(),
+				admin.GetEmergencyHeader(),
+			),
 		),
 	}
 	if c.Grpc.Network != "" {

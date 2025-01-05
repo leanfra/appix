@@ -85,17 +85,12 @@ message GetProductsReply {
 	Product product = 4;
 }
 
-// gratos::model
-message ListProductsFilter {
+message ListProductsRequest {
 	uint32 page = 1;
 	uint32 page_size = 2;
 	repeated string names = 3;
 	repeated string codes = 4;
 	repeated uint32 ids = 5;
-}
-
-message ListProductsRequest {
-	ListProductsFilter filter = 1;
 }
 
 message ListProductsReply {

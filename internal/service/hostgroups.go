@@ -138,31 +138,46 @@ func (s *HostgroupsService) GetHostgroups(ctx context.Context, req *pb.GetHostgr
 }
 
 func (s *HostgroupsService) ListHostgroups(ctx context.Context, req *pb.ListHostgroupsRequest) (*pb.ListHostgroupsReply, error) {
-	if req == nil {
-		return nil, ErrRequestNil
-	}
-	var filter = biz.DefaultHostgroupFilter()
-	if req.Filter != nil {
-		filter = &biz.ListHostgroupsFilter{
-			Names:           req.Filter.Names,
-			Ids:             req.Filter.Ids,
-			ClustersId:      req.Filter.ClustersId,
-			DatacentersId:   req.Filter.DatacentersId,
-			EnvsId:          req.Filter.EnvsId,
-			ProductsId:      req.Filter.ProductsId,
-			ShareProductsId: req.Filter.ShareProductsId,
-			ShareTeamsId:    req.Filter.ShareTeamsId,
-			TeamsId:         req.Filter.TeamsId,
-			FeaturesId:      req.Filter.FeaturesId,
-			TagsId:          req.Filter.TagsId,
-			PageSize:        req.Filter.PageSize,
-			Page:            req.Filter.Page,
+	filter := biz.DefaultHostgroupFilter()
+	if req != nil {
+		if len(req.Names) > 0 {
+			filter.Names = req.Names
 		}
-		if req.Filter.PageSize > 0 {
-			filter.PageSize = req.Filter.PageSize
+		if len(req.Ids) > 0 {
+			filter.Ids = req.Ids
 		}
-		if req.Filter.Page > 0 {
-			filter.Page = req.Filter.Page
+		if len(req.ClustersId) > 0 {
+			filter.ClustersId = req.ClustersId
+		}
+		if len(req.DatacentersId) > 0 {
+			filter.DatacentersId = req.DatacentersId
+		}
+		if len(req.EnvsId) > 0 {
+			filter.EnvsId = req.EnvsId
+		}
+		if len(req.ProductsId) > 0 {
+			filter.ProductsId = req.ProductsId
+		}
+		if len(req.ShareProductsId) > 0 {
+			filter.ShareProductsId = req.ShareProductsId
+		}
+		if len(req.ShareTeamsId) > 0 {
+			filter.ShareTeamsId = req.ShareTeamsId
+		}
+		if len(req.TeamsId) > 0 {
+			filter.TeamsId = req.TeamsId
+		}
+		if len(req.FeaturesId) > 0 {
+			filter.FeaturesId = req.FeaturesId
+		}
+		if len(req.TagsId) > 0 {
+			filter.TagsId = req.TagsId
+		}
+		if req.PageSize > 0 {
+			filter.PageSize = req.PageSize
+		}
+		if req.Page > 0 {
+			filter.Page = req.Page
 		}
 	}
 	hgs, err := s.usecase.ListHostgroups(ctx, filter)

@@ -84,16 +84,11 @@ message GetClustersReply {
 	Cluster cluster = 4;
 }
 
-// gratos::model
-message ListClustersFilter {
+message ListClustersRequest {
 	uint32 page = 1;
 	uint32 page_size = 2;
-	repeated string names = 3;
-	repeated uint32 ids = 4;
-}
-
-message ListClustersRequest {
-	ListClustersFilter filter = 1;
+	repeated uint32 ids = 3;
+	repeated string names = 4;
 }
 message ListClustersReply {
 	string message = 1;

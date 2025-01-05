@@ -57,13 +57,11 @@ Examples:
 
 		for {
 			req := &pb.ListProductsRequest{
-				Filter: &pb.ListProductsFilter{
-					Page:     currentPage,
-					PageSize: pageSize,
-					Names:    names,
-					Codes:    codes,
-					Ids:      idsUint32,
-				},
+				Page:     currentPage,
+				PageSize: pageSize,
+				Names:    names,
+				Codes:    codes,
+				Ids:      idsUint32,
 			}
 
 			ctx := context.Background()

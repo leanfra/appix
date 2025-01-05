@@ -44,11 +44,9 @@ Examples:
 
 		// Call API
 		resp, err := c.MatchAppHostgroups(ctx, &pb.MatchAppHostgroupsRequest{
-			Filter: &pb.MatchAppHostgroupsFilter{
-				FeaturesId: toUint32Slice(features),
-				ProductId:  uint32(product),
-				TeamId:     uint32(team),
-			},
+			FeaturesId: toUint32Slice(features),
+			ProductId:  uint32(product),
+			TeamId:     uint32(team),
 		})
 		if err != nil {
 			log.Fatalf("could not match hostgroups: %v", err)

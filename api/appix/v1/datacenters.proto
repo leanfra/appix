@@ -84,17 +84,13 @@ message GetDatacentersReply {
 	Datacenter datacenter = 4;
 }
 
-// gratos::model
-message ListDatacentersFilter {
+message ListDatacentersRequest {
 	uint32 page = 1;
 	uint32 page_size = 2;
 	repeated uint32 ids = 3;
 	repeated string names = 4;
 }
 
-message ListDatacentersRequest {
-	ListDatacentersFilter filter = 1;
-}
 message ListDatacentersReply {
 	string message = 1;
 	int32 code = 2;

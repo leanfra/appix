@@ -148,21 +148,22 @@ func (s *FeaturesService) GetFeatures(ctx context.Context, req *pb.GetFeaturesRe
 
 func (s *FeaturesService) ListFeatures(ctx context.Context,
 	req *pb.ListFeaturesRequest) (*pb.ListFeaturesReply, error) {
-	if req == nil {
-		return nil, fmt.Errorf("req is nil")
-	}
-	var filter = biz.DefaultFeaturesFilter()
-	if req.Filter != nil {
-		filter = &biz.ListFeaturesFilter{
-			Ids:   req.Filter.Ids,
-			Names: req.Filter.Names,
-			Kvs:   req.Filter.Kvs,
+	filter := biz.DefaultFeaturesFilter()
+	if req != nil {
+		if len(req.Ids) > 0 {
+			filter.Ids = req.Ids
 		}
-		if req.Filter.PageSize > 0 {
-			filter.PageSize = req.Filter.PageSize
+		if len(req.Names) > 0 {
+			filter.Names = req.Names
 		}
-		if req.Filter.Page > 0 {
-			filter.Page = req.Filter.Page
+		if len(req.Kvs) > 0 {
+			filter.Kvs = req.Kvs
+		}
+		if req.PageSize > 0 {
+			filter.PageSize = req.PageSize
+		}
+		if req.Page > 0 {
+			filter.Page = req.Page
 		}
 	}
 

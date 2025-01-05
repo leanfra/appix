@@ -131,21 +131,22 @@ func (s *ProductsService) GetProducts(ctx context.Context, req *pb.GetProductsRe
 	return reply, nil
 }
 func (s *ProductsService) ListProducts(ctx context.Context, req *pb.ListProductsRequest) (*pb.ListProductsReply, error) {
-	if req == nil {
-		return nil, ErrRequestNil
-	}
-	var filter = biz.DefaultProductsFilter()
-	if req.Filter != nil {
-		filter = &biz.ListProductsFilter{
-			Names: req.Filter.Names,
-			Codes: req.Filter.Codes,
-			Ids:   req.Filter.Ids,
+	filter := biz.DefaultProductsFilter()
+	if req != nil {
+		if len(req.Names) > 0 {
+			filter.Names = req.Names
 		}
-		if req.Filter.PageSize > 0 {
-			filter.PageSize = req.Filter.PageSize
+		if len(req.Codes) > 0 {
+			filter.Codes = req.Codes
 		}
-		if req.Filter.Page > 0 {
-			filter.Page = req.Filter.Page
+		if len(req.Ids) > 0 {
+			filter.Ids = req.Ids
+		}
+		if req.PageSize > 0 {
+			filter.PageSize = req.PageSize
+		}
+		if req.Page > 0 {
+			filter.Page = req.Page
 		}
 	}
 

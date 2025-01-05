@@ -6,6 +6,7 @@ toolchain go1.22.6
 
 require (
 	github.com/go-kratos/kratos/v2 v2.8.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/wire v0.6.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/stretchr/testify v1.8.4

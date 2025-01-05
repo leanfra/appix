@@ -48,12 +48,10 @@ Examples:
 		var allClusters []*pb.Cluster
 		for {
 			req := &pb.ListClustersRequest{
-				Filter: &pb.ListClustersFilter{
-					Page:     page,
-					PageSize: pageSize,
-					Names:    names,
-					Ids:      ids,
-				},
+				Page:     page,
+				PageSize: pageSize,
+				Names:    names,
+				Ids:      ids,
 			}
 
 			resp, err := client.ListClusters(ctx, req)

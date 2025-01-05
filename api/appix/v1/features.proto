@@ -87,18 +87,12 @@ message GetFeaturesReply {
 	Feature feature = 4;
 }
 
-
-// gratos::model
-message ListFeaturesFilter {
+message ListFeaturesRequest {
 	uint32 page = 1;
 	uint32 page_size = 2;
 	repeated uint32 ids = 3;
 	repeated string names = 4;
 	repeated string kvs = 5;
-}
-
-message ListFeaturesRequest {
-	ListFeaturesFilter filter = 1;
 }
 
 message ListFeaturesReply {

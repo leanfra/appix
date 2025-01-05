@@ -67,21 +67,19 @@ Examples:
 
 		for {
 			req := &pb.ListHostgroupsRequest{
-				Filter: &pb.ListHostgroupsFilter{
-					Page:            page,
-					PageSize:        pageSize,
-					Names:           names,
-					Ids:             ids,
-					ClustersId:      clustersIds,
-					DatacentersId:   datacentersIds,
-					EnvsId:          envsIds,
-					ProductsId:      productsIds,
-					TeamsId:         teamsIds,
-					FeaturesId:      featuresIds,
-					TagsId:          tagsIds,
-					ShareProductsId: shareProductsIds,
-					ShareTeamsId:    shareTeamsIds,
-				},
+				Page:            page,
+				PageSize:        pageSize,
+				Names:           names,
+				Ids:             ids,
+				ClustersId:      clustersIds,
+				DatacentersId:   datacentersIds,
+				EnvsId:          envsIds,
+				ProductsId:      productsIds,
+				TeamsId:         teamsIds,
+				FeaturesId:      featuresIds,
+				TagsId:          tagsIds,
+				ShareProductsId: shareProductsIds,
+				ShareTeamsId:    shareTeamsIds,
 			}
 
 			ctx := context.Background()

@@ -48,12 +48,10 @@ Examples:
 		var allEnvs []*pb.Env
 		for {
 			req := &pb.ListEnvsRequest{
-				Filter: &pb.ListEnvsFilter{
-					Page:     page,
-					PageSize: pageSize,
-					Names:    names,
-					Ids:      ids,
-				},
+				Page:     page,
+				PageSize: pageSize,
+				Names:    names,
+				Ids:      ids,
 			}
 
 			resp, err := client.ListEnvs(ctx, req)

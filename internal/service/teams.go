@@ -129,24 +129,25 @@ func (s *TeamsService) GetTeams(ctx context.Context, req *pb.GetTeamsRequest) (*
 }
 
 func (s *TeamsService) ListTeams(ctx context.Context, req *pb.ListTeamsRequest) (*pb.ListTeamsReply, error) {
-	if req == nil {
-		return nil, ErrRequestNil
-	}
-	var filter = biz.DefaultTeamsFilter()
-	if req.Filter != nil {
-		filter = &biz.ListTeamsFilter{
-			Page:     req.Filter.Page,
-			PageSize: req.Filter.PageSize,
-			Ids:      req.Filter.Ids,
-			Codes:    req.Filter.Codes,
-			Names:    req.Filter.Names,
-			Leaders:  req.Filter.Leaders,
+	filter := biz.DefaultTeamsFilter()
+	if req != nil {
+		if req.Page > 0 {
+			filter.Page = req.Page
 		}
-		if req.Filter.PageSize > 0 {
-			filter.PageSize = req.Filter.PageSize
+		if req.PageSize > 0 {
+			filter.PageSize = req.PageSize
 		}
-		if req.Filter.Page > 0 {
-			filter.Page = req.Filter.Page
+		if len(req.Ids) > 0 {
+			filter.Ids = req.Ids
+		}
+		if len(req.Codes) > 0 {
+			filter.Codes = req.Codes
+		}
+		if len(req.Names) > 0 {
+			filter.Names = req.Names
+		}
+		if len(req.Leaders) > 0 {
+			filter.Leaders = req.Leaders
 		}
 	}
 

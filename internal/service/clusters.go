@@ -133,20 +133,19 @@ func (s *ClustersService) GetClusters(ctx context.Context, req *pb.GetClustersRe
 }
 
 func (s *ClustersService) ListClusters(ctx context.Context, req *pb.ListClustersRequest) (*pb.ListClustersReply, error) {
-	if req == nil {
-		return nil, fmt.Errorf("req is nil")
-	}
 	filter := biz.DefaultClusterFilter()
-	if req.Filter != nil {
-		filter = &biz.ListClustersFilter{
-			Ids:   req.Filter.Ids,
-			Names: req.Filter.Names,
+	if req != nil {
+		if len(req.Ids) > 0 {
+			filter.Ids = req.Ids
 		}
-		if req.Filter.PageSize > 0 {
-			filter.PageSize = req.Filter.PageSize
+		if len(req.Names) > 0 {
+			filter.Names = req.Names
 		}
-		if req.Filter.Page > 0 {
-			filter.Page = req.Filter.Page
+		if req.PageSize > 0 {
+			filter.PageSize = req.PageSize
+		}
+		if req.Page > 0 {
+			filter.Page = req.Page
 		}
 	}
 

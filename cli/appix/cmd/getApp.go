@@ -62,18 +62,16 @@ Examples:
 		var allApps []*pb.Application
 		for {
 			req := &pb.ListApplicationsRequest{
-				Filter: &pb.ListApplicationsFilter{
-					Page:         page,
-					PageSize:     pageSize,
-					Names:        names,
-					IsStateful:   isStateful,
-					Ids:          ids,
-					ProductsId:   productsId,
-					TeamsId:      teamsId,
-					FeaturesId:   featuresId,
-					TagsId:       tagsId,
-					HostgroupsId: hostgroupsId,
-				},
+				Page:         page,
+				PageSize:     pageSize,
+				Names:        names,
+				IsStateful:   isStateful,
+				Ids:          ids,
+				ProductsId:   productsId,
+				TeamsId:      teamsId,
+				FeaturesId:   featuresId,
+				TagsId:       tagsId,
+				HostgroupsId: hostgroupsId,
 			}
 
 			resp, err := client.ListApplications(ctx, req)

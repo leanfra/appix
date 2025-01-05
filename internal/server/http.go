@@ -4,6 +4,7 @@ import (
 	appv1 "appix/api/appix/v1"
 	v1 "appix/api/helloworld/v1"
 	"appix/internal/conf"
+	"appix/internal/middleware"
 	"appix/internal/service"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -13,6 +14,7 @@ import (
 
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Server,
+	admin *conf.Admin,
 	greeter *service.GreeterService,
 	tags *service.TagsService,
 	features *service.FeaturesService,
@@ -28,6 +30,11 @@ func NewHTTPServer(c *conf.Server,
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
+		),
+		http.Middleware(middleware.JWTMiddleware(
+			admin.GetJwtSecret(),
+			admin.GetEmergencyHeader(),
+		),
 		),
 	}
 	if c.Http.Network != "" {

@@ -89,18 +89,13 @@ message GetTeamsReply {
 	Team team = 4;
 }
 
-// gratos::model
-message ListTeamsFilter {
+message ListTeamsRequest {
 	uint32 page = 1;
 	uint32 page_size = 2;
 	repeated string names = 3;
 	repeated string codes = 4;
 	repeated string leaders = 5;
 	repeated uint32 ids = 6;
-}
-
-message ListTeamsRequest {
-	ListTeamsFilter filter = 1;
 }
 
 message ListTeamsReply {

@@ -49,17 +49,14 @@ Examples:
 		currentPage := GetPage
 
 		for {
-			filter := &pb.ListTeamsFilter{
+
+			req := &pb.ListTeamsRequest{
 				Page:     currentPage,
 				PageSize: GetPageSize,
 				Names:    teamNames,
 				Codes:    teamCodes,
 				Leaders:  teamLeaders,
 				Ids:      uint32Ids,
-			}
-
-			req := &pb.ListTeamsRequest{
-				Filter: filter,
 			}
 
 			ctx := context.Background()

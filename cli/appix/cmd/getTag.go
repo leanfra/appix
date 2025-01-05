@@ -54,13 +54,11 @@ Examples:
 		var allTags []*pb.Tag
 		for {
 			req := &pb.ListTagsRequest{
-				Filter: &pb.ListTagsFilter{
-					Page:     page,
-					PageSize: pageSize,
-					Keys:     keys,
-					Kvs:      kvs,
-					Ids:      ids,
-				},
+				Page:     page,
+				PageSize: pageSize,
+				Keys:     keys,
+				Kvs:      kvs,
+				Ids:      ids,
 			}
 
 			resp, err := client.ListTags(ctx, req)

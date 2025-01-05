@@ -24,7 +24,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
+func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, logger log.Logger) (*kratos.App, func(), error) {
 	dataGorm, cleanup, err := sqldb.NewDataGorm(confData, logger)
 	if err != nil {
 		return nil, nil, err
@@ -131,8 +131,8 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
 	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, appTagsRepo, appFeaturesRepo, appHostgroupsRepo, productsRepo, teamsRepo, featuresRepo, tagsRepo, hostgroupsRepo, hostgroupFeaturesRepo, logger, txManager)
 	applicationsService := service.NewApplicationsService(applicationsUsecase, logger)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
+	grpcServer := server.NewGRPCServer(confServer, admin, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
+	httpServer := server.NewHTTPServer(confServer, admin, greeterService, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()
