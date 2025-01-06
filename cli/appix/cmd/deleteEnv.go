@@ -5,13 +5,12 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 
 	pb "appix/api/appix/v1"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 // deleteEnvCmd represents the deleteEnv command
@@ -24,12 +23,12 @@ For example:
 	Args:    cobra.MinimumNArgs(1),
 	Aliases: []string{"env", "envs", "en"},
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
-			return
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
+
 		client := pb.NewEnvsClient(conn)
 
 		if len(args) == 0 {
@@ -51,10 +50,9 @@ For example:
 			Ids: ids,
 		}
 
-		reply, err := client.DeleteEnvs(cmd.Context(), req)
+		reply, err := client.DeleteEnvs(ctx, req)
 		if err != nil {
-			fmt.Printf("Error deleting environments: %v\n", err)
-			return
+			log.Fatalf("failed to delete environments: %v", err)
 		}
 
 		if reply != nil {

@@ -4,12 +4,17 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
 
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
+	"gopkg.in/yaml.v2"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -38,7 +43,43 @@ func init() {
 
 }
 
-// 辅助函数：转换 []uint 到 []uint32
+func NewConnection(withToken bool) (context.Context, *grpc.ClientConn, error) {
+	ctx := context.Background()
+	if withToken {
+		// Read token from config file
+		configPath := strings.Replace(cfgFile, "~", os.Getenv("HOME"), 1)
+		existingConfig := make(map[string]string)
+		if existingData, err := os.ReadFile(configPath); err == nil {
+			if err := yaml.Unmarshal(existingData, &existingConfig); err != nil {
+				fmt.Printf("Failed to parse config: %v\n", err)
+				return nil, nil, err
+			}
+		}
+
+		// Get token
+		token := existingConfig["token"]
+		if token == "" {
+			fmt.Println("No active session found")
+			return nil, nil, fmt.Errorf("no active session found")
+		}
+
+		// Create context with token
+		md := metadata.New(map[string]string{
+			"Authorization": "Bearer " + token,
+		})
+		ctx = metadata.NewOutgoingContext(ctx, md)
+	}
+
+	// Create gRPC client
+	conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Printf("Failed to connect to server: %v\n", err)
+		return nil, nil, err
+	}
+	return ctx, conn, nil
+}
+
+// toUint32Slice: []uint to  []uint32
 func toUint32Slice(slice []uint) []uint32 {
 	result := make([]uint32, len(slice))
 	for i, v := range slice {
@@ -47,7 +88,7 @@ func toUint32Slice(slice []uint) []uint32 {
 	return result
 }
 
-// 添加辅助函数
+// joinUint32: []uint32 to string separated by comma
 func joinUint32(ids []uint32) string {
 	if len(ids) == 0 {
 		return ""

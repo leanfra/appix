@@ -12,8 +12,6 @@ import (
 	pb "appix/api/appix/v1"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 )
 
@@ -24,12 +22,12 @@ var updateDatacenterCmd = &cobra.Command{
 	Long:    `Update one or more datacenters with the specified ID and fields.`,
 	Aliases: []string{"datacenter", "datacenters", "dc"},
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
-			return
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
+
 		client := pb.NewDatacentersClient(conn)
 
 		var datacenters []*pb.Datacenter
@@ -42,7 +40,7 @@ var updateDatacenterCmd = &cobra.Command{
 
 			// Get the datacenter data
 			getReq := &pb.GetDatacentersRequest{Id: id}
-			getResp, err := client.GetDatacenters(cmd.Context(), getReq)
+			getResp, err := client.GetDatacenters(ctx, getReq)
 			if err != nil {
 				log.Fatalf("failed to get datacenter: %v", err)
 			}
@@ -125,10 +123,9 @@ var updateDatacenterCmd = &cobra.Command{
 			Datacenters: datacenters,
 		}
 
-		reply, err := client.UpdateDatacenters(cmd.Context(), req)
+		reply, err := client.UpdateDatacenters(ctx, req)
 		if err != nil {
-			fmt.Printf("Error updating datacenter: %v\n", err)
-			return
+			log.Fatalf("failed to update datacenter: %v", err)
 		}
 
 		if reply != nil {

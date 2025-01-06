@@ -1,15 +1,12 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 
 	pb "appix/api/appix/v1"
@@ -27,8 +24,7 @@ Examples:
   appix get feature --ids 1,2,3                 # Filter by IDs
   appix get feature --names feat1 --kvs key=val  # Combined filters`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx := context.Background()
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
 			log.Fatalf("connect to server failed: %v", err)
 		}

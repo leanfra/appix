@@ -10,8 +10,6 @@ import (
 	"os/exec"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 
 	pb "appix/api/appix/v1"
@@ -24,10 +22,9 @@ var updateFeatureCmd = &cobra.Command{
 	Long:    `Update one or more features with the specified ID and fields.`,
 	Aliases: []string{"feature", "features"},
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
-			return
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
 		client := pb.NewFeaturesClient(conn)
@@ -42,7 +39,7 @@ var updateFeatureCmd = &cobra.Command{
 
 			// Get the feature data
 			getReq := &pb.GetFeaturesRequest{Id: id}
-			getResp, err := client.GetFeatures(cmd.Context(), getReq)
+			getResp, err := client.GetFeatures(ctx, getReq)
 			if err != nil {
 				log.Fatalf("failed to get feature: %v", err)
 			}
@@ -125,10 +122,9 @@ var updateFeatureCmd = &cobra.Command{
 			Features: features,
 		}
 
-		reply, err := client.UpdateFeatures(cmd.Context(), req)
+		reply, err := client.UpdateFeatures(ctx, req)
 		if err != nil {
-			fmt.Printf("Error updating feature: %v\n", err)
-			return
+			log.Fatalf("failed to update feature: %v", err)
 		}
 
 		if reply != nil {

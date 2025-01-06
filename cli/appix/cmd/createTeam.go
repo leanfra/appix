@@ -4,7 +4,6 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -12,8 +11,6 @@ import (
 	pb "appix/api/appix/v1"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 )
 
@@ -28,10 +25,9 @@ Examples:
   appix create team --name eng-team --code eng --desc "Engineering Team" --leader "John Doe"
   appix create team --name ops-team --code ops --desc "Operations Team" --leader "Jane Smith"`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx := context.Background()
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			log.Fatalf("connect to server failed: %v", err)
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
 
@@ -96,7 +92,7 @@ Examples:
 
 		resp, err := client.CreateTeams(ctx, req)
 		if err != nil {
-			log.Fatalf("create team failed: %v", err)
+			log.Fatalf("failed to create teams: %v", err)
 		}
 
 		if resp != nil {

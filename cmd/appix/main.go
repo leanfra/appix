@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -89,6 +90,10 @@ func main() {
 		)
 	}
 
+	if err := validateAdminConfig(bc.Admin); err != nil {
+		panic(err)
+	}
+
 	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Admin, logger)
 	if err != nil {
 		panic(err)
@@ -99,4 +104,23 @@ func main() {
 	if err := app.Run(); err != nil {
 		panic(err)
 	}
+}
+
+func validateAdminConfig(conf *conf.Admin) error {
+	if conf == nil {
+		return errors.New("admin config is nil")
+	}
+	if conf.AdminUser == "" || conf.AdminPassword == "" {
+		return errors.New("admin user or password is empty")
+	}
+	if conf.JwtSecret == "" {
+		return errors.New("jwt secret is empty")
+	}
+	if conf.JwtExpireHours == 0 {
+		return errors.New("jwt expire hours is empty")
+	}
+	if conf.EmergencyHeader == "" {
+		return errors.New("emergency header is empty")
+	}
+	return nil
 }

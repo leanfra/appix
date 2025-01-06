@@ -14,3 +14,10 @@ data:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
     write_timeout: 0.2s
+admin:
+  admin_user: admin
+  admin_password: admin
+  strict_password_policy: true
+  jwt_expire_hours: 1
+  jwt_secret: "appix"
+  emergency_header: "appix-emergency"

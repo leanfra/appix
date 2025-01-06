@@ -12,8 +12,6 @@ import (
 	pb "appix/api/appix/v1"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 )
 
@@ -24,12 +22,14 @@ var updateTagCmd = &cobra.Command{
 	Long:    `Update one or more tags with the specified ID and fields.`,
 	Aliases: []string{"tag", "tags"},
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
+			fmt.Printf("Failed to connect to server: %v\n", err)
 			return
 		}
 		defer conn.Close()
+
 		client := pb.NewTagsClient(conn)
 
 		yamlFile, _ := cmd.Flags().GetString("yaml")
@@ -44,7 +44,7 @@ var updateTagCmd = &cobra.Command{
 
 			// Get the tag data
 			getReq := &pb.GetTagsRequest{Id: id}
-			getResp, err := client.GetTags(cmd.Context(), getReq)
+			getResp, err := client.GetTags(ctx, getReq)
 			if err != nil {
 				log.Fatalf("failed to get tag: %v", err)
 			}
@@ -129,10 +129,9 @@ var updateTagCmd = &cobra.Command{
 			Tags: tags,
 		}
 
-		reply, err := client.UpdateTags(cmd.Context(), req)
+		reply, err := client.UpdateTags(ctx, req)
 		if err != nil {
-			fmt.Printf("Error updating tag: %v\n", err)
-			return
+			log.Fatalf("failed to update tag: %v", err)
 		}
 
 		if reply != nil {

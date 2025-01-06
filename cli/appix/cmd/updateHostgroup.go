@@ -12,8 +12,6 @@ import (
 	pb "appix/api/appix/v1"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 )
 
@@ -33,10 +31,9 @@ Examples:
   # Update interactively in editor
   appix update hostgroup --id 1 --online`,
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
-			return
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
 		client := pb.NewHostgroupsClient(conn)
@@ -51,7 +48,7 @@ Examples:
 
 			// Get the hostgroup data
 			getReq := &pb.GetHostgroupsRequest{Id: id}
-			getResp, err := client.GetHostgroups(cmd.Context(), getReq)
+			getResp, err := client.GetHostgroups(ctx, getReq)
 			if err != nil {
 				log.Fatalf("failed to get hostgroup: %v", err)
 			}
@@ -157,10 +154,9 @@ Examples:
 			Hostgroups: hostgroups,
 		}
 
-		reply, err := client.UpdateHostgroups(cmd.Context(), req)
+		reply, err := client.UpdateHostgroups(ctx, req)
 		if err != nil {
-			fmt.Printf("Error updating hostgroup: %v\n", err)
-			return
+			log.Fatalf("failed to update hostgroup: %v", err)
 		}
 
 		if reply != nil {

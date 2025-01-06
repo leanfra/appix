@@ -4,7 +4,6 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -13,8 +12,6 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 )
 
@@ -33,14 +30,13 @@ Examples:
 		team, _ := cmd.Flags().GetUint("team")
 
 		// Connect to gRPC server
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
 			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
 
 		c := pb.NewApplicationsClient(conn)
-		ctx := context.Background()
 
 		// Call API
 		resp, err := c.MatchAppHostgroups(ctx, &pb.MatchAppHostgroupsRequest{

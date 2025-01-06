@@ -4,14 +4,11 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 
 	pb "appix/api/appix/v1"
@@ -30,10 +27,9 @@ Examples:
   appix create datacenter --name dc1 --desc "Primary datacenter"
   appix create datacenter --name dc2 --desc "Backup datacenter"`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx := context.Background()
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			log.Fatalf("connect to server failed: %v", err)
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
 
@@ -92,7 +88,7 @@ Examples:
 
 		resp, err := client.CreateDatacenters(ctx, req)
 		if err != nil {
-			log.Fatalf("create datacenter failed: %v", err)
+			log.Fatalf("failed to create datacenters: %v", err)
 		}
 
 		if resp != nil {

@@ -43,6 +43,7 @@ func toBizUser(user *pb.User) (*biz.User, error) {
 		Password: user.Password,
 		Email:    user.Email,
 		Phone:    user.Phone,
+		Token:    user.Token,
 	}, nil
 }
 
@@ -53,6 +54,7 @@ func toPbUser(user *biz.User) *pb.User {
 		Password: user.Password,
 		Email:    user.Email,
 		Phone:    user.Phone,
+		Token:    user.Token,
 	}
 }
 
@@ -187,6 +189,7 @@ func (s *AdminService) Logout(ctx context.Context, req *pb.LogoutReq) (*pb.Logou
 		Code:    0,
 		Message: "success",
 	}
+
 	err := s.usecase.Logout(ctx, req.Id)
 	if err != nil {
 		reply.Code = 1

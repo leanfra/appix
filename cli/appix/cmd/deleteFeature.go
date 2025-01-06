@@ -5,11 +5,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 
 	pb "appix/api/appix/v1"
 )
@@ -24,12 +23,12 @@ For example:
 	Args:    cobra.MinimumNArgs(1),
 	Aliases: []string{"feature", "features", "ft"},
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
-			return
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
+
 		client := pb.NewFeaturesClient(conn)
 
 		if len(args) == 0 {
@@ -51,10 +50,9 @@ For example:
 			Ids: ids,
 		}
 
-		reply, err := client.DeleteFeatures(cmd.Context(), req)
+		reply, err := client.DeleteFeatures(ctx, req)
 		if err != nil {
-			fmt.Printf("Error deleting features: %v\n", err)
-			return
+			log.Fatalf("failed to delete features: %v", err)
 		}
 
 		if reply != nil {

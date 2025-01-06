@@ -13,7 +13,7 @@ import (
 
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Server,
-	admin *conf.Admin,
+	adminConf *conf.Admin,
 	tags *service.TagsService,
 	features *service.FeaturesService,
 	teams *service.TeamsService,
@@ -23,6 +23,7 @@ func NewHTTPServer(c *conf.Server,
 	datacenters *service.DatacentersService,
 	hostgroups *service.HostgroupsService,
 	applications *service.ApplicationsService,
+	adminService *service.AdminService,
 	logger log.Logger) *http.Server {
 
 	var opts = []http.ServerOption{
@@ -30,8 +31,11 @@ func NewHTTPServer(c *conf.Server,
 			recovery.Recovery(),
 		),
 		http.Middleware(middleware.JWTMiddleware(
-			admin.GetJwtSecret(),
-			admin.GetEmergencyHeader(),
+			middleware.JWTMiddlewareOption{
+				Secret:          adminConf.GetJwtSecret(),
+				EmergencyHeader: adminConf.GetEmergencyHeader(),
+				DefaultSecret:   DefaultSecret,
+			},
 		),
 		),
 	}
@@ -54,5 +58,6 @@ func NewHTTPServer(c *conf.Server,
 	appv1.RegisterDatacentersHTTPServer(srv, datacenters)
 	appv1.RegisterHostgroupsHTTPServer(srv, hostgroups)
 	appv1.RegisterApplicationsHTTPServer(srv, applications)
+	appv1.RegisterAdminHTTPServer(srv, adminService)
 	return srv
 }

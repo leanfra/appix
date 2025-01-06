@@ -4,7 +4,6 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -13,8 +12,6 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 )
 
@@ -37,7 +34,7 @@ Examples:
 		page := GetPage
 		pageSize := GetPageSize
 
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
 			log.Fatalf("connect to server failed: %v", err)
 		}
@@ -64,7 +61,6 @@ Examples:
 				Ids:      idsUint32,
 			}
 
-			ctx := context.Background()
 			reply, err := client.ListProducts(ctx, req)
 
 			if err != nil {

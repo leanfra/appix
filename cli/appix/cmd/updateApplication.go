@@ -10,8 +10,6 @@ import (
 	"os/exec"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 
 	pb "appix/api/appix/v1"
@@ -24,12 +22,12 @@ var updateApplicationCmd = &cobra.Command{
 	Long:    `Update one or more applications with the specified ID and fields.`,
 	Aliases: []string{"application", "applications", "app"},
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
-			return
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
+
 		client := pb.NewApplicationsClient(conn)
 
 		var applications []*pb.Application
@@ -42,7 +40,7 @@ var updateApplicationCmd = &cobra.Command{
 
 			// Get the application data
 			getReq := &pb.GetApplicationsRequest{Id: id}
-			getResp, err := client.GetApplications(cmd.Context(), getReq)
+			getResp, err := client.GetApplications(ctx, getReq)
 			if err != nil {
 				log.Fatalf("failed to get application: %v", err)
 			}
@@ -139,10 +137,9 @@ var updateApplicationCmd = &cobra.Command{
 			Apps: applications,
 		}
 
-		reply, err := client.UpdateApplications(cmd.Context(), req)
+		reply, err := client.UpdateApplications(ctx, req)
 		if err != nil {
-			fmt.Printf("Error updating application: %v\n", err)
-			return
+			log.Fatalf("failed to update application: %v", err)
 		}
 
 		if reply != nil {

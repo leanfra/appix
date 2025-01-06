@@ -8,7 +8,6 @@ type User struct {
 	Password string `gorm:"column:password;not null"`
 	Email    string `gorm:"column:email;unique"`
 	Phone    string `gorm:"column:phone;unique"`
-	Token    string `gorm:"column:token;not null;unique"`
 }
 
 type UsersFilter struct {

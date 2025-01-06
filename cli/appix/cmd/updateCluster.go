@@ -10,8 +10,6 @@ import (
 	"os/exec"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 
 	pb "appix/api/appix/v1"
@@ -24,12 +22,12 @@ var updateClusterCmd = &cobra.Command{
 	Long:    `Update one or more clusters with the specified ID and fields.`,
 	Aliases: []string{"cluster", "clusters"},
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
-			return
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
+
 		client := pb.NewClustersClient(conn)
 
 		var clusters []*pb.Cluster
@@ -42,7 +40,7 @@ var updateClusterCmd = &cobra.Command{
 
 			// Get the cluster data
 			getReq := &pb.GetClustersRequest{Id: id}
-			getResp, err := client.GetClusters(cmd.Context(), getReq)
+			getResp, err := client.GetClusters(ctx, getReq)
 			if err != nil {
 				log.Fatalf("failed to get cluster: %v", err)
 			}
@@ -125,10 +123,9 @@ var updateClusterCmd = &cobra.Command{
 			Clusters: clusters,
 		}
 
-		reply, err := client.UpdateClusters(cmd.Context(), req)
+		reply, err := client.UpdateClusters(ctx, req)
 		if err != nil {
-			fmt.Printf("Error updating cluster: %v\n", err)
-			return
+			log.Fatalf("failed to update cluster: %v", err)
 		}
 
 		if reply != nil {

@@ -12,8 +12,6 @@ import (
 	pb "appix/api/appix/v1"
 
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 )
 
@@ -24,10 +22,9 @@ var updateEnvCmd = &cobra.Command{
 	Long:    `Update an environment with the specified ID and fields.`,
 	Aliases: []string{"env", "envs", "environment"},
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
-			return
+			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
 		client := pb.NewEnvsClient(conn)
@@ -42,7 +39,7 @@ var updateEnvCmd = &cobra.Command{
 
 			// Get the environment data
 			getReq := &pb.GetEnvsRequest{Id: id}
-			getResp, err := client.GetEnvs(cmd.Context(), getReq)
+			getResp, err := client.GetEnvs(ctx, getReq)
 			if err != nil {
 				log.Fatalf("failed to get environment: %v", err)
 			}
@@ -125,10 +122,9 @@ var updateEnvCmd = &cobra.Command{
 			Envs: envs,
 		}
 
-		reply, err := client.UpdateEnvs(cmd.Context(), req)
+		reply, err := client.UpdateEnvs(ctx, req)
 		if err != nil {
-			fmt.Printf("Error updating environment: %v\n", err)
-			return
+			log.Fatalf("failed to update environment: %v", err)
 		}
 
 		if reply != nil {

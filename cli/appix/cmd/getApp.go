@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -9,8 +8,6 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 
 	pb "appix/api/appix/v1"
@@ -29,8 +26,7 @@ Examples:
   appix get app --page 1 --page-size 10           # With pagination
   appix get app --names web --clusters 1 --format yaml   # Combined filters`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx := context.Background()
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
 			log.Fatalf("connect to server failed: %v", err)
 		}

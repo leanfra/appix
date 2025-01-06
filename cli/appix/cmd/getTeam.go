@@ -4,15 +4,12 @@ Copyright © 2024 Lenfra <lenfra@163.com>
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 
 	pb "appix/api/appix/v1"
@@ -31,7 +28,7 @@ Examples:
   appix get team --leaders alice,bob          # Filter by leaders
   appix get team --names dev --format yaml    # Custom format`,
 	Run: func(cmd *cobra.Command, args []string) {
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
 			log.Fatalf("connect to server failed: %v", err)
 		}
@@ -59,7 +56,6 @@ Examples:
 				Ids:      uint32Ids,
 			}
 
-			ctx := context.Background()
 			reply, err := client.ListTeams(ctx, req)
 
 			if err != nil {

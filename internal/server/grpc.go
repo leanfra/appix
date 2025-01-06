@@ -13,7 +13,7 @@ import (
 
 // NewGRPCServer new a gRPC server.
 func NewGRPCServer(c *conf.Server,
-	admin *conf.Admin,
+	adminConf *conf.Admin,
 	tags *service.TagsService,
 	features *service.FeaturesService,
 	teams *service.TeamsService,
@@ -23,14 +23,18 @@ func NewGRPCServer(c *conf.Server,
 	datacenters *service.DatacentersService,
 	hostgroups *service.HostgroupsService,
 	applications *service.ApplicationsService,
+	adminService *service.AdminService,
 	logger log.Logger) *grpc.Server {
 
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
 			middleware.JWTMiddleware(
-				admin.GetJwtSecret(),
-				admin.GetEmergencyHeader(),
+				middleware.JWTMiddlewareOption{
+					Secret:          adminConf.GetJwtSecret(),
+					EmergencyHeader: adminConf.GetEmergencyHeader(),
+					DefaultSecret:   DefaultSecret,
+				},
 			),
 		),
 	}
@@ -53,5 +57,6 @@ func NewGRPCServer(c *conf.Server,
 	apiv1.RegisterDatacentersServer(srv, datacenters)
 	apiv1.RegisterHostgroupsServer(srv, hostgroups)
 	apiv1.RegisterApplicationsServer(srv, applications)
+	apiv1.RegisterAdminServer(srv, adminService)
 	return srv
 }

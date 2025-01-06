@@ -6,7 +6,6 @@ import (
 	"errors"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/golang-jwt/jwt"
 	//  TODO: modify project name
 	// biz "appix/internal/biz"
 )
@@ -18,6 +17,12 @@ type AdminRepoGorm struct {
 
 func NewAdminRepoGorm(data *DataGorm, logger log.Logger) (repo.AdminRepo, error) {
 
+	if err := validateData(data); err != nil {
+		return nil, err
+	}
+	if err := initTable(data.DB, &repo.User{}, repo.UserTable); err != nil {
+		return nil, err
+	}
 	return &AdminRepoGorm{
 		data: data,
 		log:  log.NewHelper(logger),
@@ -87,34 +92,11 @@ func (d *AdminRepoGorm) Login(ctx context.Context, username string, password str
 	if user.Password != password {
 		return nil, errors.New("password is incorrect")
 	}
-	// generate token
-	token, err := GenerateJWTToken(user.Id, user.UserName)
-	if err != nil {
-		return nil, err
-	}
-	user.Token = token
+
 	return &user, nil
 }
 
 // Logout is
 func (d *AdminRepoGorm) Logout(ctx context.Context, id uint32) error {
-	return d.data.WithTX(nil).WithContext(ctx).Model(&repo.User{}).Where("id = ?", id).Update("token", "").Error
+	return nil
 }
-
-func GenerateJWTToken(id uint32, username string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":   id,
-		"name": username,
-	})
-	return token.SignedString([]byte("secret"))
-}
-
-// func ValidateJWTToken(token string) (repo.TokenClaims, error) {
-// 	claims := repo.TokenClaims{}
-// 	if err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-// 		return []byte("secret"), nil
-// 	}); err != nil {
-// 		return nil, err
-// 	}
-// 	return claims, nil
-// }

@@ -9,8 +9,6 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"gopkg.in/yaml.v2"
 
 	pb "appix/api/appix/v1"
@@ -57,7 +55,8 @@ Examples:
 		shareTeamsIds := toUint32Slice(shareTeams)
 
 		var allHostgroups []*pb.Hostgroup
-		conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+		ctx, conn, err := NewConnection(true)
 		if err != nil {
 			log.Fatalf("connect to server failed: %v", err)
 		}
@@ -165,7 +164,6 @@ Examples:
 			}
 		}
 
-		ctx := context.Background()
 		// Batch fetch clusters
 		for id := range clusterIDs {
 			resp, err := clustersClient.GetClusters(ctx, &pb.GetClustersRequest{Id: id})
