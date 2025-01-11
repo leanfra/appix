@@ -42,6 +42,10 @@ message Data {
   Redis redis = 2;
 }
 
+message Authz {
+  string model_file = 1;
+}
+
 message Admin {
   string admin_user = 1;
   string admin_password = 2;
@@ -49,4 +53,5 @@ message Admin {
   string jwt_secret = 4;
   string emergency_header = 5;
   int64 jwt_expire_hours = 6;
+  Authz authz = 7;
 }
