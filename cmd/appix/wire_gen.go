@@ -24,7 +24,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, logger log.Logger) (*kratos.App, func(), error) {
+func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, authz *conf.Authz, logger log.Logger) (*kratos.App, func(), error) {
 	dataGorm, cleanup, err := sqldb.NewDataGorm(confData, logger)
 	if err != nil {
 		return nil, nil, err
@@ -134,7 +134,12 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, lo
 		return nil, nil, err
 	}
 	tokenRepo := data.NewJwtMemRepo(admin)
-	adminUsecase := biz.NewAdminUsecase(admin, adminRepo, tokenRepo, logger)
+	authzRepo, err := sqldb.NewAuthzRepoGorm(authz, dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	adminUsecase := biz.NewAdminUsecase(admin, adminRepo, tokenRepo, authzRepo, logger)
 	adminService := service.NewAdminService(adminUsecase, logger)
 	grpcServer := server.NewGRPCServer(confServer, admin, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, adminService, logger)
 	httpServer := server.NewHTTPServer(confServer, admin, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, adminService, logger)

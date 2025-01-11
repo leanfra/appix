@@ -21,3 +21,5 @@ admin:
   jwt_expire_hours: 1
   jwt_secret: "appix"
   emergency_header: "appix-emergency"
+authz:
+  model_file: "configs/rbac_model.conf"

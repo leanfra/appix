@@ -14,6 +14,7 @@ import (
 type AdminUsecase struct {
 	adminRepo repo.AdminRepo
 	tokenRepo repo.TokenRepo
+	authzRepo repo.AuthzRepo
 	log       *log.Helper
 	conf      *conf.Admin
 }
@@ -22,11 +23,19 @@ func NewAdminUsecase(
 	conf *conf.Admin,
 	adminRepo repo.AdminRepo,
 	tokenRepo repo.TokenRepo,
+	authzRepo repo.AuthzRepo,
 	logger log.Logger,
 ) *AdminUsecase {
+
+	authzRepo.CreateGroup(context.Background(), nil, &repo.Group{
+		User: conf.AdminUser,
+		Role: "admin",
+	})
+
 	return &AdminUsecase{
 		adminRepo: adminRepo,
 		tokenRepo: tokenRepo,
+		authzRepo: authzRepo,
 		log:       log.NewHelper(logger),
 		conf:      conf,
 	}

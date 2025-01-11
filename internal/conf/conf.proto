@@ -9,6 +9,7 @@ message Bootstrap {
   Server server = 1;
   Data data = 2;
   Admin admin = 3;
+  Authz authz = 4;
 }
 
 message Server {
@@ -53,5 +54,4 @@ message Admin {
   string jwt_secret = 4;
   string emergency_header = 5;
   int64 jwt_expire_hours = 6;
-  Authz authz = 7;
 }

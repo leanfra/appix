@@ -5,6 +5,7 @@ go 1.21
 toolchain go1.22.6
 
 require (
+	github.com/casbin/casbin/v2 v2.103.0
 	github.com/casbin/gorm-adapter/v3 v3.32.0
 	github.com/go-kratos/kratos/v2 v2.8.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
@@ -23,7 +24,6 @@ require (
 
 require (
 	github.com/bmatcuk/doublestar/v4 v4.6.1 // indirect
-	github.com/casbin/casbin/v2 v2.103.0 // indirect
 	github.com/casbin/govaluate v1.3.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/glebarez/go-sqlite v1.20.3 // indirect

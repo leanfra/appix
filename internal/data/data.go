@@ -27,5 +27,6 @@ var ProviderSet = wire.NewSet(
 	sqldb.NewHostgroupTagsRepoGorm,
 	sqldb.NewHostgroupFeaturesRepoGorm,
 	sqldb.NewAdminRepoGorm,
+	sqldb.NewAuthzRepoGorm,
 	NewJwtMemRepo,
 )
