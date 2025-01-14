@@ -48,10 +48,9 @@ message Authz {
 }
 
 message Admin {
-  string admin_user = 1;
-  string admin_password = 2;
-  bool strict_password_policy = 3;
-  string jwt_secret = 4;
-  string emergency_header = 5;
-  int64 jwt_expire_hours = 6;
+  string admin_password = 3;
+  bool strict_password_policy = 4;
+  string jwt_secret = 5;
+  string emergency_header = 6;
+  int64 jwt_expire_hours = 7;
 }

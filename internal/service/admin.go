@@ -66,7 +66,7 @@ func toPbUsers(users []*biz.User) []*pb.User {
 	return pbUsers
 }
 
-func ToBizUsersFilter(filter *pb.ListUsersFilter) *biz.ListUsersFilter {
+func ToBizUsersFilter(filter *pb.ListUsersRequest) *biz.ListUsersFilter {
 	return &biz.ListUsersFilter{
 		Page:      filter.Page,
 		PageSize:  filter.PageSize,
@@ -156,7 +156,7 @@ func (s *AdminService) ListUsers(ctx context.Context, req *pb.ListUsersRequest) 
 		Code:    0,
 		Message: "success",
 	}
-	users, err := s.usecase.ListUsers(ctx, nil, ToBizUsersFilter(req.Filter))
+	users, err := s.usecase.ListUsers(ctx, nil, ToBizUsersFilter(req))
 	if err != nil {
 		reply.Code = 1
 		reply.Message = err.Error()

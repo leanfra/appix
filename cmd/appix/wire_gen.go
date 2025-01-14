@@ -126,7 +126,12 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 	}
 	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, hostgroupTeamsRepo, hostgroupProductsRepo, hostgroupTagsRepo, hostgroupFeaturesRepo, clustersRepo, datacentersRepo, envsRepo, featuresRepo, tagsRepo, teamsRepo, productsRepo, appHostgroupsRepo, logger, txManager)
 	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
-	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, appTagsRepo, appFeaturesRepo, appHostgroupsRepo, productsRepo, teamsRepo, featuresRepo, tagsRepo, hostgroupsRepo, hostgroupFeaturesRepo, logger, txManager)
+	authzRepo, err := sqldb.NewAuthzRepoGorm(authz, dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, appTagsRepo, appFeaturesRepo, appHostgroupsRepo, productsRepo, teamsRepo, featuresRepo, tagsRepo, hostgroupsRepo, hostgroupFeaturesRepo, authzRepo, logger, txManager)
 	applicationsService := service.NewApplicationsService(applicationsUsecase, logger)
 	adminRepo, err := sqldb.NewAdminRepoGorm(dataGorm, logger)
 	if err != nil {
@@ -134,12 +139,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 		return nil, nil, err
 	}
 	tokenRepo := data.NewJwtMemRepo(admin)
-	authzRepo, err := sqldb.NewAuthzRepoGorm(authz, dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	adminUsecase := biz.NewAdminUsecase(admin, adminRepo, tokenRepo, authzRepo, logger)
+	adminUsecase := biz.NewAdminUsecase(admin, adminRepo, tokenRepo, authzRepo, teamsRepo, txManager, logger)
 	adminService := service.NewAdminService(adminUsecase, logger)
 	grpcServer := server.NewGRPCServer(confServer, admin, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, adminService, logger)
 	httpServer := server.NewHTTPServer(confServer, admin, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, adminService, logger)

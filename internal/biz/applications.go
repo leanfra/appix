@@ -13,18 +13,19 @@ const IsStatefulFalse = "false"
 const IsStatefulNone = ""
 
 type ApplicationsUsecase struct {
-	apprepo  repo.ApplicationsRepo
-	atagrepo repo.AppTagsRepo
-	afrepo   repo.AppFeaturesRepo
-	ahgrepo  repo.AppHostgroupsRepo
-	prdrepo  repo.ProductsRepo
-	teamrepo repo.TeamsRepo
-	ftrepo   repo.FeaturesRepo
-	tagrepo  repo.TagsRepo
-	hgrepo   repo.HostgroupsRepo
-	hfrepo   repo.HostgroupFeaturesRepo
-	log      *log.Helper
-	txm      repo.TxManager
+	apprepo   repo.ApplicationsRepo
+	atagrepo  repo.AppTagsRepo
+	afrepo    repo.AppFeaturesRepo
+	ahgrepo   repo.AppHostgroupsRepo
+	prdrepo   repo.ProductsRepo
+	teamrepo  repo.TeamsRepo
+	ftrepo    repo.FeaturesRepo
+	tagrepo   repo.TagsRepo
+	hgrepo    repo.HostgroupsRepo
+	hfrepo    repo.HostgroupFeaturesRepo
+	authzrepo repo.AuthzRepo
+	log       *log.Helper
+	txm       repo.TxManager
 }
 
 func NewApplicationsUsecase(
@@ -38,22 +39,24 @@ func NewApplicationsUsecase(
 	tagrepo repo.TagsRepo,
 	hgrepo repo.HostgroupsRepo,
 	hfrepo repo.HostgroupFeaturesRepo,
+	authzrepo repo.AuthzRepo,
 	logger log.Logger,
 	txm repo.TxManager) *ApplicationsUsecase {
 
 	return &ApplicationsUsecase{
-		apprepo:  apprepo,
-		atagrepo: atagrepo,
-		afrepo:   afrepo,
-		ahgrepo:  ahgrepo,
-		prdrepo:  prdrepo,
-		teamrepo: teamrepo,
-		ftrepo:   ftrepo,
-		tagrepo:  tagrepo,
-		hgrepo:   hgrepo,
-		hfrepo:   hfrepo,
-		log:      log.NewHelper(logger),
-		txm:      txm,
+		apprepo:   apprepo,
+		atagrepo:  atagrepo,
+		afrepo:    afrepo,
+		ahgrepo:   ahgrepo,
+		prdrepo:   prdrepo,
+		teamrepo:  teamrepo,
+		ftrepo:    ftrepo,
+		tagrepo:   tagrepo,
+		hgrepo:    hgrepo,
+		hfrepo:    hfrepo,
+		authzrepo: authzrepo,
+		log:       log.NewHelper(logger),
+		txm:       txm,
 	}
 }
 
@@ -250,6 +253,20 @@ func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Ap
 
 			// create app-hostgroups
 			if err := s.createProps(ctx, tx, dbapp.Id, app.HostgroupsId, appPropHostgroup); err != nil {
+				return err
+			}
+
+			// create authz owner
+			team, err := s.teamrepo.GetTeams(ctx, app.TeamId)
+			if err != nil {
+				return err
+			}
+			ires := repo.NewResource4Sv1("app", team.Name, app.Name, app.Owner)
+			if err := s.authzrepo.CreateRule(ctx, tx, &repo.Rule{
+				Sub:      app.Owner,
+				Resource: ires,
+				Action:   repo.ActWrite,
+			}); err != nil {
 				return err
 			}
 		}

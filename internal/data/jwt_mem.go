@@ -63,7 +63,9 @@ func (r *JwtMemRepo) ValidateToken(ctx context.Context, token string) (repo.Toke
 
 	tokenClaims := make(repo.TokenClaims)
 	for key, value := range claims {
-		tokenClaims[key] = value
+		if v, ok := value.(string); ok {
+			tokenClaims[key] = v
+		}
 	}
 
 	return tokenClaims, nil

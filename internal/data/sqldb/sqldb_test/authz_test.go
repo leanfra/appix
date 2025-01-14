@@ -42,7 +42,8 @@ func Test__AuthzRepoGorm(t *testing.T) {
 func TestAuthzRepoGorm_CreateRule(t *testing.T) {
 	initAuthzRepo()
 
-	rule := &repo.Rule{Sub: "alice", ResourceId: "data1", Action: "read"}
+	ires := repo.NewResource4Sv1("data", "team1", "data1", "alice")
+	rule := &repo.Rule{Sub: "alice", Resource: ires, Action: "read"}
 	err := authzRepo.CreateRule(context.Background(), nil, rule)
 	assert.NoError(t, err)
 
@@ -51,7 +52,8 @@ func TestAuthzRepoGorm_CreateRule(t *testing.T) {
 func TestAuthzRepoGorm_DeleteRule(t *testing.T) {
 	initAuthzRepo()
 
-	rule := &repo.Rule{Sub: "alice", ResourceId: "data1", Action: "read"}
+	ires := repo.NewResource4Sv1("data", "team1", "data1", "alice")
+	rule := &repo.Rule{Sub: "alice", Resource: ires, Action: "read"}
 	err := authzRepo.CreateRule(context.Background(), nil, rule)
 	assert.NoError(t, err)
 
@@ -64,7 +66,8 @@ func TestAuthzRepoGorm_DeleteRule(t *testing.T) {
 
 func TestAuthzRepoGorm_ListRule(t *testing.T) {
 	initAuthzRepo()
-	rule := &repo.Rule{Sub: "alice", ResourceId: "data1", Action: "read"}
+	ires := repo.NewResource4Sv1("data", "team1", "data1", "alice")
+	rule := &repo.Rule{Sub: "alice", Resource: ires, Action: "read"}
 	err := authzRepo.CreateRule(context.Background(), nil, rule)
 	assert.NoError(t, err)
 
@@ -76,11 +79,13 @@ func TestAuthzRepoGorm_ListRule(t *testing.T) {
 func TestAuthzRepoGorm_Enforce(t *testing.T) {
 	initAuthzRepo()
 
-	rule := &repo.Rule{Sub: "alice", ResourceId: "data1", Action: "read"}
+	ires := repo.NewResource4Sv1("data", "", "", "alice")
+	rule := &repo.Rule{Sub: "alice", Resource: ires, Action: "read"}
 	err := authzRepo.CreateRule(context.Background(), nil, rule)
 	assert.NoError(t, err)
 
-	request := &repo.AuthenRequest{Sub: "alice", ResourceId: "data1", Action: "read"}
+	ires = repo.NewResource4Sv1("data", "team1", "data1", "alice")
+	request := &repo.AuthenRequest{Sub: "alice", Resource: ires, Action: "read"}
 	allowed, err := authzRepo.Enforce(context.Background(), nil, request)
 	assert.NoError(t, err)
 	assert.True(t, allowed)

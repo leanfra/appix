@@ -64,9 +64,7 @@ func NewConnection(withToken bool) (context.Context, *grpc.ClientConn, error) {
 		}
 
 		// Create context with token
-		md := metadata.New(map[string]string{
-			"Authorization": "Bearer " + token,
-		})
+		md := metadata.Pairs("Authorization", "Bearer "+token)
 		ctx = metadata.NewOutgoingContext(ctx, md)
 	}
 

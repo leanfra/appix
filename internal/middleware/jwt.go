@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"appix/internal/data"
 	"context"
 	"strings"
 
@@ -9,13 +10,6 @@ import (
 	"github.com/golang-jwt/jwt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-)
-
-// 在文件开头添加自定义类型
-type contextKey string
-
-const (
-	UserTokenKey contextKey = "user-token"
 )
 
 type JWTMiddlewareOption struct {
@@ -75,8 +69,18 @@ func JWTMiddleware(opt JWTMiddlewareOption) middleware.Middleware {
 					return nil, status.Errorf(codes.Unauthenticated, "invalid JWT")
 				}
 
+				ctx = context.WithValue(ctx, data.UserTokenKey, jwtToken)
 				// If JWT is valid, proceed with request
-				ctx = context.WithValue(ctx, UserTokenKey, jwtToken)
+				if claims, ok := token.Claims.(jwt.MapClaims); ok {
+					// Add token to context
+					if username, ok := claims[string(data.UserName)].(string); ok {
+						ctx = context.WithValue(ctx, data.UserName, username)
+					}
+					// Add user ID to context
+					if userId, ok := claims[string(data.UserId)].(string); ok {
+						ctx = context.WithValue(ctx, data.UserId, userId)
+					}
+				}
 
 				return handler(ctx, req)
 			}

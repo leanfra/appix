@@ -46,12 +46,13 @@ func (d *AuthzRepoGorm) CreateRule(ctx context.Context, tx repo.TX, rule *repo.R
 	if err != nil {
 		return errors.Join(fmt.Errorf("CreatePolicy failed"), err)
 	}
-	s, err := enforcer.AddPolicy(rule.Sub, rule.ResourceId, rule.Action)
+	res := rule.Resource.ResourceStr()
+	s, err := enforcer.AddPolicy(rule.Sub, res, rule.Action)
 	if err != nil {
 		return errors.Join(fmt.Errorf("CreatePolicy failed"), err)
 	}
 	if !s {
-		return errors.New("policy already exists")
+		d.log.Warnf("CreatePolicy existed %v", rule)
 	}
 
 	return nil
@@ -63,8 +64,9 @@ func (d *AuthzRepoGorm) DeleteRule(ctx context.Context, tx repo.TX, rule *repo.R
 		return errors.Join(fmt.Errorf("DeletePolicy failed"), err)
 	}
 
-	s, err := enforcer.RemovePolicy(rule.Sub, rule.ResourceId, rule.Action)
-	if err != nil || !s {
+	res := rule.Resource.ResourceStr()
+	s, err := enforcer.RemovePolicy(rule.Sub, res, rule.Action)
+	if err != nil {
 		return errors.Join(fmt.Errorf("DeletePolicy failed with value %v", s), err)
 	}
 
@@ -78,13 +80,11 @@ func (d *AuthzRepoGorm) ListRule(ctx context.Context, tx repo.TX, filter *repo.R
 	}
 
 	var _rules [][]string
-	if filter == nil || filter.Sub == "" && filter.ResourceId == "" {
+	if filter == nil || filter.Sub == "" {
 		_rules, err = enforcer.GetPolicy()
 	} else {
 		if filter.Sub != "" {
 			_rules, err = enforcer.GetFilteredPolicy(0, filter.Sub)
-		} else if filter.ResourceId != "" {
-			_rules, err = enforcer.GetFilteredPolicy(1, filter.ResourceId)
 		} else {
 			_rules, err = enforcer.GetPolicy()
 		}
@@ -95,10 +95,14 @@ func (d *AuthzRepoGorm) ListRule(ctx context.Context, tx repo.TX, filter *repo.R
 
 	rules := make([]*repo.Rule, len(_rules))
 	for i, _rule := range _rules {
+		ires := &repo.Resource4Sv1{}
+		if err := ires.ParseStr(_rule[1]); err != nil {
+			return nil, errors.Join(fmt.Errorf("ListRule failed"), err)
+		}
 		rules[i] = &repo.Rule{
-			Sub:        _rule[0],
-			ResourceId: _rule[1],
-			Action:     _rule[2],
+			Sub:      _rule[0],
+			Resource: ires,
+			Action:   _rule[2],
 		}
 	}
 	return rules, nil
@@ -109,7 +113,7 @@ func (d *AuthzRepoGorm) Enforce(ctx context.Context, tx repo.TX, request *repo.A
 	if err != nil {
 		return false, errors.Join(fmt.Errorf("Enforce failed"), err)
 	}
-	return enforcer.Enforce(request.Sub, request.ResourceId, request.Action)
+	return enforcer.Enforce(request.Sub, request.Resource.ResourceStr(), request.Action)
 }
 
 func (d *AuthzRepoGorm) CreateGroup(ctx context.Context, tx repo.TX, group *repo.Group) error {
@@ -117,12 +121,12 @@ func (d *AuthzRepoGorm) CreateGroup(ctx context.Context, tx repo.TX, group *repo
 	if err != nil {
 		return errors.Join(fmt.Errorf("CreateGroup failed"), err)
 	}
-	s, err := enforcer.AddGroupingPolicy(group.User, group.Role)
+	existed, err := enforcer.AddGroupingPolicy(group.User, group.Role)
 	if err != nil {
 		return errors.Join(fmt.Errorf("CreateGroup failed"), err)
 	}
-	if !s {
-		return errors.New("group already exists")
+	if !existed {
+		d.log.Warnf("CreateGroup existed %v", group)
 	}
 	return nil
 }

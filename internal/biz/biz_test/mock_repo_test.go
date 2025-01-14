@@ -16,6 +16,76 @@ func (m *MockTXManager) RunInTX(fn func(repo.TX) error) error {
 	return fn(nil)
 }
 
+type MockAuthzRepo struct {
+	mock.Mock
+}
+
+func (m *MockAuthzRepo) CreateRule(ctx context.Context, tx repo.TX, rule *repo.Rule) error {
+	args := m.Called(ctx, tx, rule)
+	return args.Error(0)
+}
+
+func (m *MockAuthzRepo) UpdateRule(ctx context.Context, tx repo.TX, rule *repo.Rule) error {
+	args := m.Called(ctx, tx, rule)
+	return args.Error(0)
+}
+
+func (m *MockAuthzRepo) DeleteRule(ctx context.Context, tx repo.TX, rule *repo.Rule) error {
+	args := m.Called(ctx, tx, rule)
+	return args.Error(0)
+}
+
+func (m *MockAuthzRepo) GetRule(ctx context.Context, id uint32) (*repo.Rule, error) {
+	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*repo.Rule), args.Error(1)
+}
+
+func (m *MockAuthzRepo) ListRule(ctx context.Context, tx repo.TX, filter *repo.RuleFilter) ([]*repo.Rule, error) {
+	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*repo.Rule), args.Error(1)
+}
+
+// CreateGroup
+func (m *MockAuthzRepo) CreateGroup(ctx context.Context, tx repo.TX, group *repo.Group) error {
+	args := m.Called(ctx, tx, group)
+	return args.Error(0)
+}
+
+// DeleteGroup
+func (m *MockAuthzRepo) DeleteGroup(ctx context.Context, tx repo.TX, group *repo.Group) error {
+	args := m.Called(ctx, tx, group)
+	return args.Error(0)
+}
+
+// Enforce
+func (m *MockAuthzRepo) Enforce(ctx context.Context, tx repo.TX, request *repo.AuthenRequest) (bool, error) {
+	args := m.Called(ctx, tx, request)
+	return args.Get(0).(bool), args.Error(1)
+}
+
+// ListGroup
+func (m *MockAuthzRepo) ListGroup(ctx context.Context, tx repo.TX, filter *repo.GroupFilter) ([]*repo.Group, error) {
+	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*repo.Group), args.Error(1)
+}
+
+func (m *MockAuthzRepo) ListRules(ctx context.Context, tx repo.TX, filter *repo.RuleFilter) ([]*repo.Rule, error) {
+	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*repo.Rule), args.Error(1)
+}
+
 type MockTeamsRepo struct {
 	mock.Mock
 }

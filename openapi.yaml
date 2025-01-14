@@ -232,7 +232,21 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        ListUsersFilter:
+        ListUsersReply:
+            type: object
+            properties:
+                message:
+                    type: string
+                code:
+                    type: integer
+                    format: int32
+                action:
+                    type: string
+                users:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/User'
+        ListUsersRequest:
             type: object
             properties:
                 page:
@@ -258,26 +272,6 @@ components:
                     items:
                         type: integer
                         format: uint32
-            description: gratos::model
-        ListUsersReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                users:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/User'
-        ListUsersRequest:
-            type: object
-            properties:
-                filter:
-                    $ref: '#/components/schemas/ListUsersFilter'
         LoginReply:
             type: object
             properties:

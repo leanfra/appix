@@ -1,8 +1,8 @@
 module appix
 
-go 1.21
+go 1.22.0
 
-toolchain go1.22.6
+toolchain go1.23.1
 
 require (
 	github.com/casbin/casbin/v2 v2.103.0
@@ -13,6 +13,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/automaxprocs v1.5.1
+	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
 	google.golang.org/genproto/googleapis/api v0.0.0-20240528184218-531527333157
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.34.1
@@ -38,7 +39,8 @@ require (
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230126093431-47fa9a501578 // indirect
-	golang.org/x/crypto v0.23.0 // indirect
+	golang.org/x/crypto v0.32.0 // indirect
+	golang.org/x/term v0.28.0 // indirect
 	gorm.io/driver/postgres v1.5.9 // indirect
 	gorm.io/driver/sqlserver v1.5.3 // indirect
 	gorm.io/plugin/dbresolver v1.5.3 // indirect
@@ -72,9 +74,9 @@ require (
 	go.opentelemetry.io/otel/metric v1.24.0 // indirect
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
+	golang.org/x/sync v0.10.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

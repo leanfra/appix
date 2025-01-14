@@ -127,18 +127,14 @@ message GetUsersReply {
 	User users = 4;
 }
 
-// gratos::model
-message ListUsersFilter {
+
+message ListUsersRequest {
 	uint32 page = 1;
 	uint32 page_size = 2;
 	repeated string user_names = 3;
 	repeated string emails = 4;
 	repeated string phones = 5;
 	repeated uint32 ids = 6;
-}
-
-message ListUsersRequest {
-	ListUsersFilter filter = 1;
 }
 
 message ListUsersReply {

@@ -30,20 +30,30 @@ func NewAdminRepoGorm(data *DataGorm, logger log.Logger) (repo.AdminRepo, error)
 }
 
 // CreateUsers is
-func (d *AdminRepoGorm) CreateUsers(ctx context.Context, users []*repo.User) error {
+func (d *AdminRepoGorm) CreateUsers(ctx context.Context, tx repo.TX, users []*repo.User) error {
 	if len(users) == 0 {
 		return nil
 	}
-	return d.data.WithTX(nil).WithContext(ctx).Create(users).Error
+	return d.data.WithTX(tx).WithContext(ctx).Create(users).Error
 
 }
 
 // UpdateUsers is
-func (d *AdminRepoGorm) UpdateUsers(ctx context.Context, users []*repo.User) error {
+func (d *AdminRepoGorm) UpdateUsers(ctx context.Context, tx repo.TX, users []*repo.User) error {
 	if len(users) == 0 {
 		return nil
 	}
-	return d.data.WithTX(nil).WithContext(ctx).Updates(users).Error
+
+	for _, user := range users {
+		r := d.data.WithTX(tx).WithContext(ctx).Where("id=?", user.Id).Select("Email", "Phone", "Password").Updates(user)
+		if r.Error != nil {
+			return r.Error
+		}
+		if r.RowsAffected != int64(len(users)) {
+			return errors.New("update failed")
+		}
+	}
+	return nil
 }
 
 // DeleteUsers is
@@ -81,19 +91,6 @@ func (d *AdminRepoGorm) ListUsers(ctx context.Context, tx repo.TX, filter *repo.
 	}
 	return users, nil
 
-}
-
-// Login is
-func (d *AdminRepoGorm) Login(ctx context.Context, username string, password string) (*repo.User, error) {
-	var user repo.User
-	if err := d.data.WithTX(nil).WithContext(ctx).Where("user_name = ?", username).First(&user).Error; err != nil {
-		return nil, err
-	}
-	if user.Password != password {
-		return nil, errors.New("password is incorrect")
-	}
-
-	return &user, nil
 }
 
 // Logout is

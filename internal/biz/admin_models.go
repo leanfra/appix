@@ -63,7 +63,7 @@ type UserOptions struct {
 }
 
 func (m *User) Validate(opts *UserOptions) error {
-	if opts.IsNew {
+	if !opts.IsNew {
 		if m.Id == 0 {
 			return errors.New("invalid user id")
 		}
@@ -88,21 +88,35 @@ func (m *User) Validate(opts *UserOptions) error {
 	return nil
 }
 
-func ToRepoUsers(users []*User) []*repo.User {
+func ToRepoUsers(users []*User) ([]*repo.User, error) {
 	repoUsers := make([]*repo.User, 0, len(users))
 	for _, user := range users {
-		repoUsers = append(repoUsers, ToRepoUser(user))
+		ru, err := ToRepoUser(user)
+		if err != nil {
+			return nil, err
+		}
+		repoUsers = append(repoUsers, ru)
 	}
-	return repoUsers
+	return repoUsers, nil
 }
 
-func ToRepoUser(m *User) *repo.User {
-	return &repo.User{
+func ToRepoUser(m *User) (*repo.User, error) {
+	user := &repo.User{
+		Id:       m.Id,
 		UserName: m.UserName,
-		Password: m.Password,
 		Email:    m.Email,
 		Phone:    m.Phone,
 	}
+	if strings.HasPrefix(m.Password, BcryptPrefix) {
+		user.Password = m.Password
+	} else {
+		var err error
+		user.Password, err = HashPassword(m.Password)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return user, nil
 }
 
 func ToBizUser(user *repo.User) *User {

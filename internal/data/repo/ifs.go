@@ -193,12 +193,11 @@ type TeamsRepo interface {
 }
 
 type AdminRepo interface {
-	CreateUsers(ctx context.Context, users []*User) error
-	UpdateUsers(ctx context.Context, users []*User) error
+	CreateUsers(ctx context.Context, tx TX, users []*User) error
+	UpdateUsers(ctx context.Context, tx TX, users []*User) error
 	DeleteUsers(ctx context.Context, tx TX, ids []uint32) error
 	GetUsers(ctx context.Context, id uint32) (*User, error)
 	ListUsers(ctx context.Context, tx TX, filter *UsersFilter) ([]*User, error)
-	Login(ctx context.Context, username string, password string) (*User, error)
 	Logout(ctx context.Context, id uint32) error
 }
 
@@ -206,14 +205,4 @@ type TokenRepo interface {
 	CreateToken(ctx context.Context, claims TokenClaims) (string, error)
 	DeleteToken(ctx context.Context, token string) error
 	ValidateToken(ctx context.Context, token string) (TokenClaims, error)
-}
-
-type AuthzRepo interface {
-	CreateRule(ctx context.Context, tx TX, policy *Rule) error
-	DeleteRule(ctx context.Context, tx TX, policy *Rule) error
-	ListRule(ctx context.Context, tx TX, filter *RuleFilter) ([]*Rule, error)
-	Enforce(ctx context.Context, tx TX, request *AuthenRequest) (bool, error)
-	CreateGroup(ctx context.Context, tx TX, role *Group) error
-	DeleteGroup(ctx context.Context, tx TX, role *Group) error
-	ListGroup(ctx context.Context, tx TX, filter *GroupFilter) ([]*Group, error)
 }

@@ -10,6 +10,7 @@ import (
 )
 
 var logger = log.With(log.NewStdLogger(os.Stdout))
+var dataMem *sqldb.DataGorm
 
 func getDataMem() *sqldb.DataGorm {
 	_db, _ := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})

@@ -2,7 +2,7 @@ package repo
 
 import "errors"
 
-type TokenClaims map[string]any
+type TokenClaims map[string]string
 
 var (
 	ErrInvalidToken = errors.New("invalid token")

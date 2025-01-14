@@ -15,8 +15,7 @@ data:
     read_timeout: 0.2s
     write_timeout: 0.2s
 admin:
-  admin_user: admin
-  admin_password: admin
+  admin_password: admin@123
   strict_password_policy: true
   jwt_expire_hours: 1
   jwt_secret: "appix"

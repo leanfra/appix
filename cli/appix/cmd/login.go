@@ -8,10 +8,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 
 	pb "appix/api/appix/v1"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/term"
 	"gopkg.in/yaml.v2"
 )
 
@@ -31,6 +33,17 @@ which will be used for subsequent commands.`,
 		// Get username and password from flags
 		username, _ := cmd.Flags().GetString("username")
 		password, _ := cmd.Flags().GetString("password")
+		// if password is empty, prompt for password
+		if password == "" {
+			fmt.Print("Password: ")
+			bytePassword, err := term.ReadPassword(int(syscall.Stdin))
+			if err != nil {
+				fmt.Println("Failed to read password")
+				return
+			}
+			password = string(bytePassword)
+			fmt.Println("")
+		}
 
 		// Create gRPC client
 		ctx, conn, err := NewConnection(false)
@@ -117,5 +130,4 @@ func init() {
 	loginCmd.Flags().StringP("username", "u", "", "Username")
 	loginCmd.Flags().StringP("password", "p", "", "Password")
 	loginCmd.MarkFlagRequired("username")
-	loginCmd.MarkFlagRequired("password")
 }

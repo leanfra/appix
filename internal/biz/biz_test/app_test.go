@@ -24,10 +24,11 @@ func TestCreateApp(t *testing.T) {
 	tagrepo := new(MockTagsRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo,
 		prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, nil, txm)
 
 	// 测试字段验证
 	bad_field := []*biz.Application{
@@ -278,10 +279,11 @@ func TestUpdateApp(t *testing.T) {
 	tagrepo := new(MockTagsRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo, prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, nil, txm)
 
 	// bad field
 	bad_field := []*biz.Application{
@@ -384,11 +386,12 @@ func TestAppHandleM2MProps(t *testing.T) {
 	tagrepo := new(MockTagsRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo,
 		prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, nil, txm)
 
 	// app-tag
 	atagFilter := &repo.AppTagsFilter{
@@ -465,9 +468,10 @@ func TestDeleteApplications(t *testing.T) {
 	tagrepo := new(MockTagsRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo, prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, nil, txm)
 
 	ids := []uint32{1, 2}
 
@@ -521,11 +525,12 @@ func TestListApplications(t *testing.T) {
 	tagrepo := new(MockTagsRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo,
 		prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, nil, txm)
 
 	// Empty filter
 	//filter := &biz.ListApplicationsFilter{}

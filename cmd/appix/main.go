@@ -110,7 +110,7 @@ func validateAdminConfig(conf *conf.Admin) error {
 	if conf == nil {
 		return errors.New("admin config is nil")
 	}
-	if conf.AdminUser == "" || conf.AdminPassword == "" {
+	if conf.AdminPassword == "" {
 		return errors.New("admin user or password is empty")
 	}
 	if conf.JwtSecret == "" {
