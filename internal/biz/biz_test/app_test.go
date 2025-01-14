@@ -2,6 +2,7 @@ package biz_test
 
 import (
 	"appix/internal/biz"
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"errors"
@@ -25,16 +26,17 @@ func TestCreateApp(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo,
 		prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, authzrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, adminrepo, nil, txm)
 
 	// 测试字段验证
 	bad_field := []*biz.Application{
-		{0, "", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{0, "name", "desc", "", false, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{0, "name", "desc", "web", false, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "name", "desc", 0, false, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "name", "desc", 10, false, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
 
 	for _, bc := range bad_field {
@@ -44,12 +46,15 @@ func TestCreateApp(t *testing.T) {
 	}
 
 	app := []*biz.Application{
-		{0, "test-app", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "test-app", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
 
+	ctx = context.WithValue(ctx, data.UserName, "demouser")
+
+	var err error
 	// 测试产品验证
 	prdcall := prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err := usecase.CreateApplications(ctx, app)
+	err = usecase.CreateApplications(ctx, app)
 	assert.Error(t, err)
 	t.Logf("prod: %v", err)
 	prdcall.Unset()
@@ -102,12 +107,30 @@ func TestCreateApp(t *testing.T) {
 	tgcall.Unset()
 	hgcall.Unset()
 
+	// test ownerId fail
+	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	admcall := adminrepo.On("CountUsers", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	err = usecase.CreateApplications(ctx, app)
+	assert.Error(t, err)
+	t.Logf("ownerId: %v", err)
+	prdcall.Unset()
+	tcall.Unset()
+	fcall.Unset()
+	tgcall.Unset()
+	hgcall.Unset()
+	admcall.Unset()
+
 	// 测试主机组匹配失败
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, &repo.ProductsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, &repo.TeamsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	admcall = adminrepo.On("CountUsers", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	hfcall := hfrepo.On("ListHostgroupMatchFeatures", ctx, mock.Anything, mock.Anything).Return([]uint32{}, nil)
 	hgcall2 := hgrepo.On("ListHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.Hostgroup{}, nil)
 	err = usecase.CreateApplications(ctx, app)
@@ -118,6 +141,7 @@ func TestCreateApp(t *testing.T) {
 	fcall.Unset()
 	tgcall.Unset()
 	hgcall.Unset()
+	admcall.Unset()
 	hfcall.Unset()
 	hgcall2.Unset()
 
@@ -128,6 +152,7 @@ func TestCreateApp(t *testing.T) {
 	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hfcall = hfrepo.On("ListHostgroupMatchFeatures", ctx, mock.Anything, mock.Anything).Return([]uint32{2, 3}, nil)
+	admcall = adminrepo.On("CountUsers", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	hgcall2 = hgrepo.On("ListHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.Hostgroup{
 		{Id: 1},
 		{Id: 2},
@@ -140,6 +165,7 @@ func TestCreateApp(t *testing.T) {
 	fcall.Unset()
 	tgcall.Unset()
 	hgcall.Unset()
+	admcall.Unset()
 	hfcall.Unset()
 	hgcall2.Unset()
 
@@ -149,6 +175,7 @@ func TestCreateApp(t *testing.T) {
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	admcall = adminrepo.On("CountUsers", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	hfcall = hfrepo.On("ListHostgroupMatchFeatures", ctx, mock.Anything, mock.Anything).Return([]uint32{2, 3}, nil)
 	hgcall2 = hgrepo.On("ListHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.Hostgroup{
 		{Id: 2},
@@ -165,6 +192,7 @@ func TestCreateApp(t *testing.T) {
 	fcall.Unset()
 	tgcall.Unset()
 	hgcall.Unset()
+	admcall.Unset()
 	hfcall.Unset()
 	hgcall2.Unset()
 	appcall.Unset()
@@ -175,6 +203,7 @@ func TestCreateApp(t *testing.T) {
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	admcall = adminrepo.On("CountUsers", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	hfcall = hfrepo.On("ListHostgroupMatchFeatures", ctx, mock.Anything, mock.Anything).Return([]uint32{2, 3}, nil)
 	hgcall2 = hgrepo.On("ListHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.Hostgroup{
 		{Id: 2},
@@ -193,6 +222,7 @@ func TestCreateApp(t *testing.T) {
 	fcall.Unset()
 	tgcall.Unset()
 	hgcall.Unset()
+	admcall.Unset()
 	hfcall.Unset()
 	hgcall2.Unset()
 	appcall.Unset()
@@ -205,6 +235,7 @@ func TestCreateApp(t *testing.T) {
 	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hfcall = hfrepo.On("ListHostgroupMatchFeatures", ctx, mock.Anything, mock.Anything).Return([]uint32{2, 3}, nil)
+	admcall = adminrepo.On("CountUsers", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	hgcall2 = hgrepo.On("ListHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.Hostgroup{
 		{Id: 2},
 		{Id: 3},
@@ -224,6 +255,7 @@ func TestCreateApp(t *testing.T) {
 	fcall.Unset()
 	tgcall.Unset()
 	hgcall.Unset()
+	admcall.Unset()
 	hfcall.Unset()
 	hgcall2.Unset()
 	appcall.Unset()
@@ -236,6 +268,7 @@ func TestCreateApp(t *testing.T) {
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	admcall = adminrepo.On("CountUsers", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	hfcall = hfrepo.On("ListHostgroupMatchFeatures", ctx, mock.Anything, mock.Anything).Return([]uint32{2, 3}, nil)
 	hgcall2 = hgrepo.On("ListHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.Hostgroup{
 		{Id: 2},
@@ -258,6 +291,7 @@ func TestCreateApp(t *testing.T) {
 	fcall.Unset()
 	tgcall.Unset()
 	hgcall.Unset()
+	admcall.Unset()
 	hgcall2.Unset()
 	hfcall.Unset()
 	appcall.Unset()
@@ -280,17 +314,18 @@ func TestUpdateApp(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
 
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo, prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, authzrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, adminrepo, nil, txm)
 
 	// bad field
 	bad_field := []*biz.Application{
-		{0, "name", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "name", "desc", "", false, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "name", "desc", "web", false, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{0, "name", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "name", "desc", 0, false, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "name", "desc", 10, false, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
 
 	for _, bc := range bad_field {
@@ -300,12 +335,25 @@ func TestUpdateApp(t *testing.T) {
 	}
 
 	app := []*biz.Application{
-		{0, "test-app", "desc", "web", false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		{10, "test-app", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
+
+	ctx = context.WithValue(ctx, data.UserName, "demouser")
+	// validate enforce
+	teamrepo.On("GetTeams", ctx, mock.Anything).Return(&repo.Team{ID: 1, Name: "test-team"}, nil)
+	adminrepo.On("GetUsers", ctx, mock.Anything, mock.Anything).Return(&repo.User{Id: 10, UserName: "demouser"}, nil)
+
+	efcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, nil)
+	err := usecase.UpdateApplications(ctx, app)
+	assert.Error(t, err)
+	t.Logf("enforce: %v", err)
+	efcall.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
 
 	// 测试产品验证
 	prdcall := prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err := usecase.CreateApplications(ctx, app)
+	err = usecase.UpdateApplications(ctx, app)
 	assert.Error(t, err)
 	prdcall.Unset()
 
@@ -321,7 +369,7 @@ func TestUpdateApp(t *testing.T) {
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	fcall := ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err = usecase.CreateApplications(ctx, app)
+	err = usecase.UpdateApplications(ctx, app)
 	assert.Error(t, err)
 	prdcall.Unset()
 	tcall.Unset()
@@ -332,7 +380,7 @@ func TestUpdateApp(t *testing.T) {
 	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	tgcall := tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err = usecase.CreateApplications(ctx, app)
+	err = usecase.UpdateApplications(ctx, app)
 	assert.Error(t, err)
 	prdcall.Unset()
 	tcall.Unset()
@@ -345,13 +393,30 @@ func TestUpdateApp(t *testing.T) {
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hgcall := hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err = usecase.CreateApplications(ctx, app)
+	err = usecase.UpdateApplications(ctx, app)
 	assert.Error(t, err)
 	prdcall.Unset()
 	tcall.Unset()
 	fcall.Unset()
 	tgcall.Unset()
 	hgcall.Unset()
+
+	// test countUser
+	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	tcall = teamrepo.On("CountTeams", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
+	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	usercall := adminrepo.On("CountUsers", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
+	err = usecase.UpdateApplications(ctx, app)
+	assert.Error(t, err)
+	t.Log(err)
+	prdcall.Unset()
+	tcall.Unset()
+	fcall.Unset()
+	tgcall.Unset()
+	hgcall.Unset()
+	usercall.Unset()
 
 	// 测试创建应用失败
 	prdcall = prdrepo.On("CountProducts", ctx, mock.Anything, &repo.ProductsFilter{Ids: []uint32{1}}).Return(int64(1), nil)
@@ -359,10 +424,11 @@ func TestUpdateApp(t *testing.T) {
 	fcall = ftrepo.On("CountFeatures", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	tgcall = tagrepo.On("CountTags", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
 	hgcall = hgrepo.On("CountHostgroups", ctx, mock.Anything, mock.Anything).Return(int64(2), nil)
-	appcall := apprepo.On("CreateApplications", ctx, mock.Anything, mock.Anything).
-		Return(errors.New("create application fail"))
+	usercall = adminrepo.On("CountUsers", ctx, mock.Anything, mock.Anything).Return(int64(1), nil)
+	appcall := apprepo.On("UpdateApplications", ctx, mock.Anything, mock.Anything).
+		Return(errors.New("update application fail"))
 
-	err = usecase.CreateApplications(ctx, app)
+	err = usecase.UpdateApplications(ctx, app)
 	assert.Error(t, err)
 	prdcall.Unset()
 	tcall.Unset()
@@ -370,6 +436,7 @@ func TestUpdateApp(t *testing.T) {
 	tgcall.Unset()
 	hgcall.Unset()
 	appcall.Unset()
+	usercall.Unset()
 
 }
 
@@ -387,11 +454,12 @@ func TestAppHandleM2MProps(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
 
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo,
 		prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, authzrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, adminrepo, nil, txm)
 
 	// app-tag
 	atagFilter := &repo.AppTagsFilter{
@@ -469,15 +537,35 @@ func TestDeleteApplications(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
+
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo, prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, authzrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, adminrepo, nil, txm)
 
 	ids := []uint32{1, 2}
 
+	ctx = context.WithValue(ctx, data.UserName, "demouser")
+	apprepo.On("ListApplications", ctx, mock.Anything, mock.Anything).Return([]*repo.Application{
+		{Id: 1, OwnerId: 10, TeamId: 11},
+		{Id: 2, OwnerId: 10, TeamId: 12},
+	}, nil)
+	teamrepo.On("GetTeams", ctx, mock.Anything).Return(&repo.Team{ID: 1, Name: "test-team"}, nil)
+	adminrepo.On("GetUsers", ctx, mock.Anything, mock.Anything).Return(&repo.User{Id: 10, UserName: "demouser"}, nil)
+
+	// validate enforce
+	efcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, nil)
+	err := usecase.DeleteApplications(ctx, ids)
+	assert.Error(t, err)
+	t.Log(err)
+	efcall.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// test delete app-tags
 	rerr := errors.New("delete relations error")
 	atagcall := atagrepo.On("DeleteAppTagsByAppId", ctx, mock.Anything, ids).Return(rerr)
-	err := usecase.DeleteApplications(ctx, ids)
+	err = usecase.DeleteApplications(ctx, ids)
 	assert.Error(t, err)
 	atagcall.Unset()
 
@@ -526,11 +614,12 @@ func TestListApplications(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
 
 	usecase := biz.NewApplicationsUsecase(
 		apprepo, atagrepo, afrepo, ahgrepo,
 		prdrepo, teamrepo, ftrepo, tagrepo,
-		hgrepo, hfrepo, authzrepo, nil, txm)
+		hgrepo, hfrepo, authzrepo, adminrepo, nil, txm)
 
 	// Empty filter
 	//filter := &biz.ListApplicationsFilter{}
@@ -542,7 +631,7 @@ func TestListApplications(t *testing.T) {
 			TeamId:      1,
 			ProductId:   1,
 			IsStateful:  true,
-			Owner:       "owner1",
+			OwnerId:     10,
 		},
 		{
 			Id:          2,
@@ -551,7 +640,7 @@ func TestListApplications(t *testing.T) {
 			TeamId:      2,
 			ProductId:   2,
 			IsStateful:  false,
-			Owner:       "owner2",
+			OwnerId:     10,
 		},
 	}
 	biz_apps := []*biz.Application{
@@ -559,7 +648,7 @@ func TestListApplications(t *testing.T) {
 			Id:           1,
 			Name:         "app1",
 			Description:  "desc1",
-			Owner:        "owner1",
+			OwnerId:      10,
 			IsStateful:   true,
 			TeamId:       1,
 			ProductId:    1,
@@ -571,7 +660,7 @@ func TestListApplications(t *testing.T) {
 			Id:           2,
 			Name:         "app2",
 			Description:  "desc2",
-			Owner:        "owner2",
+			OwnerId:      10,
 			IsStateful:   false,
 			TeamId:       2,
 			ProductId:    2,

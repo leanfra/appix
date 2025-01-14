@@ -16,6 +16,53 @@ func (m *MockTXManager) RunInTX(fn func(repo.TX) error) error {
 	return fn(nil)
 }
 
+// Mock AdminRepo
+type MockAdminRepo struct {
+	mock.Mock
+}
+
+func (m *MockAdminRepo) CreateUsers(ctx context.Context, tx repo.TX, users []*repo.User) error {
+	args := m.Called(ctx, tx, users)
+	return args.Error(0)
+}
+
+func (m *MockAdminRepo) UpdateUsers(ctx context.Context, tx repo.TX, user []*repo.User) error {
+	args := m.Called(ctx, tx, user)
+	return args.Error(0)
+}
+
+func (m *MockAdminRepo) DeleteUsers(ctx context.Context, tx repo.TX, user []uint32) error {
+	args := m.Called(ctx, tx, user)
+	return args.Error(0)
+}
+
+func (m *MockAdminRepo) GetUsers(ctx context.Context, tx repo.TX, id uint32) (*repo.User, error) {
+	args := m.Called(ctx, id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*repo.User), args.Error(1)
+}
+
+func (m *MockAdminRepo) ListUsers(ctx context.Context, tx repo.TX, filter *repo.UsersFilter) ([]*repo.User, error) {
+	args := m.Called(ctx, tx, filter)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*repo.User), args.Error(1)
+}
+
+func (m *MockAdminRepo) CountUsers(ctx context.Context, tx repo.TX, filter repo.CountFilter) (int64, error) {
+	args := m.Called(ctx, tx, filter)
+	return args.Get(0).(int64), args.Error(1)
+}
+
+func (m *MockAdminRepo) Logout(ctx context.Context, id uint32) error {
+	args := m.Called(ctx, id)
+	return args.Error(0)
+}
+
+// Mock AuthzRepo
 type MockAuthzRepo struct {
 	mock.Mock
 }

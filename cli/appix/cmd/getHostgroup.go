@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -81,7 +80,6 @@ Examples:
 				ShareTeamsId:    shareTeamsIds,
 			}
 
-			ctx := context.Background()
 			resp, err := client.ListHostgroups(ctx, req)
 			if err != nil {
 				fmt.Printf("Error: %v\n", err)

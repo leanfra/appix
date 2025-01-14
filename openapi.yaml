@@ -222,7 +222,7 @@ components:
                     format: int32
                 action:
                     type: string
-                users:
+                user:
                     $ref: '#/components/schemas/User'
         GoogleProtobufAny:
             type: object

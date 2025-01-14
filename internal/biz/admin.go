@@ -304,7 +304,7 @@ func (s *AdminUsecase) DeleteUsers(ctx context.Context, tx repo.TX, ids []uint32
 		}
 		// delete authz
 		for _, _id := range ids {
-			user, err := s.adminRepo.GetUsers(ctx, _id)
+			user, err := s.adminRepo.GetUsers(ctx, tx, _id)
 			if err != nil {
 				return err
 			}
@@ -328,7 +328,7 @@ func (s *AdminUsecase) DeleteUsers(ctx context.Context, tx repo.TX, ids []uint32
 
 // GetUsers is
 func (s *AdminUsecase) GetUsers(ctx context.Context, id uint32) (*User, error) {
-	user, err := s.adminRepo.GetUsers(ctx, id)
+	user, err := s.adminRepo.GetUsers(ctx, nil, id)
 	if err != nil {
 		return nil, errors.Join(errors.New("GetUsers failed"), err)
 	}

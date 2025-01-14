@@ -29,6 +29,17 @@ func NewAdminRepoGorm(data *DataGorm, logger log.Logger) (repo.AdminRepo, error)
 	}, nil
 }
 
+func (d *AdminRepoGorm) CountUsers(ctx context.Context, tx repo.TX, filter repo.CountFilter) (int64, error) {
+	ids := filter.GetIds()
+	var count int64
+	query := d.data.WithTX(tx).WithContext(ctx).Model(&repo.User{}).Where("id IN ?", ids)
+	r := query.Count(&count)
+	if r.Error != nil {
+		return 0, r.Error
+	}
+	return count, nil
+}
+
 // CreateUsers is
 func (d *AdminRepoGorm) CreateUsers(ctx context.Context, tx repo.TX, users []*repo.User) error {
 	if len(users) == 0 {
@@ -65,9 +76,9 @@ func (d *AdminRepoGorm) DeleteUsers(ctx context.Context, tx repo.TX, ids []uint3
 }
 
 // GetUsers is
-func (d *AdminRepoGorm) GetUsers(ctx context.Context, id uint32) (*repo.User, error) {
+func (d *AdminRepoGorm) GetUsers(ctx context.Context, tx repo.TX, id uint32) (*repo.User, error) {
 	var user repo.User
-	if err := d.data.WithTX(nil).WithContext(ctx).First(&user, id).Error; err != nil {
+	if err := d.data.WithTX(tx).WithContext(ctx).First(&user, id).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil

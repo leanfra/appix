@@ -52,7 +52,7 @@ var updateUserCmd = &cobra.Command{
 			}
 
 			// Convert to YAML
-			data, err := yaml.Marshal([]*pb.User{getResp.Users})
+			data, err := yaml.Marshal([]*pb.User{getResp.User})
 			if err != nil {
 				log.Fatalf("failed to marshal user: %v", err)
 			}

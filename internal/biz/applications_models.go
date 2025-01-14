@@ -4,7 +4,7 @@ type Application struct {
 	Id           uint32
 	Name         string
 	Description  string
-	Owner        string
+	OwnerId      uint32
 	IsStateful   bool
 	ProductId    uint32
 	TeamId       uint32

@@ -16,7 +16,7 @@ import (
 
 // createApplicationCmd represents the createApplication command
 var createApplicationCmd = &cobra.Command{
-	Use:   "application",
+	Use:   "app",
 	Short: "Create a new application",
 	Long: `Create a new application in the system.
 Application is a software that runs on hosts.
@@ -25,6 +25,7 @@ Application belongs to a product and team.
 Examples:
   appix create application --name web-app --desc "Web Application" --product 1 --team 1
   appix create application --name api-service --desc "API Service" --product 2 --team 1`,
+	Aliases: []string{"application", "applications", "apps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {
@@ -41,7 +42,7 @@ Examples:
 			app := &pb.Application{
 				Name:         "app-name",
 				Description:  "app description",
-				Owner:        "app-owner",
+				OwnerId:      1,
 				IsStateful:   false,
 				ProductId:    1,
 				TeamId:       1,
@@ -81,7 +82,7 @@ Examples:
 			// Create from command line flags
 			name, _ := cmd.Flags().GetString("name")
 			desc, _ := cmd.Flags().GetString("desc")
-			owner, _ := cmd.Flags().GetString("owner")
+			owner_id, _ := cmd.Flags().GetUint32("owner-id")
 			isStateful, _ := cmd.Flags().GetBool("is-stateful")
 			productId, _ := cmd.Flags().GetUint32("product-id")
 			teamId, _ := cmd.Flags().GetUint32("team-id")
@@ -98,7 +99,7 @@ Examples:
 					{
 						Name:         name,
 						Description:  desc,
-						Owner:        owner,
+						OwnerId:      owner_id,
 						IsStateful:   isStateful,
 						ProductId:    productId,
 						TeamId:       teamId,
@@ -127,7 +128,7 @@ func init() {
 	createCmd.AddCommand(createApplicationCmd)
 	createApplicationCmd.Flags().String("name", "", "Name of the application")
 	createApplicationCmd.Flags().String("desc", "", "Description of the application")
-	createApplicationCmd.Flags().String("owner", "", "Owner of the application")
+	createApplicationCmd.Flags().Uint32("owner-id", 0, "user id of the owner of the application")
 	createApplicationCmd.Flags().Bool("is-stateful", false, "Whether the application is stateful")
 	createApplicationCmd.Flags().Uint32("product-id", 0, "ID of the product this application belongs to")
 	createApplicationCmd.Flags().Uint32("team-id", 0, "ID of the team this application belongs to")

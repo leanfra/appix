@@ -31,7 +31,7 @@ func toBizApp(a *pb.Application) (*biz.Application, error) {
 	return &biz.Application{
 		Id:           a.Id,
 		Name:         a.Name,
-		Owner:        a.Owner,
+		OwnerId:      a.OwnerId,
 		Description:  a.Description,
 		IsStateful:   a.IsStateful,
 		ProductId:    a.ProductId,
@@ -52,6 +52,36 @@ func toBizApps(apps []*pb.Application) ([]*biz.Application, error) {
 		bizApps[i] = bizApp
 	}
 	return bizApps, nil
+}
+
+func toPbApp(a *biz.Application) (*pb.Application, error) {
+	if a == nil {
+		return nil, nil
+	}
+	return &pb.Application{
+		Id:           a.Id,
+		Name:         a.Name,
+		Description:  a.Description,
+		OwnerId:      a.OwnerId,
+		IsStateful:   a.IsStateful,
+		ProductId:    a.ProductId,
+		TeamId:       a.TeamId,
+		FeaturesId:   a.FeaturesId,
+		TagsId:       a.TagsId,
+		HostgroupsId: a.HostgroupsId,
+	}, nil
+}
+
+func toPbApps(apps []*biz.Application) ([]*pb.Application, error) {
+	pbApps := make([]*pb.Application, len(apps))
+	for i, a := range apps {
+		pbApp, e := toPbApp(a)
+		if e != nil {
+			return nil, e
+		}
+		pbApps[i] = pbApp
+	}
+	return pbApps, nil
 }
 
 func (s *ApplicationsService) CreateApplications(ctx context.Context, req *pb.CreateApplicationsRequest) (*pb.CreateApplicationsReply, error) {
@@ -124,18 +154,8 @@ func (s *ApplicationsService) GetApplications(ctx context.Context, req *pb.GetAp
 		Message: "success",
 	}
 	if err == nil {
-		reply.App = &pb.Application{
-			Id:           bizApp.Id,
-			Name:         bizApp.Name,
-			Owner:        bizApp.Owner,
-			Description:  bizApp.Description,
-			IsStateful:   bizApp.IsStateful,
-			ProductId:    bizApp.ProductId,
-			TeamId:       bizApp.TeamId,
-			FeaturesId:   bizApp.FeaturesId,
-			TagsId:       bizApp.TagsId,
-			HostgroupsId: bizApp.HostgroupsId,
-		}
+		papp, _ := toPbApp(bizApp)
+		reply.App = papp
 		return reply, nil
 	}
 	reply.Code = 1
@@ -185,21 +205,7 @@ func (s *ApplicationsService) ListApplications(ctx context.Context, req *pb.List
 		Message: "success",
 	}
 	if err == nil {
-		reply.Apps = make([]*pb.Application, len(apps))
-		for i, a := range apps {
-			reply.Apps[i] = &pb.Application{
-				Id:           a.Id,
-				Name:         a.Name,
-				Owner:        a.Owner,
-				Description:  a.Description,
-				IsStateful:   a.IsStateful,
-				ProductId:    a.ProductId,
-				TeamId:       a.TeamId,
-				FeaturesId:   a.FeaturesId,
-				TagsId:       a.TagsId,
-				HostgroupsId: a.HostgroupsId,
-			}
-		}
+		reply.Apps, _ = toPbApps(apps)
 		return reply, nil
 	}
 	reply.Code = 1

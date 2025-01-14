@@ -17,10 +17,10 @@ import (
 
 // updateApplicationCmd represents the updateApplication command
 var updateApplicationCmd = &cobra.Command{
-	Use:     "application",
+	Use:     "app",
 	Short:   "Update application",
 	Long:    `Update one or more applications with the specified ID and fields.`,
-	Aliases: []string{"application", "applications", "app"},
+	Aliases: []string{"application", "applications", "app", "apps"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {
@@ -109,26 +109,38 @@ var updateApplicationCmd = &cobra.Command{
 			}
 			name, _ := cmd.Flags().GetString("name")
 			desc, _ := cmd.Flags().GetString("desc")
-			owner, _ := cmd.Flags().GetString("owner")
+			ownerId, _ := cmd.Flags().GetUint32("ownerId")
 			isStateful, _ := cmd.Flags().GetBool("isStateful")
 			productId, _ := cmd.Flags().GetUint32("productId")
 			teamId, _ := cmd.Flags().GetUint32("teamId")
-			featuresId, _ := cmd.Flags().GetUint32("featuresId")
-			tagsId, _ := cmd.Flags().GetUint32("tagsId")
-			hostgroupsId, _ := cmd.Flags().GetUint32("hostgroupsId")
+			featuresId, _ := cmd.Flags().GetUintSlice("featuresId")
+			tagsId, _ := cmd.Flags().GetUintSlice("tagsId")
+			hostgroupsId, _ := cmd.Flags().GetUintSlice("hostgroupsId")
+
+			// convert featuresId, tagsId, and hostgroupsId to uint32
+			var _featuresId, _tagsId, _hostgroupsId []uint32
+			for _, id := range featuresId {
+				_featuresId = append(_featuresId, uint32(id))
+			}
+			for _, id := range tagsId {
+				_tagsId = append(_tagsId, uint32(id))
+			}
+			for _, id := range hostgroupsId {
+				_hostgroupsId = append(_hostgroupsId, uint32(id))
+			}
 
 			applications = []*pb.Application{
 				{
 					Id:           id,
 					Name:         name,
 					Description:  desc,
-					Owner:        owner,
+					OwnerId:      ownerId,
 					IsStateful:   isStateful,
 					ProductId:    productId,
 					TeamId:       teamId,
-					FeaturesId:   []uint32{featuresId},
-					TagsId:       []uint32{tagsId},
-					HostgroupsId: []uint32{hostgroupsId},
+					FeaturesId:   _featuresId,
+					TagsId:       _tagsId,
+					HostgroupsId: _hostgroupsId,
 				},
 			}
 		}
@@ -156,11 +168,11 @@ func init() {
 	updateApplicationCmd.Flags().Uint32("id", 0, "Application ID to update")
 	updateApplicationCmd.Flags().String("name", "", "New application name")
 	updateApplicationCmd.Flags().String("desc", "", "New application description")
-	updateApplicationCmd.Flags().String("owner", "", "New application owner")
-	updateApplicationCmd.Flags().Bool("isStateful", false, "New application is stateful")
-	updateApplicationCmd.Flags().Uint32("productId", 0, "New application product ID")
-	updateApplicationCmd.Flags().Uint32("teamId", 0, "New application team ID")
-	updateApplicationCmd.Flags().Uint32("featuresId", 0, "New application features ID")
-	updateApplicationCmd.Flags().Uint32("tagsId", 0, "New application tags ID")
-	updateApplicationCmd.Flags().Uint32("hostgroupsId", 0, "New application hostgroups ID")
+	updateApplicationCmd.Flags().Uint32("ownerId", 0, "New application owner")
+	updateApplicationCmd.Flags().Bool("is-stateful", false, "New application is stateful")
+	updateApplicationCmd.Flags().Uint32("product-id", 0, "New application product ID")
+	updateApplicationCmd.Flags().Uint32("team-id", 0, "New application team ID")
+	updateApplicationCmd.Flags().UintSlice("features-id", []uint{}, "New application features ID")
+	updateApplicationCmd.Flags().UintSlice("tags-id", []uint{}, "New application tags ID")
+	updateApplicationCmd.Flags().UintSlice("hostgroups-id", []uint{}, "New application hostgroups ID")
 }

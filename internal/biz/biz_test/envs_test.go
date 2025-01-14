@@ -146,7 +146,7 @@ func TestDeleteEnvs(t *testing.T) {
 		ctx, mock.Anything, repo.RequireEnv, ids).Return(int64(0), nil)
 
 	rerr := errors.New("mock repo fail")
-	envCall = envrepo.On("DeleteEnvs", ctx, mock.Anything).
+	envCall = envrepo.On("DeleteEnvs", ctx, mock.Anything, mock.Anything).
 		Return(rerr)
 	err = usecase.DeleteEnvs(ctx, ids)
 	assert.Equal(t, err, rerr)
@@ -159,7 +159,7 @@ func TestDeleteEnvs(t *testing.T) {
 	hgCall = hgrepo.On("CountRequire",
 		ctx, mock.Anything, repo.RequireEnv, ids).Return(int64(0), nil)
 
-	envCall = envrepo.On("DeleteEnvs", ctx, mock.Anything).
+	envCall = envrepo.On("DeleteEnvs", ctx, mock.Anything, mock.Anything).
 		Return(nil)
 	err = usecase.DeleteEnvs(ctx, ids)
 	assert.NoError(t, err)

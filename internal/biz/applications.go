@@ -1,8 +1,10 @@
 package biz
 
 import (
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -24,6 +26,7 @@ type ApplicationsUsecase struct {
 	hgrepo    repo.HostgroupsRepo
 	hfrepo    repo.HostgroupFeaturesRepo
 	authzrepo repo.AuthzRepo
+	adminrepo repo.AdminRepo
 	log       *log.Helper
 	txm       repo.TxManager
 }
@@ -40,6 +43,7 @@ func NewApplicationsUsecase(
 	hgrepo repo.HostgroupsRepo,
 	hfrepo repo.HostgroupFeaturesRepo,
 	authzrepo repo.AuthzRepo,
+	adminrepo repo.AdminRepo,
 	logger log.Logger,
 	txm repo.TxManager) *ApplicationsUsecase {
 
@@ -55,6 +59,7 @@ func NewApplicationsUsecase(
 		hgrepo:    hgrepo,
 		hfrepo:    hfrepo,
 		authzrepo: authzrepo,
+		adminrepo: adminrepo,
 		log:       log.NewHelper(logger),
 		txm:       txm,
 	}
@@ -74,6 +79,7 @@ const appPropTeam = "team"
 const appPropFeature = "feature"
 const appPropTag = "tag"
 const appPropHostgroup = "hostgroup"
+const appPropOwner = "user"
 
 func appPropFilter(apps []*Application, prop string) repo.CountFilter {
 	var ids []uint32
@@ -118,6 +124,14 @@ func appPropFilter(apps []*Application, prop string) repo.CountFilter {
 		return &repo.HostgroupsFilter{
 			Ids: ids,
 		}
+	case appPropOwner:
+		for _, a := range apps {
+			ids = append(ids, a.OwnerId)
+		}
+		ids = DedupSliceUint32(ids)
+		return &repo.UsersFilter{
+			Ids: ids,
+		}
 	}
 	return nil
 }
@@ -137,6 +151,7 @@ func (s *ApplicationsUsecase) validateProps(
 		{appPropFeature, appPropFilter(apps, appPropFeature), s.ftrepo.CountFeatures},
 		{appPropTag, appPropFilter(apps, appPropTag), s.tagrepo.CountTags},
 		{appPropHostgroup, appPropFilter(apps, appPropHostgroup), s.hgrepo.CountHostgroups},
+		{appPropOwner, appPropFilter(apps, appPropOwner), s.adminrepo.CountUsers},
 	}
 	for _, counter := range counters {
 		if counter.ids == nil {
@@ -214,6 +229,33 @@ func (s *ApplicationsUsecase) validateHostgroupMatch(
 	return nil
 }
 
+func (s *ApplicationsUsecase) enforce(ctx context.Context, tx repo.TX, apps []*Application) error {
+	curUserName := ctx.Value(data.UserName).(string)
+	for _, app := range apps {
+		team, err := s.teamrepo.GetTeams(ctx, app.TeamId)
+		if err != nil {
+			return err
+		}
+		owner, err := s.adminrepo.GetUsers(ctx, tx, app.OwnerId)
+		if err != nil {
+			return err
+		}
+		ires := repo.NewResource4Sv1("app", team.Name, app.Name, owner.UserName)
+		can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
+			Sub:      curUserName,
+			Resource: ires,
+			Action:   repo.ActWrite,
+		})
+		if err != nil {
+			return err
+		}
+		if !can {
+			return errors.New("no permission")
+		}
+	}
+	return nil
+}
+
 // CreateApplications is
 func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Application) error {
 	if err := s.validate(true, apps); err != nil {
@@ -253,20 +295,6 @@ func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Ap
 
 			// create app-hostgroups
 			if err := s.createProps(ctx, tx, dbapp.Id, app.HostgroupsId, appPropHostgroup); err != nil {
-				return err
-			}
-
-			// create authz owner
-			team, err := s.teamrepo.GetTeams(ctx, app.TeamId)
-			if err != nil {
-				return err
-			}
-			ires := repo.NewResource4Sv1("app", team.Name, app.Name, app.Owner)
-			if err := s.authzrepo.CreateRule(ctx, tx, &repo.Rule{
-				Sub:      app.Owner,
-				Resource: ires,
-				Action:   repo.ActWrite,
-			}); err != nil {
 				return err
 			}
 		}
@@ -394,7 +422,10 @@ func (s *ApplicationsUsecase) UpdateApplications(ctx context.Context, apps []*Ap
 	}
 
 	return s.txm.RunInTX(func(tx repo.TX) error {
-		if s.validateProps(ctx, tx, apps); err != nil {
+		if err := s.enforce(ctx, tx, apps); err != nil {
+			return err
+		}
+		if err := s.validateProps(ctx, tx, apps); err != nil {
 			return err
 		}
 
@@ -430,7 +461,21 @@ func (s *ApplicationsUsecase) DeleteApplications(ctx context.Context, ids []uint
 	if len(ids) == 0 {
 		return fmt.Errorf("EmptyIds")
 	}
+
 	return s.txm.RunInTX(func(tx repo.TX) error {
+		apps, err := s.apprepo.ListApplications(ctx, tx, &repo.ApplicationsFilter{
+			Ids: ids,
+		})
+		if err != nil {
+			return err
+		}
+		bizapps, err := ToBizApplications(apps)
+		if err != nil {
+			return err
+		}
+		if err := s.enforce(ctx, tx, bizapps); err != nil {
+			return err
+		}
 		// delete props
 
 		if err := s.atagrepo.DeleteAppTagsByAppId(ctx, tx, ids); err != nil {
@@ -475,7 +520,7 @@ func (s *ApplicationsUsecase) attachM2MProps(ctx context.Context, app *Applicati
 		return err
 	}
 	for _, tag := range _tags.([]*repo.AppTag) {
-		app.TagsId = append(app.TagsId, tag.Id)
+		app.TagsId = append(app.TagsId, tag.TagID)
 	}
 	// features id
 	_fts, err := s.listProps(ctx, nil, []uint32{app.Id}, appPropFeature)
@@ -483,7 +528,7 @@ func (s *ApplicationsUsecase) attachM2MProps(ctx context.Context, app *Applicati
 		return err
 	}
 	for _, ft := range _fts.([]*repo.AppFeature) {
-		app.FeaturesId = append(app.FeaturesId, ft.Id)
+		app.FeaturesId = append(app.FeaturesId, ft.FeatureID)
 	}
 
 	// hostgroups id
@@ -492,7 +537,7 @@ func (s *ApplicationsUsecase) attachM2MProps(ctx context.Context, app *Applicati
 		return err
 	}
 	for _, hg := range _hgs.([]*repo.AppHostgroup) {
-		app.HostgroupsId = append(app.HostgroupsId, hg.Id)
+		app.HostgroupsId = append(app.HostgroupsId, hg.HostgroupID)
 	}
 	return nil
 }

@@ -145,7 +145,7 @@ func (s *AdminService) GetUsers(ctx context.Context, req *pb.GetUsersRequest) (*
 		reply.Message = err.Error()
 		return reply, nil
 	}
-	reply.Users = toPbUser(user)
+	reply.User = toPbUser(user)
 
 	return reply, nil
 }

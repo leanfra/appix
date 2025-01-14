@@ -25,6 +25,7 @@ Examples:
   appix get app --is-stateful true                # Filter stateful
   appix get app --page 1 --page-size 10           # With pagination
   appix get app --names web --clusters 1 --format yaml   # Combined filters`,
+	Aliases: []string{"apps", "application", "applications"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {
@@ -99,6 +100,7 @@ Examples:
 		hostgroupsClient := pb.NewHostgroupsClient(conn)
 		featuresClient := pb.NewFeaturesClient(conn)
 		tagsClient := pb.NewTagsClient(conn)
+		admClient := pb.NewAdminClient(conn)
 
 		// Create caches for related data
 		productCache := make(map[uint32]string)
@@ -106,6 +108,7 @@ Examples:
 		hostgroupCache := make(map[uint32]string)
 		featureCache := make(map[uint32]string)
 		tagCache := make(map[uint32]string)
+		ownerCache := make(map[uint32]string)
 
 		// Collect all unique IDs that need to be looked up
 		productIDs := make(map[uint32]bool)
@@ -113,6 +116,7 @@ Examples:
 		hostgroupIDs := make(map[uint32]bool)
 		featureIDs := make(map[uint32]bool)
 		tagIDs := make(map[uint32]bool)
+		ownerIDs := make(map[uint32]bool)
 
 		for _, app := range allApps {
 			if app.ProductId > 0 {
@@ -120,6 +124,9 @@ Examples:
 			}
 			if app.TeamId > 0 {
 				teamIDs[app.TeamId] = true
+			}
+			if app.OwnerId > 0 {
+				ownerIDs[app.OwnerId] = true
 			}
 			for _, hgID := range app.HostgroupsId {
 				hostgroupIDs[hgID] = true
@@ -149,6 +156,16 @@ Examples:
 				teamCache[id] = resp.Team.Name
 			} else {
 				teamCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// Batch fetch owners
+		for id := range ownerIDs {
+			resp, err := admClient.GetUsers(ctx, &pb.GetUsersRequest{Id: id})
+			if err == nil && resp.User != nil {
+				ownerCache[id] = resp.User.UserName
+			} else {
+				ownerCache[id] = fmt.Sprint(id)
 			}
 		}
 
@@ -188,7 +205,6 @@ Examples:
 				Id:          app.Id,
 				Name:        app.Name,
 				Description: app.Description,
-				Owner:       app.Owner,
 				IsStateful:  app.IsStateful,
 				Features:    make([]string, len(app.FeaturesId)),
 				Tags:        make([]string, len(app.TagsId)),
@@ -201,6 +217,9 @@ Examples:
 			// Use cached team name
 			readable.Team = teamCache[app.TeamId]
 
+			// Use cached owner name
+			readable.Owner = ownerCache[app.OwnerId]
+
 			// Use cached hostgroup names
 			for i, hgID := range app.HostgroupsId {
 				readable.Hostgroups[i] = hostgroupCache[hgID]
@@ -208,12 +227,12 @@ Examples:
 
 			// Convert features to "name:value" format using cached names
 			for i, id := range app.FeaturesId {
-				readable.Features[i] = fmt.Sprintf("%s:%s", featureCache[id], fmt.Sprint(id))
+				readable.Features[i] = featureCache[id]
 			}
 
 			// Convert tags to "name:value" format using cached names
 			for i, id := range app.TagsId {
-				readable.Tags[i] = fmt.Sprintf("%s:%s", tagCache[id], fmt.Sprint(id))
+				readable.Tags[i] = tagCache[id]
 			}
 
 			readableApps = append(readableApps, readable)

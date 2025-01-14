@@ -87,7 +87,7 @@ func TestAdminRepoGorm_GetUsers(t *testing.T) {
 	user := &repo.User{UserName: "user1", Email: "user1@example.com"}
 	db.Create(user)
 
-	retrievedUser, err := adminRepo.GetUsers(ctx, user.Id)
+	retrievedUser, err := adminRepo.GetUsers(ctx, nil, user.Id)
 	assert.NoError(t, err)
 	assert.Equal(t, user.Id, retrievedUser.Id)
 	assert.Equal(t, user.UserName, retrievedUser.UserName)

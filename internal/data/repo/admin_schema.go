@@ -18,3 +18,7 @@ type UsersFilter struct {
 	Page     uint32
 	PageSize uint32
 }
+
+func (f *UsersFilter) GetIds() []uint32 {
+	return f.Ids
+}

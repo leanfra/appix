@@ -20,8 +20,8 @@ func (m *Application) Validate(isNew bool) error {
 	if len(m.Name) == 0 {
 		return fmt.Errorf("InvalidNameValue")
 	}
-	if len(m.Owner) == 0 {
-		return fmt.Errorf("InvalidOwnerValue")
+	if m.OwnerId == 0 {
+		return fmt.Errorf("InvalidOwnerIdValue")
 	}
 	if m.ProductId <= 0 {
 		return fmt.Errorf("InvalidProductId")
@@ -77,7 +77,7 @@ func ToDBApplication(app *Application) (*repo.Application, error) {
 		Id:          app.Id,
 		Name:        app.Name,
 		Description: app.Description,
-		Owner:       app.Owner,
+		OwnerId:     app.OwnerId,
 		IsStateful:  app.IsStateful,
 		ProductId:   app.ProductId,
 		TeamId:      app.TeamId,
@@ -104,7 +104,7 @@ func ToBizApplication(t *repo.Application) (*Application, error) {
 		Id:          t.Id,
 		Name:        t.Name,
 		Description: t.Description,
-		Owner:       t.Owner,
+		OwnerId:     t.OwnerId,
 		IsStateful:  t.IsStateful,
 		ProductId:   t.ProductId,
 		TeamId:      t.TeamId,
