@@ -25,6 +25,7 @@ Like GPU, CPU, etc.
 Examples:
   appix create feature --name gpu --value v100 
   appix create feature --name gpu --value a100`,
+	Aliases: []string{"feat", "features"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

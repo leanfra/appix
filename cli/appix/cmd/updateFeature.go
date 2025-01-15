@@ -20,7 +20,7 @@ var updateFeatureCmd = &cobra.Command{
 	Use:     "feature",
 	Short:   "Update feature",
 	Long:    `Update one or more features with the specified ID and fields.`,
-	Aliases: []string{"feature", "features"},
+	Aliases: []string{"feat", "features"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

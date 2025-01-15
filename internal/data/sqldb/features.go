@@ -42,9 +42,9 @@ func NewFeaturesRepoGorm(data *DataGorm, logger log.Logger) (repo.FeaturesRepo, 
 // XXX all data passed in should be validated.
 
 // CreateFeatures is
-func (d *FeaturesRepoGorm) CreateFeatures(ctx context.Context, features []*repo.Feature) error {
+func (d *FeaturesRepoGorm) CreateFeatures(ctx context.Context, tx repo.TX, features []*repo.Feature) error {
 
-	r := d.data.DB.WithContext(ctx).Create(features)
+	r := d.data.WithTX(tx).WithContext(ctx).Create(features)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -53,9 +53,9 @@ func (d *FeaturesRepoGorm) CreateFeatures(ctx context.Context, features []*repo.
 }
 
 // UpdateFeatures is
-func (d *FeaturesRepoGorm) UpdateFeatures(ctx context.Context, features []*repo.Feature) error {
+func (d *FeaturesRepoGorm) UpdateFeatures(ctx context.Context, tx repo.TX, features []*repo.Feature) error {
 
-	r := d.data.DB.WithContext(ctx).Save(features)
+	r := d.data.WithTX(tx).WithContext(ctx).Save(features)
 	if r.Error != nil {
 		return r.Error
 	}

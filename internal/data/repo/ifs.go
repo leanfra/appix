@@ -76,16 +76,6 @@ type AppHostgroupsRepo interface {
 	ListAppHostgroups(ctx context.Context, tx TX, filter *AppHostgroupsFilter) ([]*AppHostgroup, error)
 }
 
-type FeaturesRepo interface {
-	RequireCounter
-	CreateFeatures(ctx context.Context, features []*Feature) error
-	UpdateFeatures(ctx context.Context, features []*Feature) error
-	DeleteFeatures(ctx context.Context, tx TX, ids []uint32) error
-	GetFeatures(ctx context.Context, id uint32) (*Feature, error)
-	ListFeatures(ctx context.Context, tx TX, filter *FeaturesFilter) ([]*Feature, error)
-	CountFeatures(ctx context.Context, tx TX, filter CountFilter) (int64, error)
-}
-
 type HostgroupsRepo interface {
 	RequireCounter
 	CreateHostgroups(ctx context.Context, tx TX, hgs []*Hostgroup) error

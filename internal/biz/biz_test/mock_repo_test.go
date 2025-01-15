@@ -515,13 +515,13 @@ type MockFeaturesRepo struct {
 	mock.Mock
 }
 
-func (m *MockFeaturesRepo) CreateFeatures(ctx context.Context, f []*repo.Feature) error {
-	args := m.Called(ctx, f)
+func (m *MockFeaturesRepo) CreateFeatures(ctx context.Context, tx repo.TX, f []*repo.Feature) error {
+	args := m.Called(ctx, tx, f)
 	return args.Error(0)
 }
 
-func (m *MockFeaturesRepo) UpdateFeatures(ctx context.Context, f []*repo.Feature) error {
-	args := m.Called(ctx, f)
+func (m *MockFeaturesRepo) UpdateFeatures(ctx context.Context, tx repo.TX, f []*repo.Feature) error {
+	args := m.Called(ctx, tx, f)
 	return args.Error(0)
 }
 

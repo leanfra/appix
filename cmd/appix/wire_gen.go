@@ -52,6 +52,11 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 		cleanup()
 		return nil, nil, err
 	}
+	authzRepo, err := sqldb.NewAuthzRepoGorm(authz, dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	hostgroupFeaturesRepo, err := sqldb.NewHostgroupFeaturesRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
@@ -62,7 +67,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 		cleanup()
 		return nil, nil, err
 	}
-	featuresUsecase := biz.NewFeaturesUsecase(featuresRepo, hostgroupFeaturesRepo, appFeaturesRepo, logger, txManager)
+	featuresUsecase := biz.NewFeaturesUsecase(featuresRepo, authzRepo, hostgroupFeaturesRepo, appFeaturesRepo, logger, txManager)
 	featuresService := service.NewFeaturesService(featuresUsecase, logger)
 	teamsRepo, err := sqldb.NewTeamsRepoGorm(dataGorm, logger)
 	if err != nil {
@@ -99,11 +104,6 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 	productsUsecase := biz.NewProductsUsecase(productsRepo, hostgroupsRepo, applicationsRepo, hostgroupProductsRepo, logger, txManager)
 	productsService := service.NewProductsService(productsUsecase, logger)
 	envsRepo, err := sqldb.NewEnvsRepoGorm(dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	authzRepo, err := sqldb.NewAuthzRepoGorm(authz, dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

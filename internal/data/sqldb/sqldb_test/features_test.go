@@ -27,7 +27,7 @@ func createBaseFeatures(t *testing.T, data []*repo.Feature) {
 			{Name: "net", Value: "public"},
 		}
 	}
-	if err := ftRepo.CreateFeatures(context.Background(), data); err != nil {
+	if err := ftRepo.CreateFeatures(context.Background(), nil, data); err != nil {
 		t.Fatal(err)
 	}
 
@@ -73,7 +73,7 @@ func testCreateFeaturesSuccess(t *testing.T) {
 		{Name: "net", Value: "private"},
 		{Name: "net", Value: "public"},
 	}
-	err := ftRepo.CreateFeatures(context.Background(), data)
+	err := ftRepo.CreateFeatures(context.Background(), nil, data)
 	assert.NoError(t, err)
 }
 
@@ -85,7 +85,7 @@ func testCreateFeaturesError(t *testing.T) {
 		{Name: "net", Value: "private"},
 		{Name: "net", Value: "public"},
 	}
-	err := ftRepo.CreateFeatures(context.Background(), data)
+	err := ftRepo.CreateFeatures(context.Background(), nil, data)
 	assert.Error(t, err)
 }
 
@@ -99,7 +99,7 @@ func testUpdateFeaturesSuccess(t *testing.T) {
 	createBaseFeatures(t, data)
 
 	data[0].Value = "arm"
-	err := ftRepo.UpdateFeatures(context.Background(), data)
+	err := ftRepo.UpdateFeatures(context.Background(), nil, data)
 	assert.NoError(t, err)
 }
 
@@ -112,7 +112,7 @@ func testUpdateFeaturesError(t *testing.T) {
 	}
 	createBaseFeatures(t, data)
 	data[0].Value = "intel"
-	err := ftRepo.UpdateFeatures(context.Background(), data)
+	err := ftRepo.UpdateFeatures(context.Background(), nil, data)
 	assert.Error(t, err)
 }
 

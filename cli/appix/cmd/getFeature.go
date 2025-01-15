@@ -23,6 +23,7 @@ Examples:
   appix get feature --kvs key1=val1              # Filter by key-value
   appix get feature --ids 1,2,3                 # Filter by IDs
   appix get feature --names feat1 --kvs key=val  # Combined filters`,
+	Aliases: []string{"feat", "features"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

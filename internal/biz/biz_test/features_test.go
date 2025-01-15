@@ -2,6 +2,7 @@ package biz_test
 
 import (
 	"appix/internal/biz"
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"errors"
@@ -12,13 +13,15 @@ import (
 )
 
 func TestCreateFeatures(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	afrepo := new(MockAppFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewFeaturesUsecase(
 		ftrepo,
+		authzrepo,
 		hfrepo,
 		afrepo,
 		nil,
@@ -44,12 +47,21 @@ func TestCreateFeatures(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
 	prd := []*biz.Feature{
 		{Name: "name", Value: "code"},
 	}
-	call := ftrepo.On("CreateFeatures", ctx, mock.Anything).Return(errors.New("repo error"))
+	// enforce error
+	enforceCall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).
+		Return(false, nil)
 	err := usecase.CreateFeatures(ctx, prd)
+	assert.Error(t, err)
+	enforceCall.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+	call := ftrepo.On("CreateFeatures", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.CreateFeatures(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -60,7 +72,7 @@ func TestCreateFeatures(t *testing.T) {
 		{Name: "name", Value: "code-1"},
 		{Name: "name", Value: "1-code-1"},
 	}
-	ftrepo.On("CreateFeatures", ctx, mock.Anything).Return(nil)
+	ftrepo.On("CreateFeatures", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.CreateFeatures(ctx, []*biz.Feature{gc})
 		assert.NoError(t, err)
@@ -68,13 +80,15 @@ func TestCreateFeatures(t *testing.T) {
 }
 
 func TestUpdateFeatures(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	afrepo := new(MockAppFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewFeaturesUsecase(
 		ftrepo,
+		authzrepo,
 		hfrepo,
 		afrepo,
 		nil,
@@ -101,12 +115,21 @@ func TestUpdateFeatures(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
 	prd := []*biz.Feature{
 		{Id: 1, Name: "name", Value: "code"},
 	}
-	call := ftrepo.On("UpdateFeatures", ctx, mock.Anything).Return(errors.New("repo error"))
+	// enforce error
+	enforceCall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).
+		Return(false, nil)
 	err := usecase.UpdateFeatures(ctx, prd)
+	assert.Error(t, err)
+	enforceCall.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+	call := ftrepo.On("UpdateFeatures", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.UpdateFeatures(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -117,7 +140,7 @@ func TestUpdateFeatures(t *testing.T) {
 		{Id: 1, Name: "name", Value: "code-1"},
 		{Id: 1, Name: "name", Value: "1-code-1"},
 	}
-	ftrepo.On("UpdateFeatures", ctx, mock.Anything).Return(nil)
+	ftrepo.On("UpdateFeatures", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.UpdateFeatures(ctx, []*biz.Feature{gc})
 		assert.NoError(t, err)
@@ -125,14 +148,15 @@ func TestUpdateFeatures(t *testing.T) {
 }
 
 func TestDeleteFeatures(t *testing.T) {
-
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	afrepo := new(MockAppFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewFeaturesUsecase(
 		ftrepo,
+		authzrepo,
 		hfrepo,
 		afrepo,
 		nil,
@@ -146,8 +170,17 @@ func TestDeleteFeatures(t *testing.T) {
 	err = usecase.DeleteFeatures(ctx, nil)
 	assert.Error(t, err)
 
-	// Test case: failed on hostgroup need check fail
 	ids = []uint32{1, 2}
+	// enforce error
+	enforceCall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).
+		Return(false, nil)
+	err = usecase.DeleteFeatures(ctx, ids)
+	assert.Error(t, err)
+	enforceCall.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// Test case: failed on hostgroup need check fail
 	hfCall := hfrepo.On("CountRequire",
 		ctx, mock.Anything, repo.RequireFeature, ids).Return(int64(1), nil)
 	afCall := afrepo.On("CountRequire",
@@ -211,13 +244,15 @@ func TestDeleteFeatures(t *testing.T) {
 }
 
 func TestGetFeatures(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	afrepo := new(MockAppFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewFeaturesUsecase(
 		ftrepo,
+		authzrepo,
 		hfrepo,
 		afrepo,
 		nil,
@@ -255,13 +290,15 @@ func TestGetFeatures(t *testing.T) {
 }
 
 func TestListFeatures(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
 	afrepo := new(MockAppFeaturesRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewFeaturesUsecase(
 		ftrepo,
+		authzrepo,
 		hfrepo,
 		afrepo,
 		nil,

@@ -25,7 +25,7 @@ func createBaseEnvs(t *testing.T, data []*repo.Env) {
 			{Name: "stg", Description: "senving"},
 		}
 	}
-	if err := envsRepo.CreateEnvs(context.Background(), data); err != nil {
+	if err := envsRepo.CreateEnvs(context.Background(), nil, data); err != nil {
 		t.Fatal(err)
 	}
 
@@ -68,7 +68,7 @@ func testCreateEnvsSuccess(t *testing.T) {
 		{Name: "prd", Description: "production"},
 		{Name: "stg", Description: "senving"},
 	}
-	err := envsRepo.CreateEnvs(context.Background(), envs)
+	err := envsRepo.CreateEnvs(context.Background(), nil, envs)
 	assert.NoError(t, err)
 }
 
@@ -78,7 +78,7 @@ func testCreateEnvsError(t *testing.T) {
 		{Name: "prd", Description: "production"},
 		{Name: "stg", Description: "senving"},
 	}
-	err := envsRepo.CreateEnvs(context.Background(), envs)
+	err := envsRepo.CreateEnvs(context.Background(), nil, envs)
 	assert.Error(t, err)
 }
 
@@ -90,7 +90,7 @@ func testUpdateEnvsSuccess(t *testing.T) {
 	createBaseEnvs(t, envs)
 
 	envs[0].Name = "prod"
-	err := envsRepo.UpdateEnvs(context.Background(), envs)
+	err := envsRepo.UpdateEnvs(context.Background(), nil, envs)
 	assert.NoError(t, err)
 }
 
@@ -101,7 +101,7 @@ func testUpdateEnvsError(t *testing.T) {
 	}
 	createBaseEnvs(t, envs)
 	envs[0].Name = "stg"
-	err := envsRepo.UpdateEnvs(context.Background(), envs)
+	err := envsRepo.UpdateEnvs(context.Background(), nil, envs)
 	assert.Error(t, err)
 }
 

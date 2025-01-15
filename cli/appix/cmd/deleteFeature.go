@@ -21,7 +21,7 @@ var deleteFeatureCmd = &cobra.Command{
 For example:
   appix delete feature 1 2 3`,
 	Args:    cobra.MinimumNArgs(1),
-	Aliases: []string{"feature", "features", "ft"},
+	Aliases: []string{"features", "feat"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {
