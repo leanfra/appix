@@ -25,7 +25,7 @@ func createBaseDatacenters(t *testing.T, data []*repo.Datacenter) {
 			{Name: "tc-cn-nj", Description: "tencent cn nanjing"},
 		}
 	}
-	if err := dcsRepo.CreateDatacenters(context.Background(), data); err != nil {
+	if err := dcsRepo.CreateDatacenters(context.Background(), nil, data); err != nil {
 		t.Fatal(err)
 	}
 
@@ -64,44 +64,44 @@ func testCreateDatacentersSuccess(t *testing.T) {
 
 	initDatacentersRepo()
 
-	envs := []*repo.Datacenter{
+	dcs := []*repo.Datacenter{
 		{Name: "ali-cn-bj", Description: "aliyun cn beijing"},
 		{Name: "tc-cn-nj", Description: "tencent cn nanjing"},
 	}
-	err := dcsRepo.CreateDatacenters(context.Background(), envs)
+	err := dcsRepo.CreateDatacenters(context.Background(), nil, dcs)
 	assert.NoError(t, err)
 }
 
 func testCreateDatacentersError(t *testing.T) {
 	createBaseDatacenters(t, nil)
-	envs := []*repo.Datacenter{
+	dcs := []*repo.Datacenter{
 		{Name: "ali-cn-bj", Description: "aliyun cn beijing"},
 		{Name: "tc-cn-nj", Description: "tencent cn nanjing"},
 	}
-	err := dcsRepo.CreateDatacenters(context.Background(), envs)
+	err := dcsRepo.CreateDatacenters(context.Background(), nil, dcs)
 	assert.Error(t, err)
 }
 
 func testUpdateDatacentersSuccess(t *testing.T) {
-	envs := []*repo.Datacenter{
+	dcs := []*repo.Datacenter{
 		{Name: "ali-cn-bj", Description: "aliyun cn beijing"},
 		{Name: "tc-cn-nj", Description: "tencent cn nanjing"},
 	}
-	createBaseDatacenters(t, envs)
+	createBaseDatacenters(t, dcs)
 
-	envs[0].Name = "prod"
-	err := dcsRepo.UpdateDatacenters(context.Background(), envs)
+	dcs[0].Name = "prod"
+	err := dcsRepo.UpdateDatacenters(context.Background(), nil, dcs)
 	assert.NoError(t, err)
 }
 
 func testUpdateDatacentersError(t *testing.T) {
-	envs := []*repo.Datacenter{
+	dcs := []*repo.Datacenter{
 		{Name: "ali-cn-bj", Description: "aliyun cn beijing"},
 		{Name: "tc-cn-nj", Description: "tencent cn nanjing"},
 	}
-	createBaseDatacenters(t, envs)
-	envs[1].Name = "ali-cn-bj"
-	err := dcsRepo.UpdateDatacenters(context.Background(), envs)
+	createBaseDatacenters(t, dcs)
+	dcs[1].Name = "ali-cn-bj"
+	err := dcsRepo.UpdateDatacenters(context.Background(), nil, dcs)
 	assert.Error(t, err)
 }
 
@@ -125,10 +125,10 @@ func testGetDatacentersSuccess(t *testing.T) {
 	}
 	createBaseDatacenters(t, Datacenters)
 
-	env, err := dcsRepo.GetDatacenters(context.Background(), 1)
+	dc, err := dcsRepo.GetDatacenters(context.Background(), 1)
 	assert.NoError(t, err)
-	assert.NotNil(t, env)
-	assert.Equal(t, Datacenters[0], env)
+	assert.NotNil(t, dc)
+	assert.Equal(t, Datacenters[0], dc)
 }
 
 func testGetDatacentersError(t *testing.T) {
@@ -137,9 +137,9 @@ func testGetDatacentersError(t *testing.T) {
 		{Name: "tc-cn-nj", Description: "tencent cn nanjing"},
 	}
 	createBaseDatacenters(t, Datacenters)
-	env, err := dcsRepo.GetDatacenters(context.Background(), 99)
+	dc, err := dcsRepo.GetDatacenters(context.Background(), 99)
 	assert.Error(t, err)
-	assert.Nil(t, env)
+	assert.Nil(t, dc)
 }
 
 func testListDatacenters_emptyFilter_all(t *testing.T) {
