@@ -28,9 +28,9 @@ func NewEnvsRepoGorm(data *DataGorm, logger log.Logger) (repo.EnvsRepo, error) {
 }
 
 // CreateEnvs is
-func (d *EnvsRepoGorm) CreateEnvs(ctx context.Context, envs []*repo.Env) error {
+func (d *EnvsRepoGorm) CreateEnvs(ctx context.Context, tx repo.TX, envs []*repo.Env) error {
 
-	r := d.data.DB.WithContext(ctx).Create(envs)
+	r := d.data.WithTX(tx).WithContext(ctx).Create(envs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -38,9 +38,9 @@ func (d *EnvsRepoGorm) CreateEnvs(ctx context.Context, envs []*repo.Env) error {
 }
 
 // UpdateEnvs is
-func (d *EnvsRepoGorm) UpdateEnvs(ctx context.Context, envs []*repo.Env) error {
+func (d *EnvsRepoGorm) UpdateEnvs(ctx context.Context, tx repo.TX, envs []*repo.Env) error {
 
-	r := d.data.DB.WithContext(ctx).Save(envs)
+	r := d.data.WithTX(tx).WithContext(ctx).Save(envs)
 	if r.Error != nil {
 		return r.Error
 	}

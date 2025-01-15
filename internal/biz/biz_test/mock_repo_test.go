@@ -560,13 +560,13 @@ type MockEnvsRepo struct {
 	mock.Mock
 }
 
-func (m *MockEnvsRepo) CreateEnvs(ctx context.Context, e []*repo.Env) error {
-	args := m.Called(ctx, e)
+func (m *MockEnvsRepo) CreateEnvs(ctx context.Context, tx repo.TX, e []*repo.Env) error {
+	args := m.Called(ctx, tx, e)
 	return args.Error(0)
 }
 
-func (m *MockEnvsRepo) UpdateEnvs(ctx context.Context, e []*repo.Env) error {
-	args := m.Called(ctx, e)
+func (m *MockEnvsRepo) UpdateEnvs(ctx context.Context, tx repo.TX, e []*repo.Env) error {
+	args := m.Called(ctx, tx, e)
 	return args.Error(0)
 }
 

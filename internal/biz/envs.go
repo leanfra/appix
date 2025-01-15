@@ -1,6 +1,7 @@
 package biz
 
 import (
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"fmt"
@@ -9,21 +10,24 @@ import (
 )
 
 type EnvsUsecase struct {
-	repo     repo.EnvsRepo
-	log      *log.Helper
-	txm      repo.TxManager
-	required []requiredBy
+	envrepo   repo.EnvsRepo
+	authzrepo repo.AuthzRepo
+	log       *log.Helper
+	txm       repo.TxManager
+	required  []requiredBy
 }
 
 func NewEnvsUsecase(
 	repo repo.EnvsRepo,
+	authzrepo repo.AuthzRepo,
 	hgrepo repo.HostgroupsRepo,
 	logger log.Logger,
 	txm repo.TxManager) *EnvsUsecase {
 	return &EnvsUsecase{
-		repo: repo,
-		log:  log.NewHelper(logger),
-		txm:  txm,
+		envrepo:   repo,
+		authzrepo: authzrepo,
+		log:       log.NewHelper(logger),
+		txm:       txm,
 		required: []requiredBy{
 			{inst: hgrepo, name: "hostgroup"},
 		},
@@ -39,6 +43,24 @@ func (s *EnvsUsecase) validate(isNew bool, envs []*Env) error {
 	return nil
 }
 
+func (s *EnvsUsecase) enforce(ctx context.Context, tx repo.TX) error {
+	curuser := ctx.Value(data.UserName).(string)
+	ires := repo.NewResource4Sv1("env", "", "", "")
+	can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
+		Sub:      curuser,
+		Resource: ires,
+		Action:   repo.ActWrite,
+	})
+	if err != nil {
+		return err
+	}
+	if !can {
+		return fmt.Errorf("PermissionDenied")
+	}
+	return nil
+
+}
+
 // CreateEnvs is
 func (s *EnvsUsecase) CreateEnvs(ctx context.Context, envs []*Env) error {
 	if err := s.validate(true, envs); err != nil {
@@ -48,11 +70,16 @@ func (s *EnvsUsecase) CreateEnvs(ctx context.Context, envs []*Env) error {
 	if err != nil {
 		return err
 	}
-	e := s.repo.CreateEnvs(ctx, _envs)
-	if e != nil {
-		return e
-	}
-	return nil
+	err = s.txm.RunInTX(func(tx repo.TX) error {
+		if err := s.enforce(ctx, tx); err != nil {
+			return err
+		}
+		if err := s.envrepo.CreateEnvs(ctx, tx, _envs); err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
 }
 
 // UpdateEnvs is
@@ -64,7 +91,18 @@ func (s *EnvsUsecase) UpdateEnvs(ctx context.Context, envs []*Env) error {
 	if e != nil {
 		return e
 	}
-	return s.repo.UpdateEnvs(ctx, _envs)
+
+	//return s.envrepo.UpdateEnvs(ctx, _envs)
+	err := s.txm.RunInTX(func(tx repo.TX) error {
+		if err := s.enforce(ctx, tx); err != nil {
+			return err
+		}
+		if err := s.envrepo.UpdateEnvs(ctx, tx, _envs); err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
 }
 
 // DeleteEnvs is
@@ -73,6 +111,9 @@ func (s *EnvsUsecase) DeleteEnvs(ctx context.Context, ids []uint32) error {
 		return fmt.Errorf("EmptyIds")
 	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
+		if err := s.enforce(ctx, tx); err != nil {
+			return err
+		}
 		for _, r := range s.required {
 			c, err := r.inst.CountRequire(ctx, nil, repo.RequireEnv, ids)
 			if err != nil {
@@ -82,7 +123,7 @@ func (s *EnvsUsecase) DeleteEnvs(ctx context.Context, ids []uint32) error {
 				return fmt.Errorf("some %s requires", r.name)
 			}
 		}
-		return s.repo.DeleteEnvs(ctx, tx, ids)
+		return s.envrepo.DeleteEnvs(ctx, tx, ids)
 	})
 }
 
@@ -91,7 +132,7 @@ func (s *EnvsUsecase) GetEnvs(ctx context.Context, id uint32) (*Env, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("InvalidId")
 	}
-	_envs, err := s.repo.GetEnvs(ctx, id)
+	_envs, err := s.envrepo.GetEnvs(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +148,7 @@ func (s *EnvsUsecase) ListEnvs(ctx context.Context, filter *ListEnvsFilter) ([]*
 		}
 	}
 
-	_envs, err := s.repo.ListEnvs(ctx, nil, ToDBEnvsFilter(filter))
+	_envs, err := s.envrepo.ListEnvs(ctx, nil, ToDBEnvsFilter(filter))
 	if err != nil {
 		return nil, err
 	}

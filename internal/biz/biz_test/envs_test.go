@@ -2,6 +2,7 @@ package biz_test
 
 import (
 	"appix/internal/biz"
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"errors"
@@ -12,12 +13,14 @@ import (
 )
 
 func TestCreateEnvs(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewEnvsUsecase(
 		envrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -37,11 +40,20 @@ func TestCreateEnvs(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
 	prd := []*biz.Env{
 		{Name: "name"}}
-	call := envrepo.On("CreateEnvs", ctx, mock.Anything).Return(errors.New("repo error"))
+	// enforce error
+	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).
+		Return(false, nil)
 	err := usecase.CreateEnvs(ctx, prd)
+	assert.Error(t, err)
+	t.Log(err)
+	call_authz.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+	call := envrepo.On("CreateEnvs", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.CreateEnvs(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -52,7 +64,7 @@ func TestCreateEnvs(t *testing.T) {
 		{Name: "name"},
 		{Name: "name"},
 	}
-	envrepo.On("CreateEnvs", ctx, mock.Anything).Return(nil)
+	envrepo.On("CreateEnvs", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.CreateEnvs(ctx, []*biz.Env{gc})
 		assert.NoError(t, err)
@@ -60,12 +72,14 @@ func TestCreateEnvs(t *testing.T) {
 }
 
 func TestUpdateEnvs(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewEnvsUsecase(
 		envrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -86,12 +100,21 @@ func TestUpdateEnvs(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
 	prd := []*biz.Env{
 		{Id: 1, Name: "name"},
 	}
-	call := envrepo.On("UpdateEnvs", ctx, mock.Anything).Return(errors.New("repo error"))
+	// enforce error
+	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).
+		Return(false, nil)
 	err := usecase.UpdateEnvs(ctx, prd)
+	assert.Error(t, err)
+	t.Log(err)
+	call_authz.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+	call := envrepo.On("UpdateEnvs", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.UpdateEnvs(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -100,7 +123,7 @@ func TestUpdateEnvs(t *testing.T) {
 		{Id: 1, Name: "name"},
 		{Id: 1, Name: "name-1"},
 	}
-	envrepo.On("UpdateEnvs", ctx, mock.Anything).Return(nil)
+	envrepo.On("UpdateEnvs", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.UpdateEnvs(ctx, []*biz.Env{gc})
 		assert.NoError(t, err)
@@ -109,12 +132,14 @@ func TestUpdateEnvs(t *testing.T) {
 
 func TestDeleteEnvs(t *testing.T) {
 
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewEnvsUsecase(
 		envrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -128,6 +153,15 @@ func TestDeleteEnvs(t *testing.T) {
 	err = usecase.DeleteEnvs(ctx, nil)
 	assert.Error(t, err)
 
+	// enforce error
+	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).
+		Return(false, nil)
+	err = usecase.DeleteEnvs(ctx, ids)
+	assert.Error(t, err)
+	t.Log(err)
+	call_authz.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
 	// Test case: failed on hostgroup need check fail
 	ids = []uint32{1, 2}
 	hgCall := hgrepo.On("CountRequire",
@@ -140,8 +174,9 @@ func TestDeleteEnvs(t *testing.T) {
 	hgCall.Unset()
 	envCall.Unset()
 
-	// repo fail
 	ids = []uint32{1, 2}
+
+	// repo fail
 	hgCall = hgrepo.On("CountRequire",
 		ctx, mock.Anything, repo.RequireEnv, ids).Return(int64(0), nil)
 
@@ -168,12 +203,14 @@ func TestDeleteEnvs(t *testing.T) {
 }
 
 func TestGetEnvs(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewEnvsUsecase(
 		envrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -207,12 +244,14 @@ func TestGetEnvs(t *testing.T) {
 }
 
 func TestListEnvs(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewEnvsUsecase(
 		envrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,

@@ -1,5 +1,7 @@
 package repo
 
+import "context"
+
 const EnvTable = "envs"
 
 type Env struct {
@@ -17,4 +19,14 @@ type EnvsFilter struct {
 
 func (f *EnvsFilter) GetIds() []uint32 {
 	return f.Ids
+}
+
+type EnvsRepo interface {
+	RequireCounter
+	CreateEnvs(ctx context.Context, tx TX, envs []*Env) error
+	UpdateEnvs(ctx context.Context, tx TX, envs []*Env) error
+	DeleteEnvs(ctx context.Context, tx TX, ids []uint32) error
+	GetEnvs(ctx context.Context, id uint32) (*Env, error)
+	ListEnvs(ctx context.Context, tx TX, filter *EnvsFilter) ([]*Env, error)
+	CountEnvs(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }

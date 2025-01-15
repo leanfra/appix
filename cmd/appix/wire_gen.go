@@ -103,14 +103,14 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 		cleanup()
 		return nil, nil, err
 	}
-	envsUsecase := biz.NewEnvsUsecase(envsRepo, hostgroupsRepo, logger, txManager)
-	envsService := service.NewEnvsService(envsUsecase, logger)
-	clustersRepo, err := sqldb.NewClustersRepoGorm(dataGorm, logger)
+	authzRepo, err := sqldb.NewAuthzRepoGorm(authz, dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	authzRepo, err := sqldb.NewAuthzRepoGorm(authz, dataGorm, logger)
+	envsUsecase := biz.NewEnvsUsecase(envsRepo, authzRepo, hostgroupsRepo, logger, txManager)
+	envsService := service.NewEnvsService(envsUsecase, logger)
+	clustersRepo, err := sqldb.NewClustersRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

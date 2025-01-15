@@ -76,16 +76,6 @@ type AppHostgroupsRepo interface {
 	ListAppHostgroups(ctx context.Context, tx TX, filter *AppHostgroupsFilter) ([]*AppHostgroup, error)
 }
 
-type EnvsRepo interface {
-	RequireCounter
-	CreateEnvs(ctx context.Context, envs []*Env) error
-	UpdateEnvs(ctx context.Context, envs []*Env) error
-	DeleteEnvs(ctx context.Context, tx TX, ids []uint32) error
-	GetEnvs(ctx context.Context, id uint32) (*Env, error)
-	ListEnvs(ctx context.Context, tx TX, filter *EnvsFilter) ([]*Env, error)
-	CountEnvs(ctx context.Context, tx TX, filter CountFilter) (int64, error)
-}
-
 type FeaturesRepo interface {
 	RequireCounter
 	CreateFeatures(ctx context.Context, features []*Feature) error
