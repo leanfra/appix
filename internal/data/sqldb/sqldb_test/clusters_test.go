@@ -25,7 +25,7 @@ func createBaseClusters(t *testing.T, data []*repo.Cluster) {
 			{Name: "nk8s-1", Description: "non-k8s-1 cluster"},
 		}
 	}
-	if err := clusterRepo.CreateClusters(context.Background(), data); err != nil {
+	if err := clusterRepo.CreateClusters(context.Background(), nil, data); err != nil {
 		t.Fatal(err)
 	}
 
@@ -68,7 +68,7 @@ func testCreateClustersSuccess(t *testing.T) {
 		{Name: "k8s-0", Description: "k8s-0 cluster"},
 		{Name: "nk8s-1", Description: "non-k8s-1 cluster"},
 	}
-	err := clusterRepo.CreateClusters(context.Background(), envs)
+	err := clusterRepo.CreateClusters(context.Background(), nil, envs)
 	assert.NoError(t, err)
 }
 
@@ -78,7 +78,7 @@ func testCreateClustersError(t *testing.T) {
 		{Name: "k8s-0", Description: "k8s-0 cluster"},
 		{Name: "nk8s-1", Description: "non-k8s-1 cluster"},
 	}
-	err := clusterRepo.CreateClusters(context.Background(), envs)
+	err := clusterRepo.CreateClusters(context.Background(), nil, envs)
 	assert.Error(t, err)
 }
 
@@ -90,7 +90,7 @@ func testUpdateClustersSuccess(t *testing.T) {
 	createBaseClusters(t, envs)
 
 	envs[0].Name = "prod"
-	err := clusterRepo.UpdateClusters(context.Background(), envs)
+	err := clusterRepo.UpdateClusters(context.Background(), nil, envs)
 	assert.NoError(t, err)
 }
 
@@ -101,7 +101,7 @@ func testUpdateClustersError(t *testing.T) {
 	}
 	createBaseClusters(t, envs)
 	envs[1].Name = "k8s-0"
-	err := clusterRepo.UpdateClusters(context.Background(), envs)
+	err := clusterRepo.UpdateClusters(context.Background(), nil, envs)
 	assert.Error(t, err)
 }
 

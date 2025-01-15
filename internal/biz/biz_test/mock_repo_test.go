@@ -650,13 +650,13 @@ type MockClustersRepo struct {
 	mock.Mock
 }
 
-func (m *MockClustersRepo) CreateClusters(ctx context.Context, c []*repo.Cluster) error {
-	args := m.Called(ctx, c)
+func (m *MockClustersRepo) CreateClusters(ctx context.Context, tx repo.TX, c []*repo.Cluster) error {
+	args := m.Called(ctx, tx, c)
 	return args.Error(0)
 }
 
-func (m *MockClustersRepo) UpdateClusters(ctx context.Context, c []*repo.Cluster) error {
-	args := m.Called(ctx, c)
+func (m *MockClustersRepo) UpdateClusters(ctx context.Context, tx repo.TX, c []*repo.Cluster) error {
+	args := m.Called(ctx, tx, c)
 	return args.Error(0)
 }
 

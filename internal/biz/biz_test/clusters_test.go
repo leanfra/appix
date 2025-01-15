@@ -2,6 +2,7 @@ package biz_test
 
 import (
 	"appix/internal/biz"
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"errors"
@@ -16,8 +17,10 @@ func TestCreateClusters(t *testing.T) {
 	txm := new(MockTXManager)
 	clsrepo := new(MockClustersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewClustersUsecase(
 		clsrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -37,11 +40,21 @@ func TestCreateClusters(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
+	ctx = context.WithValue(ctx, data.UserName, "admin")
+	// authzrepo enforce false
+	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, nil)
 	prd := []*biz.Cluster{
 		{Name: "name"}}
-	call := clsrepo.On("CreateClusters", ctx, mock.Anything).Return(errors.New("repo error"))
 	err := usecase.CreateClusters(ctx, prd)
+	assert.Error(t, err)
+	t.Log(err)
+	call_authz.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+	call := clsrepo.On("CreateClusters", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.CreateClusters(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -52,7 +65,7 @@ func TestCreateClusters(t *testing.T) {
 		{Name: "name"},
 		{Name: "name"},
 	}
-	clsrepo.On("CreateClusters", ctx, mock.Anything).Return(nil)
+	clsrepo.On("CreateClusters", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.CreateClusters(ctx, []*biz.Cluster{gc})
 		assert.NoError(t, err)
@@ -64,8 +77,10 @@ func TestUpdateClusters(t *testing.T) {
 	txm := new(MockTXManager)
 	clsrepo := new(MockClustersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewClustersUsecase(
 		clsrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -86,12 +101,22 @@ func TestUpdateClusters(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
+	ctx = context.WithValue(ctx, data.UserName, "admin")
+
+	// authzrepo enforce false
+	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, nil)
 	prd := []*biz.Cluster{
-		{Id: 1, Name: "name"},
-	}
-	call := clsrepo.On("UpdateClusters", ctx, mock.Anything).Return(errors.New("repo error"))
-	err := usecase.UpdateClusters(ctx, prd)
+		{Name: "name"}}
+	err := usecase.CreateClusters(ctx, prd)
+	assert.Error(t, err)
+	t.Log(err)
+	call_authz.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+	call := clsrepo.On("UpdateClusters", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.UpdateClusters(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -100,7 +125,7 @@ func TestUpdateClusters(t *testing.T) {
 		{Id: 1, Name: "name"},
 		{Id: 1, Name: "name-1"},
 	}
-	clsrepo.On("UpdateClusters", ctx, mock.Anything).Return(nil)
+	clsrepo.On("UpdateClusters", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.UpdateClusters(ctx, []*biz.Cluster{gc})
 		assert.NoError(t, err)
@@ -113,8 +138,10 @@ func TestDeleteClusters(t *testing.T) {
 	txm := new(MockTXManager)
 	clsrepo := new(MockClustersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewClustersUsecase(
 		clsrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -127,6 +154,20 @@ func TestDeleteClusters(t *testing.T) {
 
 	err = usecase.DeleteClusters(ctx, nil)
 	assert.Error(t, err)
+
+	// enforce error
+	ctx = context.WithValue(ctx, data.UserName, "admin")
+
+	// authzrepo enforce false
+	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, nil)
+	prd := []*biz.Cluster{
+		{Name: "name"}}
+	err = usecase.CreateClusters(ctx, prd)
+	assert.Error(t, err)
+	t.Log(err)
+	call_authz.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(true, nil)
 
 	// Test case: failed on hostgroup need check fail
 	ids = []uint32{1, 2}
@@ -172,8 +213,10 @@ func TestGetClusters(t *testing.T) {
 	txm := new(MockTXManager)
 	clsrepo := new(MockClustersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewClustersUsecase(
 		clsrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -211,8 +254,10 @@ func TestListClusters(t *testing.T) {
 	txm := new(MockTXManager)
 	clsrepo := new(MockClustersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewClustersUsecase(
 		clsrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,

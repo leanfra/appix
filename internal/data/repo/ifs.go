@@ -76,16 +76,6 @@ type AppHostgroupsRepo interface {
 	ListAppHostgroups(ctx context.Context, tx TX, filter *AppHostgroupsFilter) ([]*AppHostgroup, error)
 }
 
-type ClustersRepo interface {
-	RequireCounter
-	CreateClusters(ctx context.Context, cs []*Cluster) error
-	UpdateClusters(ctx context.Context, cs []*Cluster) error
-	DeleteClusters(ctx context.Context, tx TX, ids []uint32) error
-	GetClusters(ctx context.Context, id uint32) (*Cluster, error)
-	ListClusters(ctx context.Context, tx TX, filter *ClustersFilter) ([]*Cluster, error)
-	CountClusters(ctx context.Context, tx TX, filter CountFilter) (int64, error)
-}
-
 type DatacentersRepo interface {
 	RequireCounter
 	CreateDatacenters(ctx context.Context, dcs []*Datacenter) error

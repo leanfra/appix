@@ -1,5 +1,7 @@
 package repo
 
+import "context"
+
 const ClusterTable = "clusters"
 
 type Cluster struct {
@@ -17,4 +19,14 @@ type ClustersFilter struct {
 
 func (f *ClustersFilter) GetIds() []uint32 {
 	return f.Ids
+}
+
+type ClustersRepo interface {
+	RequireCounter
+	CreateClusters(ctx context.Context, tx TX, cs []*Cluster) error
+	UpdateClusters(ctx context.Context, tx TX, cs []*Cluster) error
+	DeleteClusters(ctx context.Context, tx TX, ids []uint32) error
+	GetClusters(ctx context.Context, id uint32) (*Cluster, error)
+	ListClusters(ctx context.Context, tx TX, filter *ClustersFilter) ([]*Cluster, error)
+	CountClusters(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }

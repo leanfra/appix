@@ -30,9 +30,9 @@ func NewClustersRepoGorm(data *DataGorm, logger log.Logger) (repo.ClustersRepo, 
 }
 
 // CreateClusters is
-func (d *ClustersRepoGorm) CreateClusters(ctx context.Context, cs []*repo.Cluster) error {
+func (d *ClustersRepoGorm) CreateClusters(ctx context.Context, tx repo.TX, cs []*repo.Cluster) error {
 
-	r := d.data.DB.WithContext(ctx).Create(cs)
+	r := d.data.WithTX(tx).WithContext(ctx).Create(cs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -40,9 +40,9 @@ func (d *ClustersRepoGorm) CreateClusters(ctx context.Context, cs []*repo.Cluste
 }
 
 // UpdateClusters is
-func (d *ClustersRepoGorm) UpdateClusters(ctx context.Context, cs []*repo.Cluster) error {
+func (d *ClustersRepoGorm) UpdateClusters(ctx context.Context, tx repo.TX, cs []*repo.Cluster) error {
 
-	r := d.data.DB.WithContext(ctx).Save(cs)
+	r := d.data.WithTX(tx).WithContext(ctx).Save(cs)
 	if r.Error != nil {
 		return r.Error
 	}
