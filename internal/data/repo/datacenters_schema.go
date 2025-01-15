@@ -1,5 +1,7 @@
 package repo
 
+import "context"
+
 const DatacenterTable = "datacenters"
 
 type Datacenter struct {
@@ -17,4 +19,14 @@ type DatacentersFilter struct {
 
 func (f *DatacentersFilter) GetIds() []uint32 {
 	return f.Ids
+}
+
+type DatacentersRepo interface {
+	RequireCounter
+	CreateDatacenters(ctx context.Context, tx TX, dcs []*Datacenter) error
+	UpdateDatacenters(ctx context.Context, tx TX, dcs []*Datacenter) error
+	DeleteDatacenters(ctx context.Context, tx TX, ids []uint32) error
+	GetDatacenters(ctx context.Context, id uint32) (*Datacenter, error)
+	ListDatacenters(ctx context.Context, tx TX, filter *DatacentersFilter) ([]*Datacenter, error)
+	CountDatacenters(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }

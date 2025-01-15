@@ -2,6 +2,7 @@ package biz_test
 
 import (
 	"appix/internal/biz"
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"errors"
@@ -12,12 +13,14 @@ import (
 )
 
 func TestCreateDatacenters(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user1")
 	txm := new(MockTXManager)
 	dcrepo := new(MockDatacentersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewDatacentersUsecase(
 		dcrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -37,11 +40,20 @@ func TestCreateDatacenters(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
 	prd := []*biz.Datacenter{
 		{Name: "name"}}
-	call := dcrepo.On("CreateDatacenters", ctx, mock.Anything).Return(errors.New("repo error"))
+	// enforce error
+	authz_call := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, nil)
 	err := usecase.CreateDatacenters(ctx, prd)
+	assert.Error(t, err)
+	authz_call.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+
+	call := dcrepo.On("CreateDatacenters", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.CreateDatacenters(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -52,7 +64,7 @@ func TestCreateDatacenters(t *testing.T) {
 		{Name: "name"},
 		{Name: "name"},
 	}
-	dcrepo.On("CreateDatacenters", ctx, mock.Anything).Return(nil)
+	dcrepo.On("CreateDatacenters", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.CreateDatacenters(ctx, []*biz.Datacenter{gc})
 		assert.NoError(t, err)
@@ -60,12 +72,14 @@ func TestCreateDatacenters(t *testing.T) {
 }
 
 func TestUpdateDatacenters(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user1")
 	txm := new(MockTXManager)
 	dcrepo := new(MockDatacentersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewDatacentersUsecase(
 		dcrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -86,12 +100,20 @@ func TestUpdateDatacenters(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
 	prd := []*biz.Datacenter{
 		{Id: 1, Name: "name"},
 	}
-	call := dcrepo.On("UpdateDatacenters", ctx, mock.Anything).Return(errors.New("repo error"))
+	// enforce error
+	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, nil)
 	err := usecase.UpdateDatacenters(ctx, prd)
+	assert.Error(t, err)
+	call_authz.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+	call := dcrepo.On("UpdateDatacenters", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.UpdateDatacenters(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -100,7 +122,7 @@ func TestUpdateDatacenters(t *testing.T) {
 		{Id: 1, Name: "name"},
 		{Id: 1, Name: "name-1"},
 	}
-	dcrepo.On("UpdateDatacenters", ctx, mock.Anything).Return(nil)
+	dcrepo.On("UpdateDatacenters", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.UpdateDatacenters(ctx, []*biz.Datacenter{gc})
 		assert.NoError(t, err)
@@ -109,12 +131,14 @@ func TestUpdateDatacenters(t *testing.T) {
 
 func TestDeleteDatacenters(t *testing.T) {
 
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user1")
 	txm := new(MockTXManager)
 	dcrepo := new(MockDatacentersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewDatacentersUsecase(
 		dcrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -128,8 +152,16 @@ func TestDeleteDatacenters(t *testing.T) {
 	err = usecase.DeleteDatacenters(ctx, nil)
 	assert.Error(t, err)
 
-	// Test case: failed on hostgroup need check fail
 	ids = []uint32{1, 2}
+	// enforce error
+	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, nil)
+	err = usecase.DeleteDatacenters(ctx, ids)
+	assert.Error(t, err)
+	call_authz.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(true, nil)
+
+	// Test case: failed on hostgroup need check fail
 	hgCall := hgrepo.On("CountRequire",
 		ctx, mock.Anything, repo.RequireDatacenter, ids).Return(int64(1), nil)
 
@@ -172,8 +204,10 @@ func TestGetDatacenters(t *testing.T) {
 	txm := new(MockTXManager)
 	dcrepo := new(MockDatacentersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewDatacentersUsecase(
 		dcrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,
@@ -211,8 +245,10 @@ func TestListDatacenters(t *testing.T) {
 	txm := new(MockTXManager)
 	dcrepo := new(MockDatacentersRepo)
 	hgrepo := new(MockHostgroupsRepo)
+	authzrepo := new(MockAuthzRepo)
 	usecase := biz.NewDatacentersUsecase(
 		dcrepo,
+		authzrepo,
 		hgrepo,
 		nil,
 		txm,

@@ -31,9 +31,10 @@ func NewDatacentersRepoGorm(data *DataGorm, logger log.Logger) (repo.Datacenters
 
 // CreateDatacenters is
 func (d *DatacentersRepoGorm) CreateDatacenters(ctx context.Context,
+	tx repo.TX,
 	dcs []*repo.Datacenter) error {
 
-	r := d.data.DB.WithContext(ctx).Create(dcs)
+	r := d.data.WithTX(tx).WithContext(ctx).Create(dcs)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -43,9 +44,10 @@ func (d *DatacentersRepoGorm) CreateDatacenters(ctx context.Context,
 
 // UpdateDatacenters is
 func (d *DatacentersRepoGorm) UpdateDatacenters(ctx context.Context,
+	tx repo.TX,
 	dcs []*repo.Datacenter) error {
 
-	r := d.data.DB.WithContext(ctx).Save(dcs)
+	r := d.data.WithTX(tx).WithContext(ctx).Save(dcs)
 	if r.Error != nil {
 		return r.Error
 	}

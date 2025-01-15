@@ -20,7 +20,7 @@ var updateDatacenterCmd = &cobra.Command{
 	Use:     "datacenter",
 	Short:   "Update datacenter",
 	Long:    `Update one or more datacenters with the specified ID and fields.`,
-	Aliases: []string{"datacenter", "datacenters", "dc"},
+	Aliases: []string{"datacenters", "dc"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

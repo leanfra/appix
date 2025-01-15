@@ -21,7 +21,7 @@ var deleteDatacenterCmd = &cobra.Command{
 For example:
   appix delete datacenter 1 2 3`,
 	Args:    cobra.MinimumNArgs(1),
-	Aliases: []string{"datacenter", "datacenters", "dc"},
+	Aliases: []string{"datacenters", "dc"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

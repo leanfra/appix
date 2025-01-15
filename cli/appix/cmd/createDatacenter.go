@@ -26,6 +26,7 @@ Datacenter contains clusters.
 Examples:
   appix create datacenter --name dc1 --desc "Primary datacenter"
   appix create datacenter --name dc2 --desc "Backup datacenter"`,
+	Aliases: []string{"dc", "datacenters"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

@@ -605,12 +605,12 @@ type MockDatacentersRepo struct {
 	mock.Mock
 }
 
-func (m *MockDatacentersRepo) CreateDatacenters(ctx context.Context, d []*repo.Datacenter) error {
+func (m *MockDatacentersRepo) CreateDatacenters(ctx context.Context, tx repo.TX, d []*repo.Datacenter) error {
 	args := m.Called(ctx, d)
 	return args.Error(0)
 }
 
-func (m *MockDatacentersRepo) UpdateDatacenters(ctx context.Context, d []*repo.Datacenter) error {
+func (m *MockDatacentersRepo) UpdateDatacenters(ctx context.Context, tx repo.TX, d []*repo.Datacenter) error {
 	args := m.Called(ctx, d)
 	return args.Error(0)
 }

@@ -21,7 +21,7 @@ var deleteClusterCmd = &cobra.Command{
 For example:
   appix delete cluster 1 2 3`,
 	Args:    cobra.MinimumNArgs(1),
-	Aliases: []string{"cluster", "clusters", "cl"},
+	Aliases: []string{"clusters", "cls"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

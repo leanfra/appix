@@ -20,7 +20,7 @@ var updateClusterCmd = &cobra.Command{
 	Use:     "cluster",
 	Short:   "Update cluster",
 	Long:    `Update one or more clusters with the specified ID and fields.`,
-	Aliases: []string{"cluster", "clusters"},
+	Aliases: []string{"cls", "clusters"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

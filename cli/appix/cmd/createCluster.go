@@ -25,6 +25,7 @@ Cluster contains hostgroups.
 Examples:
   appix create cluster --name cluster1 --desc "Production Cluster" --env prod --dc dc1
   appix create cluster --name cluster2 --desc "Development Cluster" --env dev --dc dc2`,
+	Aliases: []string{"clusters", "cls"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

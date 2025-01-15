@@ -23,6 +23,7 @@ Examples:
   appix get datacenter --ids 1,2,3                 # Filter by IDs
   appix get datacenter --page 1 --page-size 10     # With pagination
   appix get datacenter --names dc1 --format yaml   # Custom format`,
+	Aliases: []string{"dc", "datacenters"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

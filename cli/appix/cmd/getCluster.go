@@ -23,6 +23,7 @@ Examples:
   appix get cluster --ids 1,2,3                 # Filter by IDs
   appix get cluster --page 1 --page-size 10     # With pagination
   appix get cluster --names prod --format yaml   # Combined filters`,
+	Aliases: []string{"clusters", "cls"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {
