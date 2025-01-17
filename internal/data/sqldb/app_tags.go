@@ -117,7 +117,7 @@ func (d *AppTagsRepoGorm) CountRequire(ctx context.Context,
 	case repo.RequireTag:
 		condition = "tag_id in (?)"
 	default:
-		return 0, nil
+		return 0, repo.ErrorRequireIds
 	}
 
 	var count int64

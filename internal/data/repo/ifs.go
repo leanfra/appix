@@ -30,22 +30,13 @@ const (
 	RequireDatacenter RequireType = "datacenter"
 	RequireCluster    RequireType = "cluster"
 	RequireApp        RequireType = "app"
+	RequireUser       RequireType = "user"
 )
 
-var ErrorRequireIds = errors.New("invalid require ids")
+var ErrorRequireIds = errors.New("invalid require ids or types")
 
 type RequireCounter interface {
 	CountRequire(ctx context.Context, tx TX, need RequireType, ids []uint32) (int64, error)
-}
-
-type ApplicationsRepo interface {
-	RequireCounter
-	CreateApplications(ctx context.Context, tx TX, apps []*Application) error
-	UpdateApplications(ctx context.Context, tx TX, apps []*Application) error
-	DeleteApplications(ctx context.Context, tx TX, ids []uint32) error
-	GetApplications(ctx context.Context, id uint32) (*Application, error)
-	ListApplications(ctx context.Context, tx TX, filter *ApplicationsFilter) ([]*Application, error)
-	//CountApplications(ctx context.Context, tx TX, filter *ApplicationsFilter) (int64, error)
 }
 
 type AppTagsRepo interface {
@@ -111,20 +102,4 @@ type HostgroupFeaturesRepo interface {
 		filter *HostgroupFeaturesFilter) ([]*HostgroupFeature, error)
 	ListHostgroupMatchFeatures(ctx context.Context, tx TX,
 		filter *HostgroupMatchFeaturesFilter) ([]uint32, error)
-}
-
-type AdminRepo interface {
-	CreateUsers(ctx context.Context, tx TX, users []*User) error
-	UpdateUsers(ctx context.Context, tx TX, users []*User) error
-	DeleteUsers(ctx context.Context, tx TX, ids []uint32) error
-	GetUsers(ctx context.Context, tx TX, id uint32) (*User, error)
-	ListUsers(ctx context.Context, tx TX, filter *UsersFilter) ([]*User, error)
-	Logout(ctx context.Context, id uint32) error
-	CountUsers(ctx context.Context, tx TX, filter CountFilter) (int64, error)
-}
-
-type TokenRepo interface {
-	CreateToken(ctx context.Context, claims TokenClaims) (string, error)
-	DeleteToken(ctx context.Context, token string) error
-	ValidateToken(ctx context.Context, token string) (TokenClaims, error)
 }

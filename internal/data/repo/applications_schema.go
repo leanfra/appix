@@ -1,5 +1,7 @@
 package repo
 
+import "context"
+
 const ApplicationTable = "applications"
 
 type Application struct {
@@ -25,3 +27,13 @@ type ApplicationsFilter struct {
 const IsStatefulTrue = "true"
 const IsStatefulFalse = "false"
 const IsStatefulNone = ""
+
+type ApplicationsRepo interface {
+	RequireCounter
+	CreateApplications(ctx context.Context, tx TX, apps []*Application) error
+	UpdateApplications(ctx context.Context, tx TX, apps []*Application) error
+	DeleteApplications(ctx context.Context, tx TX, ids []uint32) error
+	GetApplications(ctx context.Context, id uint32) (*Application, error)
+	ListApplications(ctx context.Context, tx TX, filter *ApplicationsFilter) ([]*Application, error)
+	//CountApplications(ctx context.Context, tx TX, filter *ApplicationsFilter) (int64, error)
+}

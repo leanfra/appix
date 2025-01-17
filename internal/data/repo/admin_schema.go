@@ -1,5 +1,7 @@
 package repo
 
+import "context"
+
 const UserTable = "users"
 
 type User struct {
@@ -21,4 +23,14 @@ type UsersFilter struct {
 
 func (f *UsersFilter) GetIds() []uint32 {
 	return f.Ids
+}
+
+type AdminRepo interface {
+	CreateUsers(ctx context.Context, tx TX, users []*User) error
+	UpdateUsers(ctx context.Context, tx TX, users []*User) error
+	DeleteUsers(ctx context.Context, tx TX, ids []uint32) error
+	GetUsers(ctx context.Context, tx TX, id uint32) (*User, error)
+	ListUsers(ctx context.Context, tx TX, filter *UsersFilter) ([]*User, error)
+	Logout(ctx context.Context, id uint32) error
+	CountUsers(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }

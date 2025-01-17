@@ -139,7 +139,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 	applicationsUsecase := biz.NewApplicationsUsecase(applicationsRepo, appTagsRepo, appFeaturesRepo, appHostgroupsRepo, productsRepo, teamsRepo, featuresRepo, tagsRepo, hostgroupsRepo, hostgroupFeaturesRepo, authzRepo, adminRepo, logger, txManager)
 	applicationsService := service.NewApplicationsService(applicationsUsecase, logger)
 	tokenRepo := data.NewJwtMemRepo(admin)
-	adminUsecase := biz.NewAdminUsecase(admin, adminRepo, tokenRepo, authzRepo, teamsRepo, txManager, logger)
+	adminUsecase := biz.NewAdminUsecase(admin, adminRepo, tokenRepo, authzRepo, teamsRepo, applicationsRepo, txManager, logger)
 	adminService := service.NewAdminService(adminUsecase, logger)
 	grpcServer := server.NewGRPCServer(confServer, admin, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, adminService, logger)
 	httpServer := server.NewHTTPServer(confServer, admin, tagsService, featuresService, teamsService, productsService, envsService, clustersService, datacentersService, hostgroupsService, applicationsService, adminService, logger)

@@ -150,7 +150,21 @@ func (d *TeamsRepoGorm) CountRequire(ctx context.Context,
 		return 0, repo.ErrorRequireIds
 	}
 
-	// require nothing
-	return 0, nil
+	var condition string
+	switch need {
+	case repo.RequireUser:
+		condition = "leader_id in (?)"
+	default:
+		return 0, repo.ErrorRequireIds
+	}
+
+	var count int64
+	r := d.data.WithTX(tx).WithContext(ctx).Model(&repo.Team{}).
+		Where(condition, ids).Count(&count)
+	if r.Error != nil {
+		return 0, r.Error
+	}
+
+	return count, nil
 
 }

@@ -14,17 +14,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AdminUsecase struct {
-	adminRepo repo.AdminRepo
-	tokenRepo repo.TokenRepo
-	authzRepo repo.AuthzRepo
-	teamsRepo repo.TeamsRepo
-	txm       repo.TxManager
-	log       *log.Helper
-	conf      *conf.Admin
-	adminUser *repo.User
-}
-
 const AdminUser = "admin"
 const AdminTeam = "admin-team"
 
@@ -49,12 +38,25 @@ func CheckPassword(hashedPassword, password string) bool {
 	return err == nil
 }
 
+type AdminUsecase struct {
+	adminRepo repo.AdminRepo
+	tokenRepo repo.TokenRepo
+	authzRepo repo.AuthzRepo
+	teamsRepo repo.TeamsRepo
+	txm       repo.TxManager
+	log       *log.Helper
+	conf      *conf.Admin
+	adminUser *repo.User
+	required  []requiredBy
+}
+
 func NewAdminUsecase(
 	conf *conf.Admin,
 	adminRepo repo.AdminRepo,
 	tokenRepo repo.TokenRepo,
 	authzRepo repo.AuthzRepo,
 	teamsRepo repo.TeamsRepo,
+	appsRepo repo.ApplicationsRepo,
 	txm repo.TxManager,
 	logger log.Logger,
 ) *AdminUsecase {
@@ -67,6 +69,10 @@ func NewAdminUsecase(
 		txm:       txm,
 		log:       log.NewHelper(logger),
 		conf:      conf,
+		required: []requiredBy{
+			{name: "team", inst: teamsRepo},
+			{name: "app", inst: appsRepo},
+		},
 	}
 
 	// get admin user
@@ -294,10 +300,18 @@ func (s *AdminUsecase) DeleteUsers(ctx context.Context, tx repo.TX, ids []uint32
 	if err != nil {
 		return errors.Join(errors.New("DeleteUsers failed"), err)
 	}
-	// return s.adminRepo.DeleteUsers(ctx, tx, ids)
 	err = s.txm.RunInTX(func(tx repo.TX) error {
 		if err := s.enforceUserAdmin("", "", usernameStr); err != nil {
 			return err
+		}
+		for _, r := range s.required {
+			c, err := r.inst.CountRequire(ctx, tx, repo.RequireUser, ids)
+			if err != nil {
+				return err
+			}
+			if c > 0 {
+				return fmt.Errorf("some %s requires", r.name)
+			}
 		}
 		err = s.adminRepo.DeleteUsers(ctx, tx, ids)
 		if err != nil {

@@ -153,8 +153,10 @@ func (d *ApplicationsRepoGorm) CountRequire(ctx context.Context,
 		condition = "product_id in (?)"
 	case repo.RequireTeam:
 		condition = "team_id in (?)"
+	case repo.RequireUser:
+		condition = "owner_id in (?)"
 	default:
-		return 0, nil
+		return 0, repo.ErrorRequireIds
 	}
 
 	var count int64

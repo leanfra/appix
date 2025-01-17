@@ -98,7 +98,7 @@ func (d *HostgroupProductsRepoGorm) CountRequire(ctx context.Context,
 	case repo.RequireProduct:
 		condition = "product_id in (?)"
 	default:
-		return 0, nil
+		return 0, repo.ErrorRequireIds
 	}
 
 	var count int64

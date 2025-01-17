@@ -1,6 +1,9 @@
 package repo
 
-import "errors"
+import (
+	"context"
+	"errors"
+)
 
 type TokenClaims map[string]string
 
@@ -21,4 +24,10 @@ type ApiKeysFilter struct {
 	Keys     []string
 	Page     uint32
 	PageSize uint32
+}
+
+type TokenRepo interface {
+	CreateToken(ctx context.Context, claims TokenClaims) (string, error)
+	DeleteToken(ctx context.Context, token string) error
+	ValidateToken(ctx context.Context, token string) (TokenClaims, error)
 }
