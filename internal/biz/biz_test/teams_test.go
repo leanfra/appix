@@ -2,6 +2,7 @@ package biz_test
 
 import (
 	"appix/internal/biz"
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"errors"
@@ -13,14 +14,16 @@ import (
 
 // TestCreateTeams tests the CreateTeams method of the TeamsUsecase.
 func TestCreateTeams(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user")
 	teamRepo := new(MockTeamsRepo)
+	authzrepo := new(MockAuthzRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hgteamrepo := new(MockHostgroupTeamsRepo)
 	apprepo := new(MockApplicationsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTeamsUsecase(
 		teamRepo,
+		authzrepo,
 		hgrepo,
 		hgteamrepo,
 		apprepo,
@@ -71,15 +74,24 @@ func TestCreateTeams(t *testing.T) {
 	err = usecase.CreateTeams(ctx, teams)
 	assert.Error(t, err)
 
+	// enforce fail
+	teams = []*biz.Team{{Name: "valid", Code: "validcode", Leader: "leader1"}}
+	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce failed"))
+	err = usecase.CreateTeams(ctx, teams)
+	assert.Error(t, err)
+	authcall.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
 	// Test case: Creation fails
 	teams = []*biz.Team{{Name: "valid", Code: "validcode", Leader: "leader1"}}
-	repoCall := teamRepo.On("CreateTeams", ctx, mock.Anything).Return(errors.New("creation failed"))
+	repoCall := teamRepo.On("CreateTeams", ctx, mock.Anything, mock.Anything).Return(errors.New("creation failed"))
 	err = usecase.CreateTeams(ctx, teams)
 	assert.Error(t, err)
 	repoCall.Unset()
 
 	// Test case: Successful creation
-	teamRepo.On("CreateTeams", ctx, mock.Anything).Return(nil)
+	teamRepo.On("CreateTeams", ctx, mock.Anything, mock.Anything).Return(nil)
 	teams = []*biz.Team{{Name: "name", Code: "validcode", Leader: "leader1"}}
 	err = usecase.CreateTeams(ctx, teams)
 	assert.NoError(t, err)
@@ -98,14 +110,16 @@ func TestCreateTeams(t *testing.T) {
 }
 
 func TestUpdateTeams(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user")
 	teamRepo := new(MockTeamsRepo)
+	authzrepo := new(MockAuthzRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hgteamrepo := new(MockHostgroupTeamsRepo)
 	apprepo := new(MockApplicationsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTeamsUsecase(
 		teamRepo,
+		authzrepo,
 		hgrepo,
 		hgteamrepo,
 		apprepo,
@@ -163,15 +177,23 @@ func TestUpdateTeams(t *testing.T) {
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.Error(t, err)
 
+	// enforce fail
+	teams = []*biz.Team{{Id: 1, Name: "valid", Code: "validcode", Leader: "leader1"}}
+	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce failed"))
+	err = usecase.UpdateTeams(ctx, teams)
+	assert.Error(t, err)
+	authcall.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
 	// Test case: Creation fails
 	teams = []*biz.Team{{Id: 1, Name: "valid", Code: "validcode", Leader: "leader1"}}
-	repoCall := teamRepo.On("UpdateTeams", ctx, mock.Anything).Return(errors.New("creation failed"))
+	repoCall := teamRepo.On("UpdateTeams", ctx, mock.Anything, mock.Anything).Return(errors.New("creation failed"))
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.Error(t, err)
 	repoCall.Unset()
 
 	// Test case: Successful creation
-	teamRepo.On("UpdateTeams", ctx, mock.Anything).Return(nil)
+	teamRepo.On("UpdateTeams", ctx, mock.Anything, mock.Anything).Return(nil)
 	teams = []*biz.Team{{Id: 1, Name: "name", Code: "validcode", Leader: "leader1"}}
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.NoError(t, err)
@@ -190,14 +212,16 @@ func TestUpdateTeams(t *testing.T) {
 }
 
 func TestDeleteTeams(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "user")
 	teamRepo := new(MockTeamsRepo)
+	authzrepo := new(MockAuthzRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hgteamrepo := new(MockHostgroupTeamsRepo)
 	apprepo := new(MockApplicationsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTeamsUsecase(
 		teamRepo,
+		authzrepo,
 		hgrepo,
 		hgteamrepo,
 		apprepo,
@@ -212,6 +236,13 @@ func TestDeleteTeams(t *testing.T) {
 
 	err = usecase.DeleteTeams(ctx, nil)
 	assert.Error(t, err)
+
+	// enforce fail
+	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce failed"))
+	err = usecase.DeleteTeams(ctx, teams)
+	assert.Error(t, err)
+	authcall.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
 
 	// Test case: failed on hostgroup need check fail
 	teams = []uint32{1, 2}
@@ -288,12 +319,14 @@ func TestDeleteTeams(t *testing.T) {
 func TestGetTeams(t *testing.T) {
 	ctx := context.Background()
 	teamRepo := new(MockTeamsRepo)
+	authzrepo := new(MockAuthzRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hgteamrepo := new(MockHostgroupTeamsRepo)
 	apprepo := new(MockApplicationsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTeamsUsecase(
 		teamRepo,
+		authzrepo,
 		hgrepo,
 		hgteamrepo,
 		apprepo,
@@ -341,12 +374,14 @@ func TestGetTeams(t *testing.T) {
 func TestListTeams(t *testing.T) {
 	ctx := context.Background()
 	teamRepo := new(MockTeamsRepo)
+	authzrepo := new(MockAuthzRepo)
 	hgrepo := new(MockHostgroupsRepo)
 	hgteamrepo := new(MockHostgroupTeamsRepo)
 	apprepo := new(MockApplicationsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTeamsUsecase(
 		teamRepo,
+		authzrepo,
 		hgrepo,
 		hgteamrepo,
 		apprepo,

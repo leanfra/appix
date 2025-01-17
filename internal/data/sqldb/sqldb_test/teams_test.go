@@ -26,7 +26,7 @@ func createBaseTeamsData(data []*repo.Team) error {
 	if data != nil {
 		teams = data
 	}
-	err := teamsRepo.CreateTeams(context.Background(), teams)
+	err := teamsRepo.CreateTeams(context.Background(), nil, teams)
 	return err
 }
 
@@ -44,7 +44,7 @@ func TestCreateTeams_Failure(t *testing.T) {
 		{Name: "Team1"},
 	}
 
-	err := teamsRepo.CreateTeams(context.Background(), teams)
+	err := teamsRepo.CreateTeams(context.Background(), nil, teams)
 	assert.Error(t, err)
 
 	teams = []*repo.Team{
@@ -52,7 +52,7 @@ func TestCreateTeams_Failure(t *testing.T) {
 		{Name: "Team2", Code: "team1", Leader: "leader2", Description: "description2"},
 	}
 
-	err = teamsRepo.CreateTeams(context.Background(), teams)
+	err = teamsRepo.CreateTeams(context.Background(), nil, teams)
 	assert.Error(t, err)
 }
 
@@ -63,7 +63,7 @@ func TestUpdateTeams_SuccessfulUpdate_ReturnsNil(t *testing.T) {
 		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
 	}
 
-	err := teamsRepo.CreateTeams(context.Background(), teams)
+	err := teamsRepo.CreateTeams(context.Background(), nil, teams)
 	assert.NoError(t, err)
 
 	teams[0].Name = "Team1_updated"
@@ -72,7 +72,7 @@ func TestUpdateTeams_SuccessfulUpdate_ReturnsNil(t *testing.T) {
 	t.Logf("Updating teams: %v", *teams[0])
 	t.Logf("Updating teams: %v", *teams[1])
 
-	err = teamsRepo.UpdateTeams(context.Background(), teams)
+	err = teamsRepo.UpdateTeams(context.Background(), nil, teams)
 	assert.NoError(t, err)
 }
 
@@ -83,7 +83,7 @@ func TestUpdateTeams_UpdateFails_ReturnsError(t *testing.T) {
 		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
 	}
 
-	err := teamsRepo.CreateTeams(context.Background(), teams)
+	err := teamsRepo.CreateTeams(context.Background(), nil, teams)
 	assert.NoError(t, err)
 
 	teams[0].Name = "Team2"
@@ -91,7 +91,7 @@ func TestUpdateTeams_UpdateFails_ReturnsError(t *testing.T) {
 	t.Logf("Updating teams: %v", *teams[0])
 	t.Logf("Updating teams: %v", *teams[1])
 
-	err = teamsRepo.UpdateTeams(context.Background(), teams)
+	err = teamsRepo.UpdateTeams(context.Background(), nil, teams)
 	assert.Error(t, err)
 }
 
@@ -122,7 +122,7 @@ func TestGetTeams_Success(t *testing.T) {
 		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
 	}
 
-	err := teamsRepo.CreateTeams(context.Background(), teams)
+	err := teamsRepo.CreateTeams(context.Background(), nil, teams)
 	assert.NoError(t, err)
 
 	team, err := teamsRepo.GetTeams(context.Background(), teams[0].ID)

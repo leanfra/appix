@@ -89,7 +89,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 		cleanup()
 		return nil, nil, err
 	}
-	teamsUsecase := biz.NewTeamsUsecase(teamsRepo, hostgroupsRepo, hostgroupTeamsRepo, applicationsRepo, logger, txManager)
+	teamsUsecase := biz.NewTeamsUsecase(teamsRepo, authzRepo, hostgroupsRepo, hostgroupTeamsRepo, applicationsRepo, logger, txManager)
 	teamsService := service.NewTeamsService(teamsUsecase, logger)
 	productsRepo, err := sqldb.NewProductsRepoGorm(dataGorm, logger)
 	if err != nil {

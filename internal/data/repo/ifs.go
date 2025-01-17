@@ -142,16 +142,6 @@ type TagsRepo interface {
 	CountTags(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }
 
-type TeamsRepo interface {
-	RequireCounter
-	CreateTeams(ctx context.Context, teams []*Team) error
-	UpdateTeams(ctx context.Context, teams []*Team) error
-	DeleteTeams(ctx context.Context, tx TX, ids []uint32) error
-	GetTeams(ctx context.Context, id uint32) (*Team, error)
-	ListTeams(ctx context.Context, tx TX, filter *TeamsFilter) ([]*Team, error)
-	CountTeams(ctx context.Context, tx TX, filter CountFilter) (int64, error)
-}
-
 type AdminRepo interface {
 	CreateUsers(ctx context.Context, tx TX, users []*User) error
 	UpdateUsers(ctx context.Context, tx TX, users []*User) error

@@ -30,8 +30,8 @@ func NewTeamsRepoGorm(data *DataGorm, logger log.Logger) (repo.TeamsRepo, error)
 }
 
 // CreateTeams is
-func (d *TeamsRepoGorm) CreateTeams(ctx context.Context, teams []*repo.Team) error {
-	r := d.data.DB.WithContext(ctx).Create(teams)
+func (d *TeamsRepoGorm) CreateTeams(ctx context.Context, tx repo.TX, teams []*repo.Team) error {
+	r := d.data.WithTX(tx).WithContext(ctx).Create(teams)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -40,8 +40,8 @@ func (d *TeamsRepoGorm) CreateTeams(ctx context.Context, teams []*repo.Team) err
 }
 
 // UpdateTeams is
-func (d *TeamsRepoGorm) UpdateTeams(ctx context.Context, teams []*repo.Team) error {
-	r := d.data.DB.WithContext(ctx).Save(teams)
+func (d *TeamsRepoGorm) UpdateTeams(ctx context.Context, tx repo.TX, teams []*repo.Team) error {
+	r := d.data.WithTX(tx).WithContext(ctx).Save(teams)
 	if r.Error != nil {
 		return r.Error
 	}

@@ -137,16 +137,16 @@ type MockTeamsRepo struct {
 	mock.Mock
 }
 
-func (m *MockTeamsRepo) CreateTeams(ctx context.Context, teams []*repo.Team) error {
-	args := m.Called(ctx, teams)
+func (m *MockTeamsRepo) CreateTeams(ctx context.Context, tx repo.TX, teams []*repo.Team) error {
+	args := m.Called(ctx, tx, teams)
 	for _, t := range teams {
 		fmt.Printf("%v\n", t)
 	}
 	return args.Error(0)
 }
 
-func (m *MockTeamsRepo) UpdateTeams(ctx context.Context, teams []*repo.Team) error {
-	args := m.Called(ctx, teams)
+func (m *MockTeamsRepo) UpdateTeams(ctx context.Context, tx repo.TX, teams []*repo.Team) error {
+	args := m.Called(ctx, tx, teams)
 	return args.Error(0)
 }
 

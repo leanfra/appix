@@ -123,7 +123,7 @@ func NewAdminUsecase(
 			Leader:      AdminUser,
 			Description: "admin team",
 		}
-		err = teamsRepo.CreateTeams(context.Background(), []*repo.Team{_admin_team})
+		err = teamsRepo.CreateTeams(context.Background(), nil, []*repo.Team{_admin_team})
 		if err != nil {
 			panic(err)
 		}

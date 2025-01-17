@@ -4,20 +4,23 @@ import (
 	"context"
 	"fmt"
 
+	"appix/internal/data"
 	"appix/internal/data/repo"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
 type TeamsUsecase struct {
-	teamRepo repo.TeamsRepo
-	txm      repo.TxManager
-	log      *log.Helper
-	required []requiredBy
+	teamRepo  repo.TeamsRepo
+	authzrepo repo.AuthzRepo
+	txm       repo.TxManager
+	log       *log.Helper
+	required  []requiredBy
 }
 
 func NewTeamsUsecase(
 	teamrepo repo.TeamsRepo,
+	authzrepo repo.AuthzRepo,
 	hgrepo repo.HostgroupsRepo,
 	htrepo repo.HostgroupTeamsRepo,
 	apprepo repo.ApplicationsRepo,
@@ -25,9 +28,10 @@ func NewTeamsUsecase(
 	txm repo.TxManager) *TeamsUsecase {
 
 	return &TeamsUsecase{
-		teamRepo: teamrepo,
-		log:      log.NewHelper(logger),
-		txm:      txm,
+		teamRepo:  teamrepo,
+		authzrepo: authzrepo,
+		log:       log.NewHelper(logger),
+		txm:       txm,
 		required: []requiredBy{
 			{inst: hgrepo, name: "hostgroup"},
 			{inst: apprepo, name: "app"},
@@ -45,6 +49,23 @@ func (s *TeamsUsecase) validate(isNew bool, teams []*Team) error {
 	return nil
 }
 
+func (s *TeamsUsecase) enforce(ctx context.Context, tx repo.TX) error {
+	curUser := ctx.Value(data.UserName).(string)
+	ires := repo.NewResource4Sv1("team", "", "", "")
+	can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
+		Sub:      curUser,
+		Resource: ires,
+		Action:   repo.ActWrite,
+	})
+	if err != nil {
+		return err
+	}
+	if !can {
+		return fmt.Errorf("PermissionDenied")
+	}
+	return nil
+}
+
 // CreateTeams is
 func (s *TeamsUsecase) CreateTeams(ctx context.Context, teams []*Team) error {
 	if err := s.validate(true, teams); err != nil {
@@ -56,7 +77,17 @@ func (s *TeamsUsecase) CreateTeams(ctx context.Context, teams []*Team) error {
 		return e
 	}
 
-	return s.teamRepo.CreateTeams(ctx, _teams)
+	err := s.txm.RunInTX(
+		func(tx repo.TX) error {
+			if err := s.enforce(ctx, tx); err != nil {
+				return err
+			}
+			if e := s.teamRepo.CreateTeams(ctx, tx, _teams); e != nil {
+				return e
+			}
+			return nil
+		})
+	return err
 }
 
 // UpdateTeams is
@@ -68,7 +99,18 @@ func (s *TeamsUsecase) UpdateTeams(ctx context.Context, teams []*Team) error {
 	if e != nil {
 		return e
 	}
-	return s.teamRepo.UpdateTeams(ctx, _teams)
+	//return s.teamRepo.UpdateTeams(ctx, _teams)
+	err := s.txm.RunInTX(
+		func(tx repo.TX) error {
+			if err := s.enforce(ctx, tx); err != nil {
+				return err
+			}
+			if e := s.teamRepo.UpdateTeams(ctx, tx, _teams); e != nil {
+				return e
+			}
+			return nil
+		})
+	return err
 }
 
 // DeleteTeams is
@@ -80,6 +122,10 @@ func (s *TeamsUsecase) DeleteTeams(ctx context.Context,
 
 	return s.txm.RunInTX(
 		func(tx repo.TX) error {
+
+			if err := s.enforce(ctx, tx); err != nil {
+				return err
+			}
 
 			for _, r := range s.required {
 				c, err := r.inst.CountRequire(ctx, tx, repo.RequireTeam, ids)
