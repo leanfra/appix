@@ -129,7 +129,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 		cleanup()
 		return nil, nil, err
 	}
-	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, hostgroupTeamsRepo, hostgroupProductsRepo, hostgroupTagsRepo, hostgroupFeaturesRepo, clustersRepo, datacentersRepo, envsRepo, featuresRepo, tagsRepo, teamsRepo, productsRepo, appHostgroupsRepo, logger, txManager)
+	hostgroupsUsecase := biz.NewHostgroupsUsecase(hostgroupsRepo, hostgroupTeamsRepo, hostgroupProductsRepo, hostgroupTagsRepo, hostgroupFeaturesRepo, clustersRepo, datacentersRepo, envsRepo, featuresRepo, tagsRepo, teamsRepo, productsRepo, appHostgroupsRepo, authzRepo, logger, txManager)
 	hostgroupsService := service.NewHostgroupsService(hostgroupsUsecase, logger)
 	adminRepo, err := sqldb.NewAdminRepoGorm(dataGorm, logger)
 	if err != nil {

@@ -76,15 +76,6 @@ type AppHostgroupsRepo interface {
 	ListAppHostgroups(ctx context.Context, tx TX, filter *AppHostgroupsFilter) ([]*AppHostgroup, error)
 }
 
-type HostgroupsRepo interface {
-	RequireCounter
-	CreateHostgroups(ctx context.Context, tx TX, hgs []*Hostgroup) error
-	UpdateHostgroups(ctx context.Context, tx TX, hgs []*Hostgroup) error
-	DeleteHostgroups(ctx context.Context, tx TX, ids []uint32) error
-	GetHostgroups(ctx context.Context, id uint32) (*Hostgroup, error)
-	ListHostgroups(ctx context.Context, tx TX, filter *HostgroupsFilter) ([]*Hostgroup, error)
-	CountHostgroups(ctx context.Context, tx TX, filter CountFilter) (int64, error)
-}
 type HostgroupTeamsRepo interface {
 	RequireCounter
 	CreateHostgroupTeams(ctx context.Context, tx TX, hfs []*HostgroupTeam) error

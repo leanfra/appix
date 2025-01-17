@@ -49,7 +49,7 @@ func (s *ProductsUsecase) validate(isNew bool, ps []*Product) error {
 
 func (s *ProductsUsecase) enforce(ctx context.Context, tx repo.TX) error {
 	curUser := ctx.Value(data.UserName).(string)
-	ires := repo.NewResource4Sv1("team", "", "", "")
+	ires := repo.NewResource4Sv1("product", "", "", "")
 	can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
 		Sub:      curUser,
 		Resource: ires,

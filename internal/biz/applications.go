@@ -240,7 +240,7 @@ func (s *ApplicationsUsecase) enforce(ctx context.Context, tx repo.TX, apps []*A
 		if err != nil {
 			return err
 		}
-		ires := repo.NewResource4Sv1("app", team.Name, app.Name, owner.UserName)
+		ires := repo.NewResource4Sv1("applications", team.Name, app.Name, owner.UserName)
 		can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
 			Sub:      curUserName,
 			Resource: ires,

@@ -2,6 +2,7 @@ package biz_test
 
 import (
 	"appix/internal/biz"
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"errors"
@@ -12,7 +13,8 @@ import (
 )
 
 func TestCreateHostgroup(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -31,7 +33,7 @@ func TestCreateHostgroup(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, nil, txm)
 
 	// bad field
 	bad_field := []*biz.Hostgroup{
@@ -48,14 +50,22 @@ func TestCreateHostgroup(t *testing.T) {
 		t.Logf("bad field: %v", err)
 		assert.Error(t, err)
 	}
-
-	// props count 0
+	// enforce fail
+	teamrepo.On("GetTeams", ctx, mock.Anything, mock.Anything).Return(&repo.Team{
+		2, "team2", "team2code", "team2l", "desc"}, nil)
 	hg := []*biz.Hostgroup{
 		{0, "name", "desc", 1, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
 	}
+	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, errors.New("enforce fail"))
+	err := usecase.CreateHostgroups(ctx, hg)
+	assert.Error(t, err)
+	authcall.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// props count 0
 	//// cluster
 	clscall := clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err := usecase.CreateHostgroups(ctx, hg)
+	err = usecase.CreateHostgroups(ctx, hg)
 	assert.Error(t, err)
 	clscall.Unset()
 
@@ -399,7 +409,8 @@ func TestCreateHostgroup(t *testing.T) {
 }
 
 func TestUpdateHostgroup(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -418,7 +429,7 @@ func TestUpdateHostgroup(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, nil, txm)
 
 	// bad field
 	bad_field := []*biz.Hostgroup{
@@ -437,13 +448,23 @@ func TestUpdateHostgroup(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// props count 0
 	hg := []*biz.Hostgroup{
 		{11, "name", "desc", 1, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
 	}
+
+	teamrepo.On("GetTeams", ctx, mock.Anything, mock.Anything).Return(&repo.Team{
+		2, "team2", "team2code", "team2l", "desc"}, nil)
+	// enforce fail
+	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce fail"))
+	err := usecase.UpdateHostgroups(ctx, hg)
+	assert.Error(t, err)
+	authcall.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// props count 0
 	//// cluster
 	clscall := clsrepo.On("CountClusters", ctx, mock.Anything, mock.Anything).Return(int64(0), nil)
-	err := usecase.UpdateHostgroups(ctx, hg)
+	err = usecase.UpdateHostgroups(ctx, hg)
 	assert.Error(t, err)
 	clscall.Unset()
 
@@ -647,7 +668,8 @@ func TestUpdateHostgroup(t *testing.T) {
 }
 
 func TestHostgroupsHandleM2MProps(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -666,7 +688,7 @@ func TestHostgroupsHandleM2MProps(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, nil, txm)
 
 	// houstgroup-tag
 	htagFilter := &repo.HostgroupTagsFilter{
@@ -752,7 +774,8 @@ func TestHostgroupsHandleM2MProps(t *testing.T) {
 }
 
 func TestDeleteHostgroups(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -771,18 +794,31 @@ func TestDeleteHostgroups(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, nil, txm)
 
+	teamrepo.On("GetTeams", ctx, mock.Anything, mock.Anything).Return(&repo.Team{
+		2, "team2", "team2code", "team2l", "desc"}, nil)
+	hgrepo.On("ListHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.Hostgroup{
+		{1, "hg1", "desc", 1, 1, 1, 1, 2}}, nil)
+	// enforce fail
+	authzcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce fail"))
+	err := usecase.DeleteHostgroups(ctx, []uint32{1})
+	assert.Error(t, err)
+	t.Logf("delete hostgroup: %v", err)
+	authzcall.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
 	// has required
 	ahrepo.On("CountRequire", ctx, mock.Anything, repo.RequireHostgroup, []uint32{1}).Return(int64(1), nil)
-	err := usecase.DeleteHostgroups(ctx, []uint32{1})
+	err = usecase.DeleteHostgroups(ctx, []uint32{1})
 	assert.Error(t, err)
 	t.Logf("delete hostgroup: %v", err)
 
 }
 
 func TestListHostgroup(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -801,7 +837,7 @@ func TestListHostgroup(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, nil, txm)
 
 	// fail
 	query := &biz.ListHostgroupsFilter{

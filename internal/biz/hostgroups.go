@@ -1,6 +1,7 @@
 package biz
 
 import (
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"fmt"
@@ -24,6 +25,8 @@ type HostgroupsUsecase struct {
 	tagrepo  repo.TagsRepo
 	envrepo  repo.EnvsRepo
 
+	authzrepo repo.AuthzRepo
+
 	log *log.Helper
 
 	required []requiredBy
@@ -42,6 +45,7 @@ func NewHostgroupsUsecase(repo repo.HostgroupsRepo,
 	teamrepo repo.TeamsRepo,
 	prdrepo repo.ProductsRepo,
 	apphgrepo repo.AppHostgroupsRepo,
+	authzrepo repo.AuthzRepo,
 	logger log.Logger,
 	txm repo.TxManager) *HostgroupsUsecase {
 
@@ -58,12 +62,38 @@ func NewHostgroupsUsecase(repo repo.HostgroupsRepo,
 		ftrepo:    ftrepo,
 		tagrepo:   tagrepo,
 		envrepo:   envrepo,
+		authzrepo: authzrepo,
 		log:       log.NewHelper(logger),
 		txm:       txm,
 		required: []requiredBy{
 			{name: "app_hostgroup", inst: apphgrepo},
 		},
 	}
+}
+
+func (s *HostgroupsUsecase) enforce(ctx context.Context, tx repo.TX, hgs []*Hostgroup) error {
+	curUser := ctx.Value(data.UserName).(string)
+
+	for _, hg := range hgs {
+		team, err := s.teamrepo.GetTeams(ctx, hg.TeamId)
+		if err != nil {
+			return err
+		}
+		// hostgroup is team leader's resource
+		ires := repo.NewResource4Sv1("hostgroups", team.Name, hg.Name, team.Leader)
+		can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
+			Sub:      curUser,
+			Resource: ires,
+			Action:   repo.ActWrite,
+		})
+		if err != nil {
+			return err
+		}
+		if !can {
+			return fmt.Errorf("PermissionDenied")
+		}
+	}
+	return nil
 }
 
 func (s *HostgroupsUsecase) validate(isNew bool, hgs []*Hostgroup) error {
@@ -253,6 +283,10 @@ func (s *HostgroupsUsecase) CreateHostgroups(ctx context.Context, hgs []*Hostgro
 		return err
 	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
+		if err := s.enforce(ctx, tx, hgs); err != nil {
+			return err
+		}
+
 		if err := s.validateProps(ctx, tx, hgs); err != nil {
 			return err
 		}
@@ -396,6 +430,9 @@ func (s *HostgroupsUsecase) UpdateHostgroups(ctx context.Context, hgs []*Hostgro
 	}
 
 	return s.txm.RunInTX(func(tx repo.TX) error {
+		if err := s.enforce(ctx, tx, hgs); err != nil {
+			return err
+		}
 		if err := s.validateProps(ctx, tx, hgs); err != nil {
 			return err
 		}
@@ -431,6 +468,19 @@ func (s *HostgroupsUsecase) DeleteHostgroups(ctx context.Context, ids []uint32) 
 		return fmt.Errorf("EmptyIds")
 	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
+		repohgs, err := s.hgrepo.ListHostgroups(ctx, tx, &repo.HostgroupsFilter{
+			Ids: ids,
+		})
+		if err != nil {
+			return err
+		}
+		hgs, err := ToBizHostgroups(repohgs)
+		if err != nil {
+			return err
+		}
+		if err := s.enforce(ctx, tx, hgs); err != nil {
+			return err
+		}
 		for _, r := range s.required {
 			c, err := r.inst.CountRequire(ctx, tx, repo.RequireHostgroup, ids)
 			if err != nil {

@@ -46,7 +46,7 @@ func (s *ClustersUsecase) validate(isNew bool, cs []*Cluster) error {
 func (s *ClustersUsecase) enforce(ctx context.Context, tx repo.TX) error {
 
 	user := ctx.Value(data.UserName).(string)
-	ires := repo.NewResource4Sv1("cluster", "", "", "")
+	ires := repo.NewResource4Sv1("clusters", "", "", "")
 	can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
 		Sub:      user,
 		Resource: ires,

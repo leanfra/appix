@@ -44,7 +44,7 @@ func (s *DatacentersUsecase) validate(isNew bool, dcs []*Datacenter) error {
 
 func (s *DatacentersUsecase) enforce(ctx context.Context, tx repo.TX) error {
 	curUser := ctx.Value(data.UserName).(string)
-	ires := repo.NewResource4Sv1("datacenter", "", "", "")
+	ires := repo.NewResource4Sv1("datacenters", "", "", "")
 	can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
 		Sub:      curUser,
 		Resource: ires,
