@@ -1,5 +1,7 @@
 package repo
 
+import "context"
+
 const ProductTable = "products"
 
 type Product struct {
@@ -19,4 +21,14 @@ type ProductsFilter struct {
 
 func (f *ProductsFilter) GetIds() []uint32 {
 	return f.Ids
+}
+
+type ProductsRepo interface {
+	RequireCounter
+	CreateProducts(ctx context.Context, tx TX, ps []*Product) error
+	UpdateProducts(ctx context.Context, tx TX, ps []*Product) error
+	DeleteProducts(ctx context.Context, tx TX, ids []uint32) error
+	GetProducts(ctx context.Context, id uint32) (*Product, error)
+	ListProducts(ctx context.Context, tx TX, filter *ProductsFilter) ([]*Product, error)
+	CountProducts(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }

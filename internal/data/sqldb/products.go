@@ -30,8 +30,8 @@ func NewProductsRepoGorm(data *DataGorm, logger log.Logger) (repo.ProductsRepo, 
 }
 
 // CreateProducts is
-func (d *ProductsRepoGorm) CreateProducts(ctx context.Context, ps []*repo.Product) error {
-	r := d.data.DB.WithContext(ctx).Create(ps)
+func (d *ProductsRepoGorm) CreateProducts(ctx context.Context, tx repo.TX, ps []*repo.Product) error {
+	r := d.data.WithTX(tx).WithContext(ctx).Create(ps)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -40,9 +40,9 @@ func (d *ProductsRepoGorm) CreateProducts(ctx context.Context, ps []*repo.Produc
 }
 
 // UpdateProducts is
-func (d *ProductsRepoGorm) UpdateProducts(ctx context.Context, ps []*repo.Product) error {
+func (d *ProductsRepoGorm) UpdateProducts(ctx context.Context, tx repo.TX, ps []*repo.Product) error {
 
-	r := d.data.DB.WithContext(ctx).Save(ps)
+	r := d.data.WithTX(tx).WithContext(ctx).Save(ps)
 	if r.Error != nil {
 		return r.Error
 	}

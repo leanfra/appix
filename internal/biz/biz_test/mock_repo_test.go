@@ -231,13 +231,13 @@ type MockProductsRepo struct {
 	mock.Mock
 }
 
-func (m *MockProductsRepo) CreateProducts(ctx context.Context, ps []*repo.Product) error {
-	args := m.Called(ctx, ps)
+func (m *MockProductsRepo) CreateProducts(ctx context.Context, tx repo.TX, ps []*repo.Product) error {
+	args := m.Called(ctx, tx, ps)
 	return args.Error(0)
 }
 
-func (m *MockProductsRepo) UpdateProducts(ctx context.Context, ps []*repo.Product) error {
-	args := m.Called(ctx, ps)
+func (m *MockProductsRepo) UpdateProducts(ctx context.Context, tx repo.TX, ps []*repo.Product) error {
+	args := m.Called(ctx, tx, ps)
 	return args.Error(0)
 }
 

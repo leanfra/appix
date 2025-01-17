@@ -101,7 +101,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 		cleanup()
 		return nil, nil, err
 	}
-	productsUsecase := biz.NewProductsUsecase(productsRepo, hostgroupsRepo, applicationsRepo, hostgroupProductsRepo, logger, txManager)
+	productsUsecase := biz.NewProductsUsecase(productsRepo, authzRepo, hostgroupsRepo, applicationsRepo, hostgroupProductsRepo, logger, txManager)
 	productsService := service.NewProductsService(productsUsecase, logger)
 	envsRepo, err := sqldb.NewEnvsRepoGorm(dataGorm, logger)
 	if err != nil {

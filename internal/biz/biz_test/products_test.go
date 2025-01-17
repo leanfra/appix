@@ -2,6 +2,7 @@ package biz_test
 
 import (
 	"appix/internal/biz"
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"errors"
@@ -12,7 +13,8 @@ import (
 )
 
 func TestCreateProducts(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)
 	apprepo := new(MockApplicationsRepo)
@@ -20,6 +22,7 @@ func TestCreateProducts(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	usecase := biz.NewProductsUsecase(
 		prdrepo,
+		authzrepo,
 		hgrepo,
 		apprepo,
 		hprepo,
@@ -46,12 +49,22 @@ func TestCreateProducts(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
+	// enforce fail
 	prd := []*biz.Product{
 		{Name: "name", Code: "code"},
 	}
-	call := prdrepo.On("CreateProducts", ctx, mock.Anything).Return(errors.New("repo error"))
+	authzcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("PermissionDenied"))
 	err := usecase.CreateProducts(ctx, prd)
+	assert.Error(t, err)
+	authzcall.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+	prd = []*biz.Product{
+		{Name: "name", Code: "code"},
+	}
+	call := prdrepo.On("CreateProducts", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.CreateProducts(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -62,7 +75,7 @@ func TestCreateProducts(t *testing.T) {
 		{Name: "name", Code: "code-1"},
 		{Name: "name", Code: "1-code-1"},
 	}
-	prdrepo.On("CreateProducts", ctx, mock.Anything).Return(nil)
+	prdrepo.On("CreateProducts", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.CreateProducts(ctx, []*biz.Product{gc})
 		assert.NoError(t, err)
@@ -70,7 +83,8 @@ func TestCreateProducts(t *testing.T) {
 }
 
 func TestUpdateProducts(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)
 	apprepo := new(MockApplicationsRepo)
@@ -78,6 +92,7 @@ func TestUpdateProducts(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	usecase := biz.NewProductsUsecase(
 		prdrepo,
+		authzrepo,
 		hgrepo,
 		apprepo,
 		hprepo,
@@ -105,12 +120,22 @@ func TestUpdateProducts(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	// repo error
+	// enforce fail
 	prd := []*biz.Product{
 		{Id: 1, Name: "name", Code: "code"},
 	}
-	call := prdrepo.On("UpdateProducts", ctx, mock.Anything).Return(errors.New("repo error"))
+	authzcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("PermissionDenied"))
 	err := usecase.UpdateProducts(ctx, prd)
+	assert.Error(t, err)
+	authzcall.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
+	// repo error
+	prd = []*biz.Product{
+		{Id: 1, Name: "name", Code: "code"},
+	}
+	call := prdrepo.On("UpdateProducts", ctx, mock.Anything, mock.Anything).Return(errors.New("repo error"))
+	err = usecase.UpdateProducts(ctx, prd)
 	assert.Error(t, err)
 	call.Unset()
 
@@ -121,7 +146,7 @@ func TestUpdateProducts(t *testing.T) {
 		{Id: 1, Name: "name", Code: "code-1"},
 		{Id: 1, Name: "name", Code: "1-code-1"},
 	}
-	prdrepo.On("UpdateProducts", ctx, mock.Anything).Return(nil)
+	prdrepo.On("UpdateProducts", ctx, mock.Anything, mock.Anything).Return(nil)
 	for _, gc := range good_cases {
 		err := usecase.UpdateProducts(ctx, []*biz.Product{gc})
 		assert.NoError(t, err)
@@ -129,7 +154,8 @@ func TestUpdateProducts(t *testing.T) {
 }
 
 func TestDeleteProducts(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)
 	apprepo := new(MockApplicationsRepo)
@@ -137,6 +163,7 @@ func TestDeleteProducts(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	usecase := biz.NewProductsUsecase(
 		prdrepo,
+		authzrepo,
 		hgrepo,
 		apprepo,
 		hprepo,
@@ -151,6 +178,14 @@ func TestDeleteProducts(t *testing.T) {
 
 	err = usecase.DeleteProducts(ctx, nil)
 	assert.Error(t, err)
+
+	// enforce fail
+	ids = []uint32{1, 2}
+	authzcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("PermissionDenied"))
+	err = usecase.DeleteProducts(ctx, ids)
+	assert.Error(t, err)
+	authzcall.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
 
 	// Test case: failed on hostgroup need check fail
 	ids = []uint32{1, 2}
@@ -246,7 +281,8 @@ func TestDeleteProducts(t *testing.T) {
 }
 
 func TestGetProducts(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)
 	apprepo := new(MockApplicationsRepo)
@@ -254,6 +290,7 @@ func TestGetProducts(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	usecase := biz.NewProductsUsecase(
 		prdrepo,
+		authzrepo,
 		hgrepo,
 		apprepo,
 		hprepo,
@@ -294,7 +331,8 @@ func TestGetProducts(t *testing.T) {
 }
 
 func TestListProducts(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)
 	apprepo := new(MockApplicationsRepo)
@@ -302,6 +340,7 @@ func TestListProducts(t *testing.T) {
 	hgrepo := new(MockHostgroupsRepo)
 	usecase := biz.NewProductsUsecase(
 		prdrepo,
+		authzrepo,
 		hgrepo,
 		apprepo,
 		hprepo,

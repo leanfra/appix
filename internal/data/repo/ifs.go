@@ -122,16 +122,6 @@ type HostgroupFeaturesRepo interface {
 		filter *HostgroupMatchFeaturesFilter) ([]uint32, error)
 }
 
-type ProductsRepo interface {
-	RequireCounter
-	CreateProducts(ctx context.Context, ps []*Product) error
-	UpdateProducts(ctx context.Context, ps []*Product) error
-	DeleteProducts(ctx context.Context, tx TX, ids []uint32) error
-	GetProducts(ctx context.Context, id uint32) (*Product, error)
-	ListProducts(ctx context.Context, tx TX, filter *ProductsFilter) ([]*Product, error)
-	CountProducts(ctx context.Context, tx TX, filter CountFilter) (int64, error)
-}
-
 type AdminRepo interface {
 	CreateUsers(ctx context.Context, tx TX, users []*User) error
 	UpdateUsers(ctx context.Context, tx TX, users []*User) error

@@ -25,7 +25,7 @@ func createBaseProds(t *testing.T, data []*repo.Product) {
 			{Name: "test1", Code: "test1"},
 		}
 	}
-	if err := prodsRepo.CreateProducts(context.Background(), data); err != nil {
+	if err := prodsRepo.CreateProducts(context.Background(), nil, data); err != nil {
 		t.Fatal(err)
 	}
 
@@ -70,7 +70,7 @@ func testCreateProdsSuccess(t *testing.T) {
 		{Name: "test", Code: "test"},
 		{Name: "test1", Code: "test1"},
 	}
-	err := prodsRepo.CreateProducts(context.Background(), prods)
+	err := prodsRepo.CreateProducts(context.Background(), nil, prods)
 	assert.NoError(t, err)
 }
 
@@ -80,7 +80,7 @@ func testCreateProdsError(t *testing.T) {
 		{Name: "test", Code: "test"},
 		{Name: "test", Code: "test"},
 	}
-	err := prodsRepo.CreateProducts(context.Background(), data)
+	err := prodsRepo.CreateProducts(context.Background(), nil, data)
 	assert.Error(t, err)
 }
 
@@ -92,7 +92,7 @@ func testUpdateProdsSuccess(t *testing.T) {
 	createBaseProds(t, data)
 
 	data[0].Name = "test2"
-	err := prodsRepo.UpdateProducts(context.Background(), data)
+	err := prodsRepo.UpdateProducts(context.Background(), nil, data)
 	assert.NoError(t, err)
 }
 
@@ -103,7 +103,7 @@ func testUpdateProdsError(t *testing.T) {
 	}
 	createBaseProds(t, data)
 	data[0].Code = "test1"
-	err := prodsRepo.UpdateProducts(context.Background(), data)
+	err := prodsRepo.UpdateProducts(context.Background(), nil, data)
 	assert.Error(t, err)
 }
 
