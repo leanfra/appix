@@ -6,7 +6,7 @@ import (
 )
 
 func (f *Team) Validate(isNew bool) error {
-	if len(f.Name) == 0 || len(f.Code) == 0 || len(f.Leader) == 0 {
+	if len(f.Name) == 0 || len(f.Code) == 0 || f.LeaderId == 0 {
 		return fmt.Errorf("InvalidNameCodeLeader")
 	}
 	if !isNew {
@@ -31,7 +31,7 @@ func (lf *ListTeamsFilter) Validate() error {
 	}
 	if len(lf.Codes) > MaxFilterValues ||
 		len(lf.Ids) > MaxFilterValues ||
-		len(lf.Leaders) > MaxFilterValues ||
+		len(lf.LeadersId) > MaxFilterValues ||
 		len(lf.Names) > MaxFilterValues {
 		return ErrFilterValuesExceedMax
 	}
@@ -56,7 +56,7 @@ func ToDBTeam(t *Team) (*repo.Team, error) {
 		ID:          t.Id,
 		Name:        t.Name,
 		Code:        t.Code,
-		Leader:      t.Leader,
+		LeaderId:    t.LeaderId,
 		Description: t.Description,
 	}, nil
 }
@@ -78,7 +78,7 @@ func ToBizTeam(t *repo.Team) (*Team, error) {
 		Id:          t.ID,
 		Code:        t.Code,
 		Description: t.Description,
-		Leader:      t.Leader,
+		LeaderId:    t.LeaderId,
 		Name:        t.Name,
 	}, nil
 }
@@ -86,24 +86,18 @@ func ToBizTeam(t *repo.Team) (*Team, error) {
 func ToBizTeams(teams []*repo.Team) ([]*Team, error) {
 	var biz_teams = make([]*Team, len(teams))
 	for i, t := range teams {
-		biz_teams[i] = &Team{
-			Id:          t.ID,
-			Code:        t.Code,
-			Description: t.Description,
-			Leader:      t.Leader,
-			Name:        t.Name,
-		}
+		biz_teams[i], _ = ToBizTeam(t)
 	}
 	return biz_teams, nil
 }
 
 func ToDBTeamsFilter(filter *ListTeamsFilter) *repo.TeamsFilter {
 	return &repo.TeamsFilter{
-		Codes:    filter.Codes,
-		Ids:      filter.Ids,
-		Leaders:  filter.Leaders,
-		Names:    filter.Names,
-		Page:     filter.Page,
-		PageSize: filter.PageSize,
+		Codes:     filter.Codes,
+		Ids:       filter.Ids,
+		LeadersId: filter.LeadersId,
+		Names:     filter.Names,
+		Page:      filter.Page,
+		PageSize:  filter.PageSize,
 	}
 }

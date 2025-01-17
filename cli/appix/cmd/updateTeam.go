@@ -114,7 +114,7 @@ var updateTeamCmd = &cobra.Command{
 			name, _ := cmd.Flags().GetString("name")
 			description, _ := cmd.Flags().GetString("description")
 			code, _ := cmd.Flags().GetString("code")
-			leader, _ := cmd.Flags().GetString("leader")
+			leaderId, _ := cmd.Flags().GetUint32("leader")
 
 			teams = []*pb.Team{
 				{
@@ -122,7 +122,7 @@ var updateTeamCmd = &cobra.Command{
 					Name:        name,
 					Description: description,
 					Code:        code,
-					Leader:      leader,
+					LeaderId:    leaderId,
 				},
 			}
 		}
@@ -149,7 +149,7 @@ func init() {
 
 	updateTeamCmd.Flags().Uint32("id", 0, "Team ID to update")
 	updateTeamCmd.Flags().String("code", "", "New team code")
-	updateTeamCmd.Flags().String("leader", "", "New team leader")
+	updateTeamCmd.Flags().Uint32("leader-id", 0, "New team leader user id")
 	updateTeamCmd.Flags().String("name", "", "New team name")
 	updateTeamCmd.Flags().String("desc", "", "New team description")
 

@@ -26,6 +26,7 @@ type HostgroupsUsecase struct {
 	envrepo  repo.EnvsRepo
 
 	authzrepo repo.AuthzRepo
+	adminrepo repo.AdminRepo
 
 	log *log.Helper
 
@@ -46,6 +47,7 @@ func NewHostgroupsUsecase(repo repo.HostgroupsRepo,
 	prdrepo repo.ProductsRepo,
 	apphgrepo repo.AppHostgroupsRepo,
 	authzrepo repo.AuthzRepo,
+	adminrepo repo.AdminRepo,
 	logger log.Logger,
 	txm repo.TxManager) *HostgroupsUsecase {
 
@@ -63,6 +65,7 @@ func NewHostgroupsUsecase(repo repo.HostgroupsRepo,
 		tagrepo:   tagrepo,
 		envrepo:   envrepo,
 		authzrepo: authzrepo,
+		adminrepo: adminrepo,
 		log:       log.NewHelper(logger),
 		txm:       txm,
 		required: []requiredBy{
@@ -79,8 +82,12 @@ func (s *HostgroupsUsecase) enforce(ctx context.Context, tx repo.TX, hgs []*Host
 		if err != nil {
 			return err
 		}
+		leader, err := s.adminrepo.GetUsers(ctx, tx, team.LeaderId)
+		if err != nil {
+			return err
+		}
 		// hostgroup is team leader's resource
-		ires := repo.NewResource4Sv1("hostgroups", team.Name, hg.Name, team.Leader)
+		ires := repo.NewResource4Sv1("hostgroups", team.Name, hg.Name, leader.UserName)
 		can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
 			Sub:      curUser,
 			Resource: ires,

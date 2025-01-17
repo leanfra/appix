@@ -20,8 +20,8 @@ func initTeamsRepo() {
 func createBaseTeamsData(data []*repo.Team) error {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 	if data != nil {
 		teams = data
@@ -48,8 +48,8 @@ func TestCreateTeams_Failure(t *testing.T) {
 	assert.Error(t, err)
 
 	teams = []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team1", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team1", LeaderId: 2, Description: "description2"},
 	}
 
 	err = teamsRepo.CreateTeams(context.Background(), nil, teams)
@@ -59,8 +59,8 @@ func TestCreateTeams_Failure(t *testing.T) {
 func TestUpdateTeams_SuccessfulUpdate_ReturnsNil(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 
 	err := teamsRepo.CreateTeams(context.Background(), nil, teams)
@@ -79,8 +79,8 @@ func TestUpdateTeams_SuccessfulUpdate_ReturnsNil(t *testing.T) {
 func TestUpdateTeams_UpdateFails_ReturnsError(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 
 	err := teamsRepo.CreateTeams(context.Background(), nil, teams)
@@ -118,8 +118,8 @@ func TestDeleteTeams_Fail_ReturnError(t *testing.T) {
 func TestGetTeams_Success(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 
 	err := teamsRepo.CreateTeams(context.Background(), nil, teams)
@@ -144,8 +144,8 @@ func TestGetTeams_Fail(t *testing.T) {
 func TestListTeams_NoFilter_ReturnsAllTeams(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 
 	createBaseTeamsData(teams)
@@ -158,8 +158,8 @@ func TestListTeams_NoFilter_ReturnsAllTeams(t *testing.T) {
 func TestListTeams_WithPagination_ReturnsPaginatedTeams(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 
 	createBaseTeamsData(teams)
@@ -173,8 +173,8 @@ func TestListTeams_WithPagination_ReturnsPaginatedTeams(t *testing.T) {
 func TestListTeams_Ids_ReturnsFilteredTeams(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 	createBaseTeamsData(teams)
 	filter := &repo.TeamsFilter{Ids: []uint32{1, 2, 3}}
@@ -187,8 +187,8 @@ func TestListTeams_Ids_ReturnsFilteredTeams(t *testing.T) {
 func TestListTeams_Codes_ReturnsFilteredTeams(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 	createBaseTeamsData(teams)
 	filter := &repo.TeamsFilter{Codes: []string{"team1", "team2"}}
@@ -204,11 +204,11 @@ func TestListTeams_Codes_ReturnsFilteredTeams(t *testing.T) {
 func TestListTeams_Leaders_ReturnsFilteredTeams(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 	createBaseTeamsData(teams)
-	filter := &repo.TeamsFilter{Leaders: []string{"leader1", "leader2"}}
+	filter := &repo.TeamsFilter{LeadersId: []uint32{1, 2}}
 
 	teams_filtered, err := teamsRepo.ListTeams(context.Background(), nil, filter)
 	assert.NoError(t, err)
@@ -221,8 +221,8 @@ func TestListTeams_Leaders_ReturnsFilteredTeams(t *testing.T) {
 func TestListTeams_WithNamesFilter_ReturnsFilteredTeams(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 	createBaseTeamsData(teams)
 	filter := &repo.TeamsFilter{Names: []string{"am1"}}
@@ -238,8 +238,8 @@ func TestListTeams_WithNamesFilter_ReturnsFilteredTeams(t *testing.T) {
 func TestListTeams_Partial_ReturnsFiltered(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 	createBaseTeamsData(teams)
 	filter := &repo.TeamsFilter{Names: []string{"Team3", "Team2"}}
@@ -255,8 +255,8 @@ func TestListTeams_Partial_ReturnsFiltered(t *testing.T) {
 func TestCountTeams_NoFilter_AllTeamsCounted(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 	createBaseTeamsData(teams)
 	count, err := teamsRepo.CountTeams(context.Background(), nil, nil)
@@ -267,8 +267,8 @@ func TestCountTeams_NoFilter_AllTeamsCounted(t *testing.T) {
 func TestCountTeams_Id_PartialTeamsCounted(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 	createBaseTeamsData(teams)
 	filter := &repo.TeamsFilter{Ids: []uint32{1, 3}}
@@ -280,8 +280,8 @@ func TestCountTeams_Id_PartialTeamsCounted(t *testing.T) {
 func TestCountTeams_Id_Empty(t *testing.T) {
 	initTeamsRepo()
 	teams := []*repo.Team{
-		{Name: "Team1", Code: "team1", Leader: "leader1", Description: "description1"},
-		{Name: "Team2", Code: "team2", Leader: "leader2", Description: "description2"},
+		{Name: "Team1", Code: "team1", LeaderId: 1, Description: "description1"},
+		{Name: "Team2", Code: "team2", LeaderId: 2, Description: "description2"},
 	}
 	createBaseTeamsData(teams)
 	filter := &repo.TeamsFilter{Ids: []uint32{4, 3}}

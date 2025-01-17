@@ -111,6 +111,10 @@ func initTable(db *gorm.DB, model interface{}, table string) error {
 		m.AddColumn(&repo.Application{}, "owner_id")
 	}
 
+	if !m.HasColumn(&repo.Team{}, "leader_id") {
+		m.AddColumn(&repo.Team{}, "leader_id")
+	}
+
 	log.Infof("exists table %s", table)
 	return nil
 }

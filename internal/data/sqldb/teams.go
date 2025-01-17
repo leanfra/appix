@@ -103,13 +103,8 @@ func (d *TeamsRepoGorm) ListTeams(ctx context.Context,
 			}
 			query = query.Where(codeConditions, params...)
 		}
-		if len(filter.Leaders) > 0 {
-			leaderConditions := buildOrLike("leader", len(filter.Leaders))
-			params := make([]interface{}, len(filter.Leaders))
-			for i, v := range filter.Leaders {
-				params[i] = "%" + v + "%"
-			}
-			query = query.Where(leaderConditions, params...)
+		if len(filter.LeadersId) > 0 {
+			query = query.Where("leader_id in (?)", filter.LeadersId)
 		}
 		if len(filter.Names) > 0 {
 			nameConditions := buildOrLike("name", len(filter.Names))

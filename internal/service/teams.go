@@ -28,7 +28,7 @@ func toBizTeam(t *pb.Team) (*biz.Team, error) {
 		Id:          t.Id,
 		Code:        t.Code,
 		Description: t.Description,
-		Leader:      t.Leader,
+		LeaderId:    t.LeaderId,
 		Name:        t.Name,
 	}, nil
 }
@@ -146,8 +146,8 @@ func (s *TeamsService) ListTeams(ctx context.Context, req *pb.ListTeamsRequest) 
 		if len(req.Names) > 0 {
 			filter.Names = req.Names
 		}
-		if len(req.Leaders) > 0 {
-			filter.Leaders = req.Leaders
+		if len(req.LeadersId) > 0 {
+			filter.LeadersId = req.LeadersId
 		}
 	}
 
@@ -174,7 +174,7 @@ func toPbTeam(t *biz.Team) *pb.Team {
 		Id:          t.Id,
 		Code:        t.Code,
 		Description: t.Description,
-		Leader:      t.Leader,
+		LeaderId:    t.LeaderId,
 		Name:        t.Name,
 	}
 }
@@ -183,13 +183,7 @@ func toPbTeams(ts []*biz.Team) []*pb.Team {
 	var res []*pb.Team
 	for _, t := range ts {
 		if t != nil {
-			res = append(res, &pb.Team{
-				Id:          t.Id,
-				Code:        t.Code,
-				Description: t.Description,
-				Leader:      t.Leader,
-				Name:        t.Name,
-			})
+			res = append(res, toPbTeam(t))
 		}
 	}
 	return res

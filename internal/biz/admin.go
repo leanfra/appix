@@ -79,33 +79,34 @@ func NewAdminUsecase(
 	if len(admin_users) == 0 {
 		// create admin user
 		md5pass, err := HashPassword(conf.AdminPassword)
-		if err != nil {
-			panic(err)
-		}
-		admin_user := &repo.User{
+		_user := &repo.User{
 			UserName: AdminUser,
 			Password: md5pass,
 		}
-		err = adminRepo.CreateUsers(context.Background(), nil, []*repo.User{admin_user})
 		if err != nil {
 			panic(err)
 		}
-		uc.adminUser = admin_user
+		err = adminRepo.CreateUsers(context.Background(), nil, []*repo.User{_user})
+		if err != nil {
+			panic(err)
+		}
+		uc.adminUser = _user
 	} else {
 		// update admin user
-		admin_user := admin_users[0]
+		_user := admin_users[0]
 		md5pass, err := HashPassword(conf.AdminPassword)
 		if err != nil {
 			panic(err)
 		}
-		if admin_user.Password != md5pass {
-			admin_user.Password = md5pass
-			err = adminRepo.UpdateUsers(context.Background(), nil, []*repo.User{admin_user})
+		// check
+		if !CheckPassword(_user.Password, md5pass) {
+			_user.Password = md5pass
+			err = adminRepo.UpdateUsers(context.Background(), nil, []*repo.User{_user})
 			if err != nil {
 				panic(err)
 			}
 		}
-		uc.adminUser = admin_user
+		uc.adminUser = _user
 	}
 
 	// create admin team
@@ -120,7 +121,7 @@ func NewAdminUsecase(
 		_admin_team := &repo.Team{
 			Name:        AdminTeam,
 			Code:        AdminTeam,
-			Leader:      AdminUser,
+			LeaderId:    uc.adminUser.Id,
 			Description: "admin team",
 		}
 		err = teamsRepo.CreateTeams(context.Background(), nil, []*repo.Team{_admin_team})

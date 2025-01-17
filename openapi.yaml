@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: Admin API
+    title: Teams API
     version: 0.0.1
 paths:
-    /api/v1/users/create:
+    /api/v1/teams/create:
         post:
             tags:
-                - Admin
-            operationId: Admin_CreateUsers
+                - Teams
+            operationId: Teams_CreateTeams
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateUsersRequest'
+                            $ref: '#/components/schemas/CreateTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -23,23 +23,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateUsersReply'
+                                $ref: '#/components/schemas/CreateTeamsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/users/delete:
+    /api/v1/teams/delete:
         post:
             tags:
-                - Admin
-            operationId: Admin_DeleteUsers
+                - Teams
+            operationId: Teams_DeleteTeams
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/DeleteUsersRequest'
+                            $ref: '#/components/schemas/DeleteTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -47,23 +47,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/DeleteUsersReply'
+                                $ref: '#/components/schemas/DeleteTeamsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/users/list:
+    /api/v1/teams/list:
         post:
             tags:
-                - Admin
-            operationId: Admin_ListUsers
+                - Teams
+            operationId: Teams_ListTeams
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/ListUsersRequest'
+                            $ref: '#/components/schemas/ListTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -71,23 +71,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ListUsersReply'
+                                $ref: '#/components/schemas/ListTeamsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/users/login:
+    /api/v1/teams/update:
         post:
             tags:
-                - Admin
-            operationId: Admin_Login
+                - Teams
+            operationId: Teams_UpdateTeams
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/LoginReq'
+                            $ref: '#/components/schemas/UpdateTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -95,66 +95,18 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/LoginReply'
+                                $ref: '#/components/schemas/UpdateTeamsReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /api/v1/users/logout:
-        post:
-            tags:
-                - Admin
-            operationId: Admin_Logout
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/LogoutReq'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/LogoutReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /api/v1/users/update:
-        post:
-            tags:
-                - Admin
-            operationId: Admin_UpdateUsers
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/UpdateUsersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/UpdateUsersReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /api/v1/users/{id}:
+    /api/v1/teams/{id}:
         get:
             tags:
-                - Admin
-            operationId: Admin_GetUsers
+                - Teams
+            operationId: Teams_GetTeams
             parameters:
                 - name: id
                   in: path
@@ -168,7 +120,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetUsersReply'
+                                $ref: '#/components/schemas/GetTeamsReply'
                 default:
                     description: Default error response
                     content:
@@ -177,7 +129,7 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreateUsersReply:
+        CreateTeamsReply:
             type: object
             properties:
                 message:
@@ -187,14 +139,14 @@ components:
                     format: int32
                 action:
                     type: string
-        CreateUsersRequest:
+        CreateTeamsRequest:
             type: object
             properties:
-                users:
+                teams:
                     type: array
                     items:
-                        $ref: '#/components/schemas/User'
-        DeleteUsersReply:
+                        $ref: '#/components/schemas/Team'
+        DeleteTeamsReply:
             type: object
             properties:
                 message:
@@ -204,7 +156,7 @@ components:
                     format: int32
                 action:
                     type: string
-        DeleteUsersRequest:
+        DeleteTeamsRequest:
             type: object
             properties:
                 ids:
@@ -212,7 +164,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        GetUsersReply:
+        GetTeamsReply:
             type: object
             properties:
                 message:
@@ -222,8 +174,8 @@ components:
                     format: int32
                 action:
                     type: string
-                user:
-                    $ref: '#/components/schemas/User'
+                team:
+                    $ref: '#/components/schemas/Team'
         GoogleProtobufAny:
             type: object
             properties:
@@ -232,7 +184,7 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        ListUsersReply:
+        ListTeamsReply:
             type: object
             properties:
                 message:
@@ -242,11 +194,11 @@ components:
                     format: int32
                 action:
                     type: string
-                users:
+                teams:
                     type: array
                     items:
-                        $ref: '#/components/schemas/User'
-        ListUsersRequest:
+                        $ref: '#/components/schemas/Team'
+        ListTeamsRequest:
             type: object
             properties:
                 page:
@@ -255,58 +207,24 @@ components:
                 pageSize:
                     type: integer
                     format: uint32
-                userNames:
+                names:
                     type: array
                     items:
                         type: string
-                emails:
+                codes:
                     type: array
                     items:
                         type: string
-                phones:
+                leadersId:
                     type: array
                     items:
-                        type: string
+                        type: integer
+                        format: uint32
                 ids:
                     type: array
                     items:
                         type: integer
                         format: uint32
-        LoginReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-                user:
-                    $ref: '#/components/schemas/User'
-        LoginReq:
-            type: object
-            properties:
-                userName:
-                    type: string
-                password:
-                    type: string
-        LogoutReply:
-            type: object
-            properties:
-                message:
-                    type: string
-                code:
-                    type: integer
-                    format: int32
-                action:
-                    type: string
-        LogoutReq:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
         Status:
             type: object
             properties:
@@ -323,7 +241,23 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
-        UpdateUsersReply:
+        Team:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                name:
+                    type: string
+                code:
+                    type: string
+                description:
+                    type: string
+                leaderId:
+                    type: integer
+                    format: uint32
+            description: gratos::model
+        UpdateTeamsReply:
             type: object
             properties:
                 message:
@@ -333,29 +267,12 @@ components:
                     format: int32
                 action:
                     type: string
-        UpdateUsersRequest:
+        UpdateTeamsRequest:
             type: object
             properties:
-                users:
+                teams:
                     type: array
                     items:
-                        $ref: '#/components/schemas/User'
-        User:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: uint32
-                userName:
-                    type: string
-                password:
-                    type: string
-                email:
-                    type: string
-                phone:
-                    type: string
-                token:
-                    type: string
-            description: gratos::model
+                        $ref: '#/components/schemas/Team'
 tags:
-    - name: Admin
+    - name: Teams

@@ -41,7 +41,7 @@ Examples:
 				Name:        "team-name",
 				Code:        "team-code",
 				Description: "team description",
-				Leader:      "team leader",
+				LeaderId:    1,
 			}
 			teams := []*pb.Team{team}
 
@@ -76,7 +76,7 @@ Examples:
 			name, _ := cmd.Flags().GetString("name")
 			code, _ := cmd.Flags().GetString("code")
 			desc, _ := cmd.Flags().GetString("desc")
-			leader, _ := cmd.Flags().GetString("leader")
+			leaderId, _ := cmd.Flags().GetUint32("leader")
 
 			req = &pb.CreateTeamsRequest{
 				Teams: []*pb.Team{
@@ -84,7 +84,7 @@ Examples:
 						Name:        name,
 						Code:        code,
 						Description: desc,
-						Leader:      leader,
+						LeaderId:    leaderId,
 					},
 				},
 			}
@@ -109,5 +109,5 @@ func init() {
 	createTeamCmd.Flags().String("name", "", "Name of the team")
 	createTeamCmd.Flags().String("code", "", "Code of the team")
 	createTeamCmd.Flags().String("desc", "", "Description of the team")
-	createTeamCmd.Flags().String("leader", "", "Leader of the team")
+	createTeamCmd.Flags().Uint32("leaderId", 0, "UserId of the Leader of the team")
 }

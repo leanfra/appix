@@ -75,7 +75,7 @@ func TestCreateTeams(t *testing.T) {
 	assert.Error(t, err)
 
 	// enforce fail
-	teams = []*biz.Team{{Name: "valid", Code: "validcode", Leader: "leader1"}}
+	teams = []*biz.Team{{Name: "valid", Code: "validcode", LeaderId: 1}}
 	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce failed"))
 	err = usecase.CreateTeams(ctx, teams)
 	assert.Error(t, err)
@@ -84,7 +84,7 @@ func TestCreateTeams(t *testing.T) {
 	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
 
 	// Test case: Creation fails
-	teams = []*biz.Team{{Name: "valid", Code: "validcode", Leader: "leader1"}}
+	teams = []*biz.Team{{Name: "valid", Code: "validcode", LeaderId: 1}}
 	repoCall := teamRepo.On("CreateTeams", ctx, mock.Anything, mock.Anything).Return(errors.New("creation failed"))
 	err = usecase.CreateTeams(ctx, teams)
 	assert.Error(t, err)
@@ -92,19 +92,19 @@ func TestCreateTeams(t *testing.T) {
 
 	// Test case: Successful creation
 	teamRepo.On("CreateTeams", ctx, mock.Anything, mock.Anything).Return(nil)
-	teams = []*biz.Team{{Name: "name", Code: "validcode", Leader: "leader1"}}
+	teams = []*biz.Team{{Name: "name", Code: "validcode", LeaderId: 1}}
 	err = usecase.CreateTeams(ctx, teams)
 	assert.NoError(t, err)
 
-	teams = []*biz.Team{{Name: "name0", Code: "validcode0", Leader: "leader1"}}
+	teams = []*biz.Team{{Name: "name0", Code: "validcode0", LeaderId: 1}}
 	err = usecase.CreateTeams(ctx, teams)
 	assert.NoError(t, err)
 
-	teams = []*biz.Team{{Name: "name-0", Code: "validcode-0", Leader: "leader1"}}
+	teams = []*biz.Team{{Name: "name-0", Code: "validcode-0", LeaderId: 1}}
 	err = usecase.CreateTeams(ctx, teams)
 	assert.NoError(t, err)
 
-	teams = []*biz.Team{{Name: "name-0", Code: "1-validcode-0", Leader: "leader1"}}
+	teams = []*biz.Team{{Name: "name-0", Code: "1-validcode-0", LeaderId: 1}}
 	err = usecase.CreateTeams(ctx, teams)
 	assert.NoError(t, err)
 }
@@ -171,14 +171,14 @@ func TestUpdateTeams(t *testing.T) {
 	assert.Error(t, err)
 
 	// no id
-	teams = []*biz.Team{{Name: "name", Code: "validcode", Leader: "leader1"}}
+	teams = []*biz.Team{{Name: "name", Code: "validcode", LeaderId: 1}}
 	// not call repo
 	// repoCall = teamRepo.On("CreateTeams", ctx, mock.Anything).Return(nil)
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.Error(t, err)
 
 	// enforce fail
-	teams = []*biz.Team{{Id: 1, Name: "valid", Code: "validcode", Leader: "leader1"}}
+	teams = []*biz.Team{{Id: 1, Name: "valid", Code: "validcode", LeaderId: 1}}
 	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce failed"))
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.Error(t, err)
@@ -186,7 +186,7 @@ func TestUpdateTeams(t *testing.T) {
 	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
 
 	// Test case: Creation fails
-	teams = []*biz.Team{{Id: 1, Name: "valid", Code: "validcode", Leader: "leader1"}}
+	teams = []*biz.Team{{Id: 1, Name: "valid", Code: "validcode", LeaderId: 1}}
 	repoCall := teamRepo.On("UpdateTeams", ctx, mock.Anything, mock.Anything).Return(errors.New("creation failed"))
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.Error(t, err)
@@ -194,19 +194,19 @@ func TestUpdateTeams(t *testing.T) {
 
 	// Test case: Successful creation
 	teamRepo.On("UpdateTeams", ctx, mock.Anything, mock.Anything).Return(nil)
-	teams = []*biz.Team{{Id: 1, Name: "name", Code: "validcode", Leader: "leader1"}}
+	teams = []*biz.Team{{Id: 1, Name: "name", Code: "validcode", LeaderId: 1}}
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.NoError(t, err)
 
-	teams = []*biz.Team{{Id: 1, Name: "name0", Code: "validcode0", Leader: "leader1"}}
+	teams = []*biz.Team{{Id: 1, Name: "name0", Code: "validcode0", LeaderId: 1}}
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.NoError(t, err)
 
-	teams = []*biz.Team{{Id: 1, Name: "name-0", Code: "validcode-0", Leader: "leader1"}}
+	teams = []*biz.Team{{Id: 1, Name: "name-0", Code: "validcode-0", LeaderId: 1}}
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.NoError(t, err)
 
-	teams = []*biz.Team{{Id: 1, Name: "name-0", Code: "1-validcode-0", Leader: "leader1"}}
+	teams = []*biz.Team{{Id: 1, Name: "name-0", Code: "1-validcode-0", LeaderId: 1}}
 	err = usecase.UpdateTeams(ctx, teams)
 	assert.NoError(t, err)
 }
@@ -353,14 +353,14 @@ func TestGetTeams(t *testing.T) {
 		ID:          team_id,
 		Name:        "team1",
 		Code:        "code1",
-		Leader:      "leader1",
+		LeaderId:    1,
 		Description: "team1 description",
 	}
 	biz_team := &biz.Team{
 		Id:          team_id,
 		Name:        "team1",
 		Code:        "code1",
-		Leader:      "leader1",
+		LeaderId:    1,
 		Description: "team1 description",
 	}
 	call = teamRepo.On("GetTeams", ctx, team_id).Return(&db_team, nil)
@@ -409,7 +409,7 @@ func TestListTeams(t *testing.T) {
 	assert.Equal(t, e, biz.ErrFilterValuesExceedMax)
 	// filter error. leaders exceeds
 	filter = biz.ListTeamsFilter{
-		Leaders: []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34"},
+		LeadersId: []uint32{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34},
 	}
 	_, e = usecase.ListTeams(context.Background(), &filter)
 	assert.Equal(t, e, biz.ErrFilterValuesExceedMax)
@@ -436,16 +436,16 @@ func TestListTeams(t *testing.T) {
 	// success
 	db_teams := []*repo.Team{
 		{
-			ID:     1,
-			Code:   "team1",
-			Leader: "leader1",
-			Name:   "team1",
+			ID:       1,
+			Code:     "team1",
+			LeaderId: 1,
+			Name:     "team1",
 		},
 		{
-			ID:     2,
-			Name:   "team2",
-			Code:   "team2",
-			Leader: "leader2",
+			ID:       2,
+			Name:     "team2",
+			Code:     "team2",
+			LeaderId: 2,
 		},
 	}
 	biz_teams := []*biz.Team{
@@ -453,14 +453,14 @@ func TestListTeams(t *testing.T) {
 			Id:          1,
 			Code:        "team1",
 			Description: "",
-			Leader:      "leader1",
+			LeaderId:    1,
 			Name:        "team1",
 		},
 		{
 			Id:          2,
 			Code:        "team2",
 			Description: "",
-			Leader:      "leader2",
+			LeaderId:    2,
 			Name:        "team2",
 		},
 	}

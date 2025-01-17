@@ -25,7 +25,7 @@ Examples:
   appix get team                              # List all
   appix get team --names team1,team2          # Filter by names
   appix get team --codes dev,prod             # Filter by codes
-  appix get team --leaders alice,bob          # Filter by leaders
+  appix get team --leaders 1,2 				  # Filter by leaders user id
   appix get team --names dev --format yaml    # Custom format`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
@@ -48,12 +48,12 @@ Examples:
 		for {
 
 			req := &pb.ListTeamsRequest{
-				Page:     currentPage,
-				PageSize: GetPageSize,
-				Names:    teamNames,
-				Codes:    teamCodes,
-				Leaders:  teamLeaders,
-				Ids:      uint32Ids,
+				Page:      currentPage,
+				PageSize:  GetPageSize,
+				Names:     teamNames,
+				Codes:     teamCodes,
+				LeadersId: teamLeadersId,
+				Ids:       uint32Ids,
 			}
 
 			reply, err := client.ListTeams(ctx, req)
@@ -96,7 +96,7 @@ Examples:
 			}
 			for _, team := range allTeams {
 				fmt.Printf("ID: %d, Name: %s, Code: %s, Leader: %s, Description: %s\n",
-					team.Id, team.Name, team.Code, team.Leader, team.Description)
+					team.Id, team.Name, team.Code, team.LeaderId, team.Description)
 			}
 		case "table":
 			table := tablewriter.NewWriter(os.Stdout)
@@ -106,7 +106,7 @@ Examples:
 					fmt.Sprint(team.Id),
 					team.Name,
 					team.Code,
-					team.Leader,
+					fmt.Sprintf("%v", team.LeaderId),
 					team.Description,
 				})
 			}
@@ -119,7 +119,7 @@ Examples:
 
 var teamNames []string
 var teamCodes []string
-var teamLeaders []string
+var teamLeadersId []uint32
 var teamIds []uint
 
 func init() {
@@ -129,7 +129,7 @@ func init() {
 
 	getTeamCmd.Flags().StringSlice("codes", []string{}, "Filter by team codes (comma-separated)")
 
-	getTeamCmd.Flags().StringSlice("leaders", []string{}, "Filter by team leaders (comma-separated)")
+	getTeamCmd.Flags().UintSlice("leaders-id", []uint{}, "Filter by team leaders (comma-separated)")
 
 	getTeamCmd.Flags().UintSlice("ids", []uint{}, "Filter by team IDs (comma-separated)")
 }

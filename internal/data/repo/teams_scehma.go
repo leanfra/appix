@@ -8,17 +8,17 @@ type Team struct {
 	ID          uint32 `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_team_name,unique"`
 	Code        string `gorm:"type:varchar(255);index:idx_team_code,unique"`
-	Leader      string `gorm:"type:varchar(255);index:idx_team_leader"`
+	LeaderId    uint32 `gorm:"index:idx_team_leader_id"`
 	Description string `gorm:"type:varchar(255);"`
 }
 
 type TeamsFilter struct {
-	Page     uint32
-	PageSize uint32
-	Ids      []uint32
-	Names    []string
-	Leaders  []string
-	Codes    []string
+	Page      uint32
+	PageSize  uint32
+	Ids       []uint32
+	Names     []string
+	LeadersId []uint32
+	Codes     []string
 }
 
 func (f *TeamsFilter) GetIds() []uint32 {

@@ -15,6 +15,7 @@ import (
 func TestCreateHostgroup(t *testing.T) {
 	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -33,7 +34,7 @@ func TestCreateHostgroup(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, authzrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, adminrepo, nil, txm)
 
 	// bad field
 	bad_field := []*biz.Hostgroup{
@@ -52,7 +53,9 @@ func TestCreateHostgroup(t *testing.T) {
 	}
 	// enforce fail
 	teamrepo.On("GetTeams", ctx, mock.Anything, mock.Anything).Return(&repo.Team{
-		2, "team2", "team2code", "team2l", "desc"}, nil)
+		2, "team2", "team2code", 2, "desc"}, nil)
+	adminrepo.On("GetUsers", ctx, mock.Anything, mock.Anything).Return(&repo.User{
+		2, "admin", "admin", "email", "phone"}, nil)
 	hg := []*biz.Hostgroup{
 		{0, "name", "desc", 1, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
 	}
@@ -411,6 +414,7 @@ func TestCreateHostgroup(t *testing.T) {
 func TestUpdateHostgroup(t *testing.T) {
 	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -429,7 +433,7 @@ func TestUpdateHostgroup(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, authzrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, adminrepo, nil, txm)
 
 	// bad field
 	bad_field := []*biz.Hostgroup{
@@ -453,7 +457,9 @@ func TestUpdateHostgroup(t *testing.T) {
 	}
 
 	teamrepo.On("GetTeams", ctx, mock.Anything, mock.Anything).Return(&repo.Team{
-		2, "team2", "team2code", "team2l", "desc"}, nil)
+		2, "team2", "team2code", 2, "desc"}, nil)
+	adminrepo.On("GetUsers", ctx, mock.Anything, mock.Anything).Return(&repo.User{
+		2, "admin", "admin", "email", "phone"}, nil)
 	// enforce fail
 	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce fail"))
 	err := usecase.UpdateHostgroups(ctx, hg)
@@ -670,6 +676,7 @@ func TestUpdateHostgroup(t *testing.T) {
 func TestHostgroupsHandleM2MProps(t *testing.T) {
 	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -688,7 +695,7 @@ func TestHostgroupsHandleM2MProps(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, authzrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, adminrepo, nil, txm)
 
 	// houstgroup-tag
 	htagFilter := &repo.HostgroupTagsFilter{
@@ -776,6 +783,7 @@ func TestHostgroupsHandleM2MProps(t *testing.T) {
 func TestDeleteHostgroups(t *testing.T) {
 	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -794,10 +802,12 @@ func TestDeleteHostgroups(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, authzrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, adminrepo, nil, txm)
 
 	teamrepo.On("GetTeams", ctx, mock.Anything, mock.Anything).Return(&repo.Team{
-		2, "team2", "team2code", "team2l", "desc"}, nil)
+		2, "team2", "team2code", 2, "desc"}, nil)
+	adminrepo.On("GetUsers", ctx, mock.Anything, mock.Anything).Return(&repo.User{
+		2, "admin", "admin", "email", "phone"}, nil)
 	hgrepo.On("ListHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.Hostgroup{
 		{1, "hg1", "desc", 1, 1, 1, 1, 2}}, nil)
 	// enforce fail
@@ -819,6 +829,7 @@ func TestDeleteHostgroups(t *testing.T) {
 func TestListHostgroup(t *testing.T) {
 	ctx := context.WithValue(context.Background(), data.UserName, "admin")
 	authzrepo := new(MockAuthzRepo)
+	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)
 	hgrepo := new(MockHostgroupsRepo)
 	htrepo := new(MockHostgroupTeamsRepo)
@@ -837,7 +848,7 @@ func TestListHostgroup(t *testing.T) {
 	usecase := biz.NewHostgroupsUsecase(
 		hgrepo, htrepo, hprepo, htagrepo, hfrepo, clsrepo,
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
-		prdrepo, ahrepo, authzrepo, nil, txm)
+		prdrepo, ahrepo, authzrepo, adminrepo, nil, txm)
 
 	// fail
 	query := &biz.ListHostgroupsFilter{

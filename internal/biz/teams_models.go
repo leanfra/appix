@@ -5,14 +5,14 @@ type Team struct {
 	Name        string
 	Code        string
 	Description string
-	Leader      string
+	LeaderId    uint32
 }
 
 type ListTeamsFilter struct {
-	Page     uint32
-	PageSize uint32
-	Names    []string
-	Codes    []string
-	Leaders  []string
-	Ids      []uint32
+	Page      uint32
+	PageSize  uint32
+	Names     []string
+	Codes     []string
+	LeadersId []uint32
+	Ids       []uint32
 }

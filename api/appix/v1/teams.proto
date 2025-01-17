@@ -46,7 +46,7 @@ message Team {
 	string name = 2;
 	string code = 3;
 	string description = 4;
-	string leader = 5;
+	uint32 leader_id = 5;
 }
 
 message CreateTeamsRequest {
@@ -94,7 +94,7 @@ message ListTeamsRequest {
 	uint32 page_size = 2;
 	repeated string names = 3;
 	repeated string codes = 4;
-	repeated string leaders = 5;
+	repeated uint32 leaders_id = 5;
 	repeated uint32 ids = 6;
 }
 
