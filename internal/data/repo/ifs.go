@@ -132,16 +132,6 @@ type ProductsRepo interface {
 	CountProducts(ctx context.Context, tx TX, filter CountFilter) (int64, error)
 }
 
-type TagsRepo interface {
-	RequireCounter
-	CreateTags(ctx context.Context, tags []*Tag) error
-	UpdateTags(ctx context.Context, tags []*Tag) error
-	DeleteTags(ctx context.Context, tx TX, ids []uint32) error
-	GetTags(ctx context.Context, id uint32) (*Tag, error)
-	ListTags(ctx context.Context, tx TX, filter *TagsFilter) ([]*Tag, error)
-	CountTags(ctx context.Context, tx TX, filter CountFilter) (int64, error)
-}
-
 type AdminRepo interface {
 	CreateUsers(ctx context.Context, tx TX, users []*User) error
 	UpdateUsers(ctx context.Context, tx TX, users []*User) error

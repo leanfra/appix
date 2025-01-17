@@ -1,6 +1,7 @@
 package biz
 
 import (
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"fmt"
@@ -9,22 +10,25 @@ import (
 )
 
 type TagsUsecase struct {
-	repo     repo.TagsRepo
-	txm      repo.TxManager
-	log      *log.Helper
-	required []requiredBy
+	tagsrepo  repo.TagsRepo
+	authzrepo repo.AuthzRepo
+	txm       repo.TxManager
+	log       *log.Helper
+	required  []requiredBy
 }
 
 func NewTagsUsecase(repo repo.TagsRepo,
+	authzrepo repo.AuthzRepo,
 	logger log.Logger,
 	apptagrepo repo.AppTagsRepo,
 	hgtagrepo repo.HostgroupTagsRepo,
 	txm repo.TxManager) *TagsUsecase {
 
 	return &TagsUsecase{
-		repo: repo,
-		log:  log.NewHelper(logger),
-		txm:  txm,
+		tagsrepo:  repo,
+		authzrepo: authzrepo,
+		log:       log.NewHelper(logger),
+		txm:       txm,
 		required: []requiredBy{
 			{inst: apptagrepo, name: "app_tag"},
 			{inst: hgtagrepo, name: "hostgroup_tag"},
@@ -41,6 +45,23 @@ func (s *TagsUsecase) validate(isNew bool, tags []*Tag) error {
 	return nil
 }
 
+func (s *TagsUsecase) enforce(ctx context.Context, tx repo.TX) error {
+	curUser := ctx.Value(data.UserName).(string)
+	ires := repo.NewResource4Sv1("team", "", "", "")
+	can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
+		Sub:      curUser,
+		Resource: ires,
+		Action:   repo.ActWrite,
+	})
+	if err != nil {
+		return err
+	}
+	if !can {
+		return fmt.Errorf("PermissionDenied")
+	}
+	return nil
+}
+
 // CreateTags is
 func (s *TagsUsecase) CreateTags(ctx context.Context, tags []*Tag) error {
 	// validate tags
@@ -53,7 +74,17 @@ func (s *TagsUsecase) CreateTags(ctx context.Context, tags []*Tag) error {
 		return e
 	}
 
-	return s.repo.CreateTags(ctx, _tags)
+	err := s.txm.RunInTX(
+		func(tx repo.TX) error {
+			if err := s.enforce(ctx, tx); err != nil {
+				return err
+			}
+			if e := s.tagsrepo.CreateTags(ctx, tx, _tags); e != nil {
+				return e
+			}
+			return nil
+		})
+	return err
 }
 
 // UpdateTags is
@@ -66,7 +97,18 @@ func (s *TagsUsecase) UpdateTags(ctx context.Context, tags []*Tag) error {
 	if e != nil {
 		return e
 	}
-	return s.repo.UpdateTags(ctx, _tags)
+	//return s.tagsrepo.UpdateTags(ctx, _tags)
+	err := s.txm.RunInTX(
+		func(tx repo.TX) error {
+			if err := s.enforce(ctx, tx); err != nil {
+				return err
+			}
+			if e := s.tagsrepo.UpdateTags(ctx, tx, _tags); e != nil {
+				return e
+			}
+			return nil
+		})
+	return err
 }
 
 // DeleteTags is
@@ -76,6 +118,9 @@ func (s *TagsUsecase) DeleteTags(ctx context.Context, ids []uint32) error {
 		return fmt.Errorf("EmptyIds")
 	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
+		if err := s.enforce(ctx, tx); err != nil {
+			return err
+		}
 		for _, r := range s.required {
 			c, err := r.inst.CountRequire(ctx, tx, repo.RequireTag, ids)
 			if err != nil {
@@ -85,7 +130,7 @@ func (s *TagsUsecase) DeleteTags(ctx context.Context, ids []uint32) error {
 				return fmt.Errorf("some %s requires", r.name)
 			}
 		}
-		if e := s.repo.DeleteTags(ctx, tx, ids); e != nil {
+		if e := s.tagsrepo.DeleteTags(ctx, tx, ids); e != nil {
 			return e
 		}
 		return nil
@@ -97,7 +142,7 @@ func (s *TagsUsecase) GetTags(ctx context.Context, id uint32) (*Tag, error) {
 	if id <= 0 {
 		return nil, fmt.Errorf("EmptyId")
 	}
-	t, e := s.repo.GetTags(ctx, id)
+	t, e := s.tagsrepo.GetTags(ctx, id)
 	if e != nil {
 		return nil, e
 	}
@@ -112,7 +157,7 @@ func (s *TagsUsecase) ListTags(ctx context.Context,
 			return nil, err
 		}
 	}
-	_ts, e := s.repo.ListTags(ctx, nil, ToDBTagsFilter(filter))
+	_ts, e := s.tagsrepo.ListTags(ctx, nil, ToDBTagsFilter(filter))
 	if e != nil {
 		return nil, e
 	}

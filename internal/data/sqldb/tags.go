@@ -40,9 +40,9 @@ func NewTagsRepoGorm(data *DataGorm, logger log.Logger) (repo.TagsRepo, error) {
 }
 
 // CreateTags is
-func (d *TagsRepoGorm) CreateTags(ctx context.Context, tags []*repo.Tag) error {
+func (d *TagsRepoGorm) CreateTags(ctx context.Context, tx repo.TX, tags []*repo.Tag) error {
 
-	r := d.data.DB.WithContext(ctx).Create(tags)
+	r := d.data.WithTX(tx).WithContext(ctx).Create(tags)
 	if r.Error != nil {
 		return r.Error
 	}
@@ -50,8 +50,8 @@ func (d *TagsRepoGorm) CreateTags(ctx context.Context, tags []*repo.Tag) error {
 }
 
 // UpdateTags is
-func (d *TagsRepoGorm) UpdateTags(ctx context.Context, tags []*repo.Tag) error {
-	r := d.data.DB.WithContext(ctx).Save(tags)
+func (d *TagsRepoGorm) UpdateTags(ctx context.Context, tx repo.TX, tags []*repo.Tag) error {
+	r := d.data.WithTX(tx).WithContext(ctx).Save(tags)
 	if r.Error != nil {
 		return r.Error
 	}

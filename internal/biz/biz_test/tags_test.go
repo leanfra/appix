@@ -2,6 +2,7 @@ package biz_test
 
 import (
 	"appix/internal/biz"
+	"appix/internal/data"
 	"appix/internal/data/repo"
 	"context"
 	"errors"
@@ -12,13 +13,15 @@ import (
 )
 
 func TestCreateTags(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)
 	hgtagrepo := new(MockHostgroupTagsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTagsUsecase(
 		tagsrepo,
+		authzrepo,
 		nil,
 		apptagrepo,
 		hgtagrepo,
@@ -54,6 +57,15 @@ func TestCreateTags(t *testing.T) {
 	err = usecase.CreateTags(ctx, tags)
 	assert.Error(t, err)
 
+	// enforce fail
+	tags = []*biz.Tag{{Key: "valid", Value: "validcode"}}
+	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce failed"))
+	err = usecase.CreateTags(ctx, tags)
+	assert.Error(t, err)
+	authcall.Unset()
+
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
 	// Test case: Creation fails
 	tags = []*biz.Tag{{Key: "valid", Value: "validcode"}}
 	repoCall := tagsrepo.On("CreateTags", ctx, mock.Anything).Return(errors.New("creation failed"))
@@ -81,13 +93,15 @@ func TestCreateTags(t *testing.T) {
 }
 
 func TestUpdateTags(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)
 	hgtagrepo := new(MockHostgroupTagsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTagsUsecase(
 		tagsrepo,
+		authzrepo,
 		nil,
 		apptagrepo,
 		hgtagrepo,
@@ -144,6 +158,14 @@ func TestUpdateTags(t *testing.T) {
 	err = usecase.UpdateTags(ctx, tags)
 	assert.Error(t, err)
 
+	// enforce fail
+	tags = []*biz.Tag{{Id: 1, Key: "valid", Value: "validcode"}}
+	authzcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce failed"))
+	err = usecase.UpdateTags(ctx, tags)
+	assert.Error(t, err)
+	authzcall.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
+
 	// Test case: Creation fails
 	tags = []*biz.Tag{{Id: 1, Key: "valid", Value: "validcode"}}
 	repoCall := tagsrepo.On("UpdateTags", ctx, mock.Anything).Return(errors.New("creation failed"))
@@ -171,13 +193,15 @@ func TestUpdateTags(t *testing.T) {
 }
 
 func TestDeleteTags(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)
 	hgtagrepo := new(MockHostgroupTagsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTagsUsecase(
 		tagsrepo,
+		authzrepo,
 		nil,
 		apptagrepo,
 		hgtagrepo,
@@ -191,6 +215,15 @@ func TestDeleteTags(t *testing.T) {
 
 	err = usecase.DeleteTags(ctx, nil)
 	assert.Error(t, err)
+
+	// enforce fails
+	tags = []uint32{1, 2}
+	authzcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce failed"))
+	err = usecase.DeleteTags(ctx, tags)
+	assert.Error(t, err)
+	t.Logf("error. %v\n", err)
+	authzcall.Unset()
+	authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(true, nil)
 
 	// Test case: failed on app-tag need check fail
 	tags = []uint32{1, 2}
@@ -252,13 +285,15 @@ func TestDeleteTags(t *testing.T) {
 
 func TestGetTags(t *testing.T) {
 
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)
 	hgtagrepo := new(MockHostgroupTagsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTagsUsecase(
 		tagsrepo,
+		authzrepo,
 		nil,
 		apptagrepo,
 		hgtagrepo,
@@ -298,13 +333,15 @@ func TestGetTags(t *testing.T) {
 }
 
 func TestListTags(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)
 	hgtagrepo := new(MockHostgroupTagsRepo)
 	txm := new(MockTXManager)
 	usecase := biz.NewTagsUsecase(
 		tagsrepo,
+		authzrepo,
 		nil,
 		apptagrepo,
 		hgtagrepo,

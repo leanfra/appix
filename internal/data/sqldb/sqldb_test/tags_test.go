@@ -25,7 +25,7 @@ func createBaseTags(t *testing.T, data []*repo.Tag) {
 			{Key: "test", Value: "value2"},
 		}
 	}
-	if err := tagsRepo.CreateTags(context.Background(), data); err != nil {
+	if err := tagsRepo.CreateTags(context.Background(), nil, data); err != nil {
 		t.Fatal(err)
 	}
 
@@ -69,7 +69,7 @@ func testCreateTagsSuccess(t *testing.T) {
 		{Key: "test", Value: "value"},
 		{Key: "test", Value: "value2"},
 	}
-	err := tagsRepo.CreateTags(context.Background(), tags)
+	err := tagsRepo.CreateTags(context.Background(), nil, tags)
 	assert.NoError(t, err)
 }
 
@@ -79,7 +79,7 @@ func testCreateTagsError(t *testing.T) {
 		{Key: "test", Value: "value"},
 		{Key: "test", Value: "value"},
 	}
-	err := tagsRepo.CreateTags(context.Background(), tags)
+	err := tagsRepo.CreateTags(context.Background(), nil, tags)
 	assert.Error(t, err)
 }
 
@@ -91,7 +91,7 @@ func testUpdateTagsSuccess(t *testing.T) {
 	createBaseTags(t, tags)
 
 	tags[0].Value = "value1"
-	err := tagsRepo.UpdateTags(context.Background(), tags)
+	err := tagsRepo.UpdateTags(context.Background(), nil, tags)
 	assert.NoError(t, err)
 }
 
@@ -102,7 +102,7 @@ func testUpdateTagsError(t *testing.T) {
 	}
 	createBaseTags(t, tags)
 	tags[0].Value = "value2"
-	err := tagsRepo.UpdateTags(context.Background(), tags)
+	err := tagsRepo.UpdateTags(context.Background(), nil, tags)
 	assert.Error(t, err)
 }
 

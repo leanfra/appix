@@ -34,6 +34,11 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 		cleanup()
 		return nil, nil, err
 	}
+	authzRepo, err := sqldb.NewAuthzRepoGorm(authz, dataGorm, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	appTagsRepo, err := sqldb.NewAppTagsRepoGorm(dataGorm, logger)
 	if err != nil {
 		cleanup()
@@ -45,14 +50,9 @@ func wireApp(confServer *conf.Server, confData *conf.Data, admin *conf.Admin, au
 		return nil, nil, err
 	}
 	txManager := sqldb.NewTxManagerGorm(dataGorm, logger)
-	tagsUsecase := biz.NewTagsUsecase(tagsRepo, logger, appTagsRepo, hostgroupTagsRepo, txManager)
+	tagsUsecase := biz.NewTagsUsecase(tagsRepo, authzRepo, logger, appTagsRepo, hostgroupTagsRepo, txManager)
 	tagsService := service.NewTagsService(tagsUsecase, logger)
 	featuresRepo, err := sqldb.NewFeaturesRepoGorm(dataGorm, logger)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	authzRepo, err := sqldb.NewAuthzRepoGorm(authz, dataGorm, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

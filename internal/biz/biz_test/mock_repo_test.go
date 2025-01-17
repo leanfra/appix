@@ -186,12 +186,12 @@ type MockTagsRepo struct {
 	mock.Mock
 }
 
-func (m *MockTagsRepo) CreateTags(ctx context.Context, tags []*repo.Tag) error {
+func (m *MockTagsRepo) CreateTags(ctx context.Context, tx repo.TX, tags []*repo.Tag) error {
 	args := m.Called(ctx, tags)
 	return args.Error(0)
 }
 
-func (m *MockTagsRepo) UpdateTags(ctx context.Context, tags []*repo.Tag) error {
+func (m *MockTagsRepo) UpdateTags(ctx context.Context, tx repo.TX, tags []*repo.Tag) error {
 	args := m.Called(ctx, tags)
 	return args.Error(0)
 }
