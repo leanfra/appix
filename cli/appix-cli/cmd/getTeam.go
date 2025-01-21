@@ -27,6 +27,7 @@ Examples:
   appix get team --codes dev,prod             # Filter by codes
   appix get team --leaders 1,2 				  # Filter by leaders user id
   appix get team --names dev --format yaml    # Custom format`,
+	Aliases: []string{"teams", "tm"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {
@@ -81,32 +82,70 @@ Examples:
 			currentPage++
 		}
 
+		// convert teams to TeamReadable
+		// 创建一个缓存来存储 leader_id 对应的 username
+		leaderCache := make(map[uint32]string)
+
+		// 收集所有唯一的 leader_id 需要被查询
+		leaderIDs := make(map[uint32]bool)
+		for _, team := range allTeams {
+			if team.LeaderId > 0 {
+				leaderIDs[team.LeaderId] = true
+			}
+		}
+
+		// 批量获取 leaders
+		adminClient := pb.NewAdminClient(conn)
+
+		for id := range leaderIDs {
+			resp, err := adminClient.GetUsers(ctx, &pb.GetUsersRequest{Id: id})
+			if err == nil && resp.User != nil {
+				leaderCache[id] = resp.User.UserName
+			} else {
+				leaderCache[id] = fmt.Sprint(id)
+			}
+		}
+
+		// 将 pb.Team 转换为 pb.TeamReadable
+		var readableTeams []*pb.TeamReadable
+		for _, team := range allTeams {
+			readable := &pb.TeamReadable{
+				Id:          team.Id,
+				Name:        team.Name,
+				Code:        team.Code,
+				Description: team.Description,
+				Leader:      leaderCache[team.LeaderId],
+			}
+			readableTeams = append(readableTeams, readable)
+		}
+
 		// 按 GetFormat 格式输出
 		switch GetFormat {
 		case "yaml":
-			data, err := yaml.Marshal(allTeams)
+			data, err := yaml.Marshal(readableTeams)
 			if err != nil {
 				log.Fatalf("serialize yaml failed: %v", err)
 			}
 			fmt.Println(string(data))
 		case "text":
-			if len(allTeams) == 0 {
+			if len(readableTeams) == 0 {
 				fmt.Println("No teams found")
 				return
 			}
-			for _, team := range allTeams {
+			for _, team := range readableTeams {
 				fmt.Printf("ID: %d, Name: %s, Code: %s, Leader: %s, Description: %s\n",
-					team.Id, team.Name, team.Code, team.LeaderId, team.Description)
+					team.Id, team.Name, team.Code, team.Leader, team.Description)
 			}
 		case "table":
 			table := tablewriter.NewWriter(os.Stdout)
 			table.SetHeader([]string{"ID", "Name", "Code", "Leader", "Description"})
-			for _, team := range allTeams {
+			table.SetAutoFormatHeaders(true)
+			for _, team := range readableTeams {
 				table.Append([]string{
 					fmt.Sprint(team.Id),
 					team.Name,
 					team.Code,
-					fmt.Sprintf("%v", team.LeaderId),
+					team.Leader,
 					team.Description,
 				})
 			}

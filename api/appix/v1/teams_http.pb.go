@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.8.2
 // - protoc             v3.12.4
-// source: api/appix/v1/teams.proto
+// source: appix/v1/teams.proto
 
 package v1
 
