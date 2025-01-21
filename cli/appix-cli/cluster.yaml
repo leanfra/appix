@@ -1,0 +1,7 @@
+- id: 0
+  name: k8s-0
+  description: kubernetes-0
+- name: k8s-1
+  description: kubernetes-1
+- name: nk8s-0
+  description: non-k8s-0

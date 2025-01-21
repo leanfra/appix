@@ -1,0 +1,144 @@
+syntax = "proto3";
+
+package api.appix.v1;
+
+option go_package = "appix/api/appix/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.appix.v1";
+
+import "google/api/annotations.proto";
+
+service Applications {
+	rpc CreateApplications (CreateApplicationsRequest) returns (CreateApplicationsReply){
+		option (google.api.http) = {
+			post: "/api/v1/applications/create"
+			body: "*"
+		};
+	};
+	rpc UpdateApplications (UpdateApplicationsRequest) returns (UpdateApplicationsReply){
+		option (google.api.http) = {
+			post: "/api/v1/applications/update"
+			body: "*"
+		};
+	};
+	rpc DeleteApplications (DeleteApplicationsRequest) returns (DeleteApplicationsReply){
+		option (google.api.http) = {
+			post: "/api/v1/applications/delete"
+			body: "*"
+		};
+	};
+	rpc GetApplications (GetApplicationsRequest) returns (GetApplicationsReply){
+		option (google.api.http) = {
+			get: "/api/v1/applications/{id}"
+		};
+	};
+	rpc ListApplications (ListApplicationsRequest) returns (ListApplicationsReply){
+		option (google.api.http) = {
+			post: "/api/v1/applications/list"
+			body: "*"
+		};
+	};
+	rpc MatchAppHostgroups (MatchAppHostgroupsRequest) returns (MatchAppHostgroupsReply){
+		option (google.api.http) = {
+			post: "/api/v1/applications/match-hostgroups"
+			body: "*"
+		};
+	};
+}
+
+// gratos::model
+message Application {
+	uint32 id = 1;
+	string name = 2;
+	string description = 3;
+	uint32 owner_id = 11;
+	bool is_stateful = 13;
+	uint32 product_id = 7;
+	uint32 team_id = 8;
+	repeated uint32 features_id = 9;
+	repeated uint32 tags_id = 10;
+	repeated uint32 hostgroups_id = 12;
+}
+
+// Application readable
+message ApplicationReadable {
+	uint32 id = 1;
+	string name = 2;
+	string description = 3;
+	string owner = 11;
+	bool is_stateful = 13;
+	string product = 7;
+	string team = 8;
+	repeated string features = 9;
+	repeated string tags = 10;
+	repeated string hostgroups = 12;
+}
+
+message CreateApplicationsRequest {
+	repeated Application apps = 1;
+}
+message CreateApplicationsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message UpdateApplicationsRequest {
+	repeated Application apps = 1;
+}
+message UpdateApplicationsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message DeleteApplicationsRequest {
+	repeated uint32 ids = 1;
+}
+message DeleteApplicationsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message GetApplicationsRequest {
+	uint32 id = 1;
+}
+message GetApplicationsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	Application app = 4;
+}
+
+message ListApplicationsRequest {
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated uint32 ids = 3;
+	repeated string names = 4;
+	string is_stateful = 5;
+	repeated uint32 products_id = 6;
+	repeated uint32 teams_id = 7;
+	repeated uint32 features_id = 8;
+	repeated uint32 tags_id = 9;
+	repeated uint32 hostgroups_id = 10;
+}
+message ListApplicationsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	repeated Application apps = 4;
+}
+
+message MatchAppHostgroupsRequest {
+	repeated uint32 features_id = 1;
+	uint32 product_id = 2;
+	uint32 team_id = 3;
+}
+
+message MatchAppHostgroupsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	repeated uint32 hostgroups_id = 4;
+}

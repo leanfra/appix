@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package api.appix.v1;
+
+option go_package = "appix/api/appix/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.appix.v1";
+
+import "google/api/annotations.proto";
+
+// gratos::model
+message Product {
+	uint32 id = 1;
+	string name = 2;
+	string code = 3;
+	string description = 4;
+}
+
+service Products {
+	rpc CreateProducts (CreateProductsRequest) returns (CreateProductsReply){
+		option (google.api.http) = {
+			post: "/api/v1/products/create"
+			body: "*"
+		};
+	};
+	rpc UpdateProducts (UpdateProductsRequest) returns (UpdateProductsReply){
+		option (google.api.http) = {
+			post: "/api/v1/products/update"
+			body: "*"
+		};
+	};
+	rpc DeleteProducts (DeleteProductsRequest) returns (DeleteProductsReply){
+		option (google.api.http) = {
+			post: "/api/v1/products/delete"
+			body: "*"
+		};
+	};
+	rpc GetProducts (GetProductsRequest) returns (GetProductsReply){
+		option (google.api.http) = {
+			get: "/api/v1/products/{id}"
+		};
+	};
+	rpc ListProducts (ListProductsRequest) returns (ListProductsReply){
+		option (google.api.http) = {
+			post: "/api/v1/products"
+			body: "*"
+		};
+	};
+}
+
+message CreateProductsRequest {
+	repeated Product products = 1;
+}
+message CreateProductsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message UpdateProductsRequest {
+	repeated Product products = 1;
+}
+message UpdateProductsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message DeleteProductsRequest {
+	repeated uint32 ids = 1;
+}
+message DeleteProductsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message GetProductsRequest {
+	uint32 id = 1;
+}
+message GetProductsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	Product product = 4;
+}
+
+message ListProductsRequest {
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated string names = 3;
+	repeated string codes = 4;
+	repeated uint32 ids = 5;
+}
+
+message ListProductsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	repeated Product products = 4;
+}

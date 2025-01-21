@@ -1,0 +1,56 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "appix/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+  Server server = 1;
+  Data data = 2;
+  Admin admin = 3;
+  Authz authz = 4;
+}
+
+message Server {
+  message HTTP {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  message GRPC {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  HTTP http = 1;
+  GRPC grpc = 2;
+  string tracer = 3;
+}
+
+message Data {
+  message Database {
+    string driver = 1;
+    string source = 2;
+  }
+  message Redis {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration read_timeout = 3;
+    google.protobuf.Duration write_timeout = 4;
+  }
+  Database database = 1;
+  Redis redis = 2;
+}
+
+message Authz {
+  string model_file = 1;
+}
+
+message Admin {
+  string admin_password = 3;
+  bool strict_password_policy = 4;
+  string jwt_secret = 5;
+  string emergency_header = 6;
+  int64 jwt_expire_hours = 7;
+}

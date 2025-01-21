@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package api.appix.v1;
+
+option go_package = "appix/api/appix/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.appix.v1";
+
+import "google/api/annotations.proto";
+
+service Teams {
+	rpc CreateTeams (CreateTeamsRequest) returns (CreateTeamsReply){
+		option (google.api.http) = {
+			post: "/api/v1/teams/create"
+			body: "*"
+		};
+	};
+	rpc UpdateTeams (UpdateTeamsRequest) returns (UpdateTeamsReply){
+		option (google.api.http) = {
+			post: "/api/v1/teams/update"
+			body: "*"
+		};
+	};
+	rpc DeleteTeams (DeleteTeamsRequest) returns (DeleteTeamsReply){
+		option (google.api.http) = {
+			post: "/api/v1/teams/delete"
+			body: "*"
+		};
+	};
+	rpc GetTeams (GetTeamsRequest) returns (GetTeamsReply){
+		option (google.api.http) = {
+			get: "/api/v1/teams/{id}"
+		};
+	};
+	rpc ListTeams (ListTeamsRequest) returns (ListTeamsReply){
+		option (google.api.http) = {
+			post: "/api/v1/teams/list"
+			body: "*"
+		};
+	};
+}
+
+// gratos::model
+message Team {
+	uint32 id = 1;
+	string name = 2;
+	string code = 3;
+	string description = 4;
+	uint32 leader_id = 5;
+}
+
+message TeamReadable {
+	uint32 id = 1;
+	string name = 2;
+	string code = 3;
+	string description = 4;
+	string leader = 5;
+}
+
+message CreateTeamsRequest {
+	repeated Team teams = 1;
+}
+
+message CreateTeamsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message UpdateTeamsRequest {
+	repeated Team teams = 1;
+}
+
+message UpdateTeamsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message DeleteTeamsRequest {
+	repeated uint32 ids = 1;
+}
+
+message DeleteTeamsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message GetTeamsRequest {
+	uint32 id = 1;
+}
+message GetTeamsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	Team team = 4;
+}
+
+message ListTeamsRequest {
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated string names = 3;
+	repeated string codes = 4;
+	repeated uint32 leaders_id = 5;
+	repeated uint32 ids = 6;
+}
+
+message ListTeamsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	repeated Team teams = 4;
+}
