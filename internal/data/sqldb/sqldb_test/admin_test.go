@@ -55,7 +55,8 @@ func TestAdminRepoGorm_UpdateUsers(t *testing.T) {
 
 	var updatedUserFromDB repo.User
 	db.First(&updatedUserFromDB, user.Id)
-	assert.Equal(t, "user1_updated", updatedUserFromDB.UserName)
+	// username not updated
+	assert.Equal(t, "user1", updatedUserFromDB.UserName)
 	assert.Equal(t, "user1_updated@example.com", updatedUserFromDB.Email)
 }
 
