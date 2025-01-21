@@ -14,5 +14,5 @@ var dataMem *sqldb.DataGorm
 
 func getDataMem() *sqldb.DataGorm {
 	_db, _ := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
-	return &sqldb.DataGorm{DB: _db}
+	return &sqldb.DataGorm{DB: _db, Driver: "sqlite"}
 }

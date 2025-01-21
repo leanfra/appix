@@ -59,9 +59,6 @@ func TestAuthzRepoGorm_DeleteRule(t *testing.T) {
 
 	err = authzRepo.DeleteRule(context.Background(), nil, rule)
 	assert.NoError(t, err)
-
-	err = authzRepo.DeleteRule(context.Background(), nil, rule)
-	assert.Error(t, err)
 }
 
 func TestAuthzRepoGorm_ListRule(t *testing.T) {

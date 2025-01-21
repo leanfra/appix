@@ -2,6 +2,7 @@ package sqldb_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"appix/internal/data/repo"
@@ -14,7 +15,9 @@ var ftRepo repo.FeaturesRepo
 
 func initFeaturesRepo() {
 	dataMem := getDataMem()
-	ftRepo, _ = sqldb.NewFeaturesRepoGorm(dataMem, logger)
+	var err error
+	ftRepo, err = sqldb.NewFeaturesRepoGorm(dataMem, logger)
+	fmt.Println(ftRepo == nil, err)
 }
 
 func createBaseFeatures(t *testing.T, data []*repo.Feature) {

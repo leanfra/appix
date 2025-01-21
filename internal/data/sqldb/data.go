@@ -16,7 +16,7 @@ import (
 // DataGorm .
 type DataGorm struct {
 	DB     *gorm.DB
-	driver string
+	Driver string
 }
 
 // NewDataGorm .
@@ -50,7 +50,7 @@ func NewDataGorm(c *conf.Data, logger log.Logger) (*DataGorm, func(), error) {
 
 	return &DataGorm{
 		DB:     _db,
-		driver: driver,
+		Driver: driver,
 	}, cleanup, nil
 }
 
@@ -64,11 +64,11 @@ func (d *DataGorm) WithTX(tx repo.TX) *gorm.DB {
 // ColumnExistsForSQLite 用于检测SQLite数据库中指定表是否存在某一列
 func (d *DataGorm) ColumnExists(tableName string, columnName string) (bool, error) {
 	var count int
-	if d.driver == "sqlite" {
+	if d.Driver == "sqlite" {
 		// 在SQLite中，通过查询sqlite_master表获取表结构相关信息来判断列是否存在
 		query := fmt.Sprintf("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%s' AND sql LIKE '%%%s%%'", tableName, columnName)
 		d.DB.Raw(query).Scan(&count)
-	} else if d.driver == "mysql" {
+	} else if d.Driver == "mysql" {
 		query := fmt.Sprintf("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE table_name = '%s' AND column_name = '%s'", tableName, columnName)
 		d.DB.Raw(query).Scan(&count)
 	} else {
