@@ -30,6 +30,7 @@ Examples:
 
   # Update interactively in editor
   appix update hostgroup --id 1 --online`,
+	Aliases: []string{"hg", "hgs", "hostgroups"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

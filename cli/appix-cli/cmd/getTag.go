@@ -27,6 +27,7 @@ Examples:
   appix get tag --kvs env=prod               # Filter by key-value
   appix get tag --ids 1,2,3                 # Filter by IDs
   appix get tag --keys env --format yaml     # Custom format`,
+	Aliases: []string{"tags"},
 	Run: func(cmd *cobra.Command, args []string) {
 		// 建立 gRPC 连接
 		ctx, conn, err := NewConnection(true)

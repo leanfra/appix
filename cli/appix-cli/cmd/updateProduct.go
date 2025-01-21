@@ -20,7 +20,7 @@ var updateProductCmd = &cobra.Command{
 	Use:     "product",
 	Short:   "Update product",
 	Long:    `Update one or more products with the specified ID and fields.`,
-	Aliases: []string{"product", "products"},
+	Aliases: []string{"prod", "prods", "products"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

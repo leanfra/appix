@@ -25,7 +25,7 @@ Examples:
   appix get app --is-stateful true                # Filter stateful
   appix get app --page 1 --page-size 10           # With pagination
   appix get app --names web --clusters 1 --format yaml   # Combined filters`,
-	Aliases: []string{"apps", "application", "applications"},
+	Aliases: []string{"apps", "applications"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

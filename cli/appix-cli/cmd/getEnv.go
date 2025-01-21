@@ -23,6 +23,7 @@ Examples:
   appix get env --ids 1,2,3                 # Filter by IDs
   appix get env --page 1 --page-size 10     # With pagination
   appix get env --names prod --format yaml   # Custom format`,
+	Aliases: []string{"envs"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

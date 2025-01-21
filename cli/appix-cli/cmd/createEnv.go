@@ -24,6 +24,7 @@ Environment is used to describe the purpose of the system, like production, deve
 Examples:
   appix create env --name prod --desc "Production Environment"
   appix create env --name dev --desc "Development Environment"`,
+	Aliases: []string{"envs"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

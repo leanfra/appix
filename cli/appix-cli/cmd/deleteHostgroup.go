@@ -21,7 +21,7 @@ var deleteHostgroupCmd = &cobra.Command{
 For example:
   appix delete hostgroup 1 2 3`,
 	Args:    cobra.MinimumNArgs(1),
-	Aliases: []string{"hostgroup", "hostgroups", "hg"},
+	Aliases: []string{"hg", "hostgroups", "hgs"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

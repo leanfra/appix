@@ -24,6 +24,7 @@ Tag is a key-value pair that used for labeling resources.
 Examples:
   appix create tag --key runtime --value "Production"
   appix create tag --key runtime --value "Development"`,
+	Aliases: []string{"tags"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

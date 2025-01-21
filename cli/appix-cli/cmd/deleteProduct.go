@@ -21,7 +21,7 @@ var deleteProductCmd = &cobra.Command{
 For example:
   appix delete product 1 2 3`,
 	Args:    cobra.MinimumNArgs(1),
-	Aliases: []string{"product", "products", "pd"},
+	Aliases: []string{"products", "prod"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

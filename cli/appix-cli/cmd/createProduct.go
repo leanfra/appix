@@ -24,6 +24,7 @@ Product is a business unit that used for grouping resources.
 Examples:
   appix create product --name web-app --code webapp --desc "Web Application"
   appix create product --name mobile-app --code mobile --desc "Mobile Application"`,
+	Aliases: []string{"prod", "prods", "products"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

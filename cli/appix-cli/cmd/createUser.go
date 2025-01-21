@@ -26,7 +26,8 @@ Examples:
   appix create createUser --name john --email john@example.com
   appix create createUser --out-file user-template.yaml
   appix create createUser --yaml-file user.yaml`,
-	Run: createUser,
+	Aliases: []string{"usr", "users"},
+	Run:     createUser,
 }
 
 func createUser(cmd *cobra.Command, args []string) {

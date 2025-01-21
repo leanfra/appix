@@ -27,6 +27,7 @@ Examples:
   appix get product --codes code1,code2          # Filter by codes
   appix get product --ids 1,2,3                  # Filter by IDs
   appix get product --names prod1 --format yaml  # Custom format`,
+	Aliases: []string{"prod", "prods", "products"},
 	Run: func(cmd *cobra.Command, args []string) {
 		names, _ := cmd.Flags().GetStringSlice("names")
 		codes, _ := cmd.Flags().GetStringSlice("codes")

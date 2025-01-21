@@ -23,6 +23,7 @@ var matchHostgroupCmd = &cobra.Command{
 
 Examples:
   appix match hostgroup --features 1,2 --product 1 --team 1`,
+	Aliases: []string{"hg", "hostgroups", "hgs"},
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get flags
 		features, _ := cmd.Flags().GetUintSlice("features")

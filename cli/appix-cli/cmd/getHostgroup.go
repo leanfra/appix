@@ -24,6 +24,7 @@ Examples:
   appix get hostgroup --ids 1,2,3                   # Filter by IDs
   appix get hostgroup --clusters 1 --teams 2        # Filter by cluster and team
   appix get hostgroup --products 1 --format yaml    # Custom format`,
+	Aliases: []string{"hg", "hostgroups", "hgs"},
 	Run: func(cmd *cobra.Command, args []string) {
 		page := GetPage
 		pageSize := GetPageSize

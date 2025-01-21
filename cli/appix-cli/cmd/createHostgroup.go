@@ -25,6 +25,7 @@ Hostgroup belongs to a cluster.
 Examples:
   appix create hostgroup --name web-servers --desc "Web Servers" --cluster cluster1
   appix create hostgroup --name db-servers --desc "Database Servers" --cluster cluster1`,
+	Aliases: []string{"hg", "hgs", "hostgroups"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

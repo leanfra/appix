@@ -21,7 +21,7 @@ var deleteAppCmd = &cobra.Command{
 For example:
   appix delete app 1 2 3`,
 	Args:    cobra.MinimumNArgs(1),
-	Aliases: []string{"app", "apps", "ap"},
+	Aliases: []string{"apps", "application", "applications"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

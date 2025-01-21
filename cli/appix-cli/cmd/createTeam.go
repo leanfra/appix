@@ -24,6 +24,7 @@ Team is a development team as organization unit.
 Examples:
   appix create team --name eng-team --code eng --desc "Engineering Team" --leader "John Doe"
   appix create team --name ops-team --code ops --desc "Operations Team" --leader "Jane Smith"`,
+	Aliases: []string{"tm", "teams"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {

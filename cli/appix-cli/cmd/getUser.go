@@ -26,6 +26,7 @@ Examples:
   appix get user --ids 1,2,3                       # Filter by IDs
   appix get user --page 1 --page-size 10           # With pagination
   appix get user --names john --format yaml          # Combined filters`,
+	Aliases: []string{"users"},
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, conn, err := NewConnection(true)
 		if err != nil {
