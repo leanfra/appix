@@ -10,10 +10,6 @@ data:
   database:
     driver: sqlite
     source: database/data.sqlite
-  redis:
-    addr: 127.0.0.1:6379
-    read_timeout: 0.2s
-    write_timeout: 0.2s
 admin:
   admin_password: admin@123
   strict_password_policy: true
