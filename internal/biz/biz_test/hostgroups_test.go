@@ -13,7 +13,7 @@ import (
 )
 
 func TestCreateHostgroup(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)
@@ -412,7 +412,7 @@ func TestCreateHostgroup(t *testing.T) {
 }
 
 func TestUpdateHostgroup(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)
@@ -674,7 +674,7 @@ func TestUpdateHostgroup(t *testing.T) {
 }
 
 func TestHostgroupsHandleM2MProps(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)
@@ -781,7 +781,7 @@ func TestHostgroupsHandleM2MProps(t *testing.T) {
 }
 
 func TestDeleteHostgroups(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)
@@ -827,7 +827,7 @@ func TestDeleteHostgroups(t *testing.T) {
 }
 
 func TestListHostgroup(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	adminrepo := new(MockAdminRepo)
 	txm := new(MockTXManager)

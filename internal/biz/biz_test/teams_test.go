@@ -14,7 +14,7 @@ import (
 
 // TestCreateTeams tests the CreateTeams method of the TeamsUsecase.
 func TestCreateTeams(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user")
 	teamRepo := new(MockTeamsRepo)
 	authzrepo := new(MockAuthzRepo)
 	hgrepo := new(MockHostgroupsRepo)
@@ -110,7 +110,7 @@ func TestCreateTeams(t *testing.T) {
 }
 
 func TestUpdateTeams(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user")
 	teamRepo := new(MockTeamsRepo)
 	authzrepo := new(MockAuthzRepo)
 	hgrepo := new(MockHostgroupsRepo)
@@ -212,7 +212,7 @@ func TestUpdateTeams(t *testing.T) {
 }
 
 func TestDeleteTeams(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user")
 	teamRepo := new(MockTeamsRepo)
 	authzrepo := new(MockAuthzRepo)
 	hgrepo := new(MockHostgroupsRepo)

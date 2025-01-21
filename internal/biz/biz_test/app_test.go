@@ -49,7 +49,7 @@ func TestCreateApp(t *testing.T) {
 		{0, "test-app", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
 
-	ctx = context.WithValue(ctx, data.UserName, "demouser")
+	ctx = context.WithValue(ctx, data.CtxUserName, "demouser")
 
 	var err error
 	// 测试产品验证
@@ -338,7 +338,7 @@ func TestUpdateApp(t *testing.T) {
 		{10, "test-app", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
 	}
 
-	ctx = context.WithValue(ctx, data.UserName, "demouser")
+	ctx = context.WithValue(ctx, data.CtxUserName, "demouser")
 	// validate enforce
 	teamrepo.On("GetTeams", ctx, mock.Anything).Return(&repo.Team{ID: 1, Name: "test-team"}, nil)
 	adminrepo.On("GetUsers", ctx, mock.Anything, mock.Anything).Return(&repo.User{Id: 10, UserName: "demouser"}, nil)
@@ -545,7 +545,7 @@ func TestDeleteApplications(t *testing.T) {
 
 	ids := []uint32{1, 2}
 
-	ctx = context.WithValue(ctx, data.UserName, "demouser")
+	ctx = context.WithValue(ctx, data.CtxUserName, "demouser")
 	apprepo.On("ListApplications", ctx, mock.Anything, mock.Anything).Return([]*repo.Application{
 		{Id: 1, OwnerId: 10, TeamId: 11},
 		{Id: 2, OwnerId: 10, TeamId: 12},

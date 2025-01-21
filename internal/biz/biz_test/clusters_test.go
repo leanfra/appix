@@ -40,7 +40,7 @@ func TestCreateClusters(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	ctx = context.WithValue(ctx, data.UserName, "admin")
+	ctx = context.WithValue(ctx, data.CtxUserName, "admin")
 	// authzrepo enforce false
 	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, nil)
 	prd := []*biz.Cluster{
@@ -101,7 +101,7 @@ func TestUpdateClusters(t *testing.T) {
 		assert.Error(t, err)
 	}
 
-	ctx = context.WithValue(ctx, data.UserName, "admin")
+	ctx = context.WithValue(ctx, data.CtxUserName, "admin")
 
 	// authzrepo enforce false
 	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, nil)
@@ -156,7 +156,7 @@ func TestDeleteClusters(t *testing.T) {
 	assert.Error(t, err)
 
 	// enforce error
-	ctx = context.WithValue(ctx, data.UserName, "admin")
+	ctx = context.WithValue(ctx, data.CtxUserName, "admin")
 
 	// authzrepo enforce false
 	call_authz := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, nil)

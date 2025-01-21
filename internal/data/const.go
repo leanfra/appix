@@ -4,7 +4,7 @@ package data
 type ContextKey string
 
 const (
-	UserTokenKey ContextKey = "user-token"
-	UserName     ContextKey = "username"
-	UserId       ContextKey = "userid"
+	CtxUserTokenKey ContextKey = "user-token"
+	CtxUserName     ContextKey = "username"
+	CtxUserId       ContextKey = "userid"
 )

@@ -75,7 +75,7 @@ func NewHostgroupsUsecase(repo repo.HostgroupsRepo,
 }
 
 func (s *HostgroupsUsecase) enforce(ctx context.Context, tx repo.TX, hgs []*Hostgroup) error {
-	curUser := ctx.Value(data.UserName).(string)
+	curUser := ctx.Value(data.CtxUserName).(string)
 
 	for _, hg := range hgs {
 		team, err := s.teamrepo.GetTeams(ctx, hg.TeamId)

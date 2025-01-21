@@ -13,18 +13,18 @@ var (
 	ErrExpiredToken = errors.New("expired token")
 )
 
-type ApiKey struct {
-	ID          uint32 `gorm:"primaryKey;autoIncrement"`
-	Key         string `gorm:"type:varchar(255);unique"`
-	Description string `gorm:"type:varchar(255);"`
-}
+// type ApiKey struct {
+// 	ID          uint32 `gorm:"primaryKey;autoIncrement"`
+// 	Key         string `gorm:"type:varchar(255);unique"`
+// 	Description string `gorm:"type:varchar(255);"`
+// }
 
-type ApiKeysFilter struct {
-	Ids      []uint32
-	Keys     []string
-	Page     uint32
-	PageSize uint32
-}
+// type ApiKeysFilter struct {
+// 	Ids      []uint32
+// 	Keys     []string
+// 	Page     uint32
+// 	PageSize uint32
+// }
 
 type TokenRepo interface {
 	CreateToken(ctx context.Context, claims TokenClaims) (string, error)

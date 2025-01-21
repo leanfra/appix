@@ -13,7 +13,7 @@ import (
 )
 
 func TestCreateTags(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "testuser")
 	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)
@@ -93,7 +93,7 @@ func TestCreateTags(t *testing.T) {
 }
 
 func TestUpdateTags(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "testuser")
 	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)
@@ -193,7 +193,7 @@ func TestUpdateTags(t *testing.T) {
 }
 
 func TestDeleteTags(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "testuser")
 	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)
@@ -285,7 +285,7 @@ func TestDeleteTags(t *testing.T) {
 
 func TestGetTags(t *testing.T) {
 
-	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "testuser")
 	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)
@@ -333,7 +333,7 @@ func TestGetTags(t *testing.T) {
 }
 
 func TestListTags(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "testuser")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "testuser")
 	authzrepo := new(MockAuthzRepo)
 	tagsrepo := new(MockTagsRepo)
 	apptagrepo := new(MockAppTagsRepo)

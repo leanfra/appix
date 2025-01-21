@@ -69,16 +69,16 @@ func JWTMiddleware(opt JWTMiddlewareOption) middleware.Middleware {
 					return nil, status.Errorf(codes.Unauthenticated, "invalid JWT")
 				}
 
-				ctx = context.WithValue(ctx, data.UserTokenKey, jwtToken)
+				ctx = context.WithValue(ctx, data.CtxUserTokenKey, jwtToken)
 				// If JWT is valid, proceed with request
 				if claims, ok := token.Claims.(jwt.MapClaims); ok {
 					// Add token to context
-					if username, ok := claims[string(data.UserName)].(string); ok {
-						ctx = context.WithValue(ctx, data.UserName, username)
+					if username, ok := claims[string(data.CtxUserName)].(string); ok {
+						ctx = context.WithValue(ctx, data.CtxUserName, username)
 					}
 					// Add user ID to context
-					if userId, ok := claims[string(data.UserId)].(string); ok {
-						ctx = context.WithValue(ctx, data.UserId, userId)
+					if userId, ok := claims[string(data.CtxUserId)].(string); ok {
+						ctx = context.WithValue(ctx, data.CtxUserId, userId)
 					}
 				}
 

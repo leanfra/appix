@@ -13,7 +13,7 @@ import (
 )
 
 func TestCreateProducts(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)
@@ -83,7 +83,7 @@ func TestCreateProducts(t *testing.T) {
 }
 
 func TestUpdateProducts(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)
@@ -154,7 +154,7 @@ func TestUpdateProducts(t *testing.T) {
 }
 
 func TestDeleteProducts(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)
@@ -281,7 +281,7 @@ func TestDeleteProducts(t *testing.T) {
 }
 
 func TestGetProducts(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)
@@ -331,7 +331,7 @@ func TestGetProducts(t *testing.T) {
 }
 
 func TestListProducts(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	authzrepo := new(MockAuthzRepo)
 	txm := new(MockTXManager)
 	prdrepo := new(MockProductsRepo)

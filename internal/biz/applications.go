@@ -230,7 +230,7 @@ func (s *ApplicationsUsecase) validateHostgroupMatch(
 }
 
 func (s *ApplicationsUsecase) enforce(ctx context.Context, tx repo.TX, apps []*Application) error {
-	curUserName := ctx.Value(data.UserName).(string)
+	curUserName := ctx.Value(data.CtxUserName).(string)
 	for _, app := range apps {
 		team, err := s.teamrepo.GetTeams(ctx, app.TeamId)
 		if err != nil {

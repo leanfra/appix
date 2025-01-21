@@ -44,7 +44,7 @@ func (s *EnvsUsecase) validate(isNew bool, envs []*Env) error {
 }
 
 func (s *EnvsUsecase) enforce(ctx context.Context, tx repo.TX) error {
-	curuser := ctx.Value(data.UserName).(string)
+	curuser := ctx.Value(data.CtxUserName).(string)
 	ires := repo.NewResource4Sv1("envs", "", "", "")
 	can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
 		Sub:      curuser,

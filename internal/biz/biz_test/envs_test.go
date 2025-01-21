@@ -13,7 +13,7 @@ import (
 )
 
 func TestCreateEnvs(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)
@@ -72,7 +72,7 @@ func TestCreateEnvs(t *testing.T) {
 }
 
 func TestUpdateEnvs(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)
@@ -132,7 +132,7 @@ func TestUpdateEnvs(t *testing.T) {
 
 func TestDeleteEnvs(t *testing.T) {
 
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)
@@ -203,7 +203,7 @@ func TestDeleteEnvs(t *testing.T) {
 }
 
 func TestGetEnvs(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)
@@ -244,7 +244,7 @@ func TestGetEnvs(t *testing.T) {
 }
 
 func TestListEnvs(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "admin")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "admin")
 	txm := new(MockTXManager)
 	envrepo := new(MockEnvsRepo)
 	hgrepo := new(MockHostgroupsRepo)

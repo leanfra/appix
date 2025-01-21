@@ -13,7 +13,7 @@ import (
 )
 
 func TestCreateDatacenters(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user1")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user1")
 	txm := new(MockTXManager)
 	dcrepo := new(MockDatacentersRepo)
 	hgrepo := new(MockHostgroupsRepo)
@@ -72,7 +72,7 @@ func TestCreateDatacenters(t *testing.T) {
 }
 
 func TestUpdateDatacenters(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user1")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user1")
 	txm := new(MockTXManager)
 	dcrepo := new(MockDatacentersRepo)
 	hgrepo := new(MockHostgroupsRepo)
@@ -131,7 +131,7 @@ func TestUpdateDatacenters(t *testing.T) {
 
 func TestDeleteDatacenters(t *testing.T) {
 
-	ctx := context.WithValue(context.Background(), data.UserName, "user1")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user1")
 	txm := new(MockTXManager)
 	dcrepo := new(MockDatacentersRepo)
 	hgrepo := new(MockHostgroupsRepo)

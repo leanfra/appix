@@ -13,7 +13,7 @@ import (
 )
 
 func TestCreateFeatures(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
@@ -80,7 +80,7 @@ func TestCreateFeatures(t *testing.T) {
 }
 
 func TestUpdateFeatures(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
@@ -148,7 +148,7 @@ func TestUpdateFeatures(t *testing.T) {
 }
 
 func TestDeleteFeatures(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
@@ -244,7 +244,7 @@ func TestDeleteFeatures(t *testing.T) {
 }
 
 func TestGetFeatures(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)
@@ -290,7 +290,7 @@ func TestGetFeatures(t *testing.T) {
 }
 
 func TestListFeatures(t *testing.T) {
-	ctx := context.WithValue(context.Background(), data.UserName, "user")
+	ctx := context.WithValue(context.Background(), data.CtxUserName, "user")
 	txm := new(MockTXManager)
 	ftrepo := new(MockFeaturesRepo)
 	hfrepo := new(MockHostgroupFeaturesRepo)

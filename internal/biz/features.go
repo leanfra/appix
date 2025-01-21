@@ -46,7 +46,7 @@ func (s *FeaturesUsecase) validate(isNew bool, features []*Feature) error {
 }
 
 func (s *FeaturesUsecase) enforce(ctx context.Context, tx repo.TX) error {
-	curUser := ctx.Value(data.UserName).(string)
+	curUser := ctx.Value(data.CtxUserName).(string)
 	ires := repo.NewResource4Sv1("features", "", "", "")
 	can, err := s.authzrepo.Enforce(ctx, tx, &repo.AuthenRequest{
 		Sub:      curUser,

@@ -174,7 +174,7 @@ func (s *AdminUsecase) validate(isNew bool, users []*User) error {
 
 func getUsername(ctx context.Context) (string, error) {
 
-	uname := ctx.Value(data.UserName)
+	uname := ctx.Value(data.CtxUserName)
 	if uname == nil {
 		return "", errors.New("user name is nil")
 	}
@@ -385,8 +385,8 @@ func (s *AdminUsecase) Login(ctx context.Context, username, password string) (*U
 	_idstr := strconv.Itoa(int(user.Id))
 
 	token, err := s.tokenRepo.CreateToken(ctx, repo.TokenClaims{
-		string(data.UserId):   _idstr,
-		string(data.UserName): user.UserName,
+		string(data.CtxUserId):   _idstr,
+		string(data.CtxUserName): user.UserName,
 	})
 	if err != nil {
 		return nil, err
@@ -400,12 +400,12 @@ func (s *AdminUsecase) Login(ctx context.Context, username, password string) (*U
 
 // Logout is
 func (s *AdminUsecase) Logout(ctx context.Context, id uint32) error {
-	_idClaim := ctx.Value(data.UserId)
+	_idClaim := ctx.Value(data.CtxUserId)
 	_id := strconv.Itoa(int(id))
 	if _id != _idClaim {
 		return errors.Join(errors.New("logout failed"), errors.New("invalid user id"))
 	}
-	tokenStr := ctx.Value(data.UserTokenKey)
+	tokenStr := ctx.Value(data.CtxUserTokenKey)
 
 	if tokenStr != nil {
 		_tokenStr, ok := tokenStr.(string)
