@@ -1,4 +1,5 @@
 NAME="appix"
+CLINAME="appix-cli"
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
@@ -55,7 +56,7 @@ build:
 .PHONY: cli
 # build cli
 cli:
-	mkdir -p bin/ && go build -ldflags "-X main.Branch=${BRANCH}  -X main.Version=$(VERSION) -X main.Name=${NAME}" -o ./bin/ ./cli/...
+	mkdir -p bin/ && go build -ldflags "-X appix/cli/appix-cli/cmd.Branch=${BRANCH}  -X appix/cli/appix-cli/cmd.Version=$(VERSION) -X appix/cli/appix-cli/cmd.Name=${CLINAME}" -o ./bin/ ./cli/...
 
 .PHONY: generate
 # generate
