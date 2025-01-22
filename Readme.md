@@ -33,7 +33,16 @@ Appix is an application-centric CMDB designed for orchestrating microservices. I
 8. Clusters management.
 9. Users management.
 
-# VI. Quick Start
+# Quick Start
+
+## Concepts
+
+- Application and Hostgroup are the forcus items managed by Appix.
+- Features are used to describe the application's requirements and hostgroups can provide.
+- Application's matched Hostgroups must have the same Team and Product, and Application's Features must be subset of Hostgroup's Features. 
+- Teams, Products, Environments, Datacenters, Clusters are used to describe the Application and Hostgroups.
+- Teams and Products are special tags which must be set because they are used everywhere, such as, to calculate the cost summary.
+- Tags are used to label applications and hostgroups.
 
 ## Configure
 
@@ -54,4 +63,57 @@ docker run -it \
 
 ```
 $ appix-cli -h
+```
+
+## examples
+
+### Application
+
+- get all applications
+
+```
+❯ ./appix-cli get apps
++----+------+----------------------+-------+----------+---------+-------+-----------+----------+------------+
+| ID | Name |     Description      | Owner | Stateful | Product | Team  | Features  |   Tags   | Hostgroups |
++----+------+----------------------+-------+----------+---------+-------+-----------+----------+------------+
+|  2 | app1 | app description gag1 | gag1  | false    | meta    | infra | cpu:intel | sla:9999 | meta-intel |
++----+------+----------------------+-------+----------+---------+-------+-----------+----------+------------+
+
+```
+
+### Hostgroup
+
+- get all hostgroups
+
+```
+❯ ./appix-cli get hg
++----+------------+---------------------+---------+--------------+-----+---------+-------+-----------+------+---------------+------------+
+| ID |    Name    |     Description     | Cluster |  Datacenter  | Env | Product | Team  | Features  | Tags | ShareProducts | ShareTeams |
++----+------------+---------------------+---------+--------------+-----+---------+-------+-----------+------+---------------+------------+
+|  4 | meta-intel | for meta with intel | k8s-0   | aws-us-west2 | prd | meta    | infra | cpu:intel |      | meta, myin    |            |
++----+------------+---------------------+---------+--------------+-----+---------+-------+-----------+------+---------------+------------+
+
+```
+
+# Development
+
+## Scaffold
+
+- [kratos](https://go-kratos.dev/)
+- [gorm](https://gorm.io/)
+- [corbra](https://github.com/spf13/cobra)
+
+## Build
+
+Refer to Makefile for details.
+
+- build server
+
+```
+make build
+```
+- build cli
+
+```
+make cli
 ```
