@@ -1,7 +1,9 @@
 # Appix
 
-# Tagline:
-Appix: Orchestrate, Optimize.
+[![Go](https://github.com/leanfra/appix/actions/workflows/go.yml/badge.svg)](https://github.com/leanfra/appix/actions/workflows/go.yml)
+
+# Tag
+Appix, Orchestrate, Optimize.
 
 # Description:
 Appix is an application-centric CMDB designed for orchestrating microservices. I developed it because I wanted to:
