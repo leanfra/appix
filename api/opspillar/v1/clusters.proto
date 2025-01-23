@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package api.opspillar.v1;
+
+option go_package = "opspillar/api/opspillar/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.opspillar.v1";
+
+import "google/api/annotations.proto";
+
+service Clusters {
+	rpc CreateClusters (CreateClustersRequest) returns (CreateClustersReply){
+		option (google.api.http) = {
+			post: "/api/v1/clusters/create"
+			body: "*"
+		};
+	};
+	rpc UpdateClusters (UpdateClustersRequest) returns (UpdateClustersReply){
+		option (google.api.http) = {
+			post: "/api/v1/clusters/update"
+			body: "*"
+		};
+	};
+	rpc DeleteClusters (DeleteClustersRequest) returns (DeleteClustersReply){
+		option (google.api.http) = {
+			post: "/api/v1/clusters/delete"
+			body: "*"
+		};
+	};
+	rpc GetClusters (GetClustersRequest) returns (GetClustersReply){
+		option (google.api.http) = {
+			get: "/api/v1/clusters/{id}"
+		};
+	};
+	rpc ListClusters (ListClustersRequest) returns (ListClustersReply){
+		option (google.api.http) = {
+			post: "/api/v1/clusters/list"
+			body: "*"
+		};
+	};
+}
+
+// gratos::model
+message Cluster {
+	uint32 id = 1;
+	string name = 2;
+	string description = 3;
+}
+
+message CreateClustersRequest {
+	repeated Cluster clusters = 1;
+}
+message CreateClustersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message UpdateClustersRequest {
+	repeated Cluster clusters = 1;
+}
+message UpdateClustersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message DeleteClustersRequest {
+	repeated uint32 ids = 1;
+}
+message DeleteClustersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message GetClustersRequest {
+	uint32 id = 1;
+}
+message GetClustersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	Cluster cluster = 4;
+}
+
+message ListClustersRequest {
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated uint32 ids = 3;
+	repeated string names = 4;
+}
+message ListClustersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	repeated Cluster clusters = 4;
+}

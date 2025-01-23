@@ -14,7 +14,7 @@ admin:
   admin_password: admin@123
   strict_password_policy: true
   jwt_expire_hours: 1
-  jwt_secret: "appix"
-  emergency_header: "appix-emergency"
+  jwt_secret: "opspillar"
+  emergency_header: "opspillar-emergency"
 authz:
   model_file: "configs/rbac_model.conf"

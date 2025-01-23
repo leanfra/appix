@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	pb "appix/api/appix/v1"
-	biz "appix/internal/biz"
+	pb "opspillar/api/opspillar/v1"
+	biz "opspillar/internal/biz"
 
 	"github.com/go-kratos/kratos/v2/log"
 )

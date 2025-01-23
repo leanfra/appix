@@ -1,9 +1,9 @@
 package biz_test
 
 import (
-	"appix/internal/biz"
-	"appix/internal/data"
-	"appix/internal/data/repo"
+	"opspillar/internal/biz"
+	"opspillar/internal/data"
+	"opspillar/internal/data/repo"
 	"context"
 	"errors"
 	"testing"

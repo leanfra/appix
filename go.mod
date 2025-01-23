@@ -1,4 +1,4 @@
-module appix
+module opspillar
 
 go 1.22.0
 

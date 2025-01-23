@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package api.opspillar.v1;
+
+option go_package = "opspillar/api/opspillar/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.opspillar.v1";
+
+import "google/api/annotations.proto";
+
+service Envs {
+	rpc CreateEnvs (CreateEnvsRequest) returns (CreateEnvsReply) {
+		option (google.api.http) = {
+			post: "/api/v1/envs/create"
+			body: "*"
+		};
+	};
+	rpc UpdateEnvs (UpdateEnvsRequest) returns (UpdateEnvsReply){
+		option (google.api.http) = {
+			post: "/api/v1/envs/update"
+			body: "*"
+		};
+	};
+	rpc DeleteEnvs (DeleteEnvsRequest) returns (DeleteEnvsReply){
+		option (google.api.http) = {
+			post: "/api/v1/envs/delete"
+			body: "*"
+		};
+	};
+	rpc GetEnvs (GetEnvsRequest) returns (GetEnvsReply){
+		option (google.api.http) = {
+			get: "/api/v1/envs/{id}"
+		};
+	};
+	rpc ListEnvs (ListEnvsRequest) returns (ListEnvsReply){
+		option (google.api.http) = {
+			post: "/api/v1/envs/list"
+			body: "*"
+		};
+	};
+}
+
+// gratos::model
+message Env {
+	uint32 id = 1;
+	string name = 2;
+	string description = 4;
+}
+
+message CreateEnvsRequest {
+	repeated Env envs = 1;
+}
+message CreateEnvsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message UpdateEnvsRequest {
+	repeated Env envs = 1;
+}
+
+message UpdateEnvsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message DeleteEnvsRequest {
+	repeated uint32 ids = 1;
+}
+message DeleteEnvsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message GetEnvsRequest {
+	uint32 id = 1;
+}
+message GetEnvsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	Env env = 4;
+}
+
+message ListEnvsRequest {
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated string names = 3;
+	repeated uint32 ids = 4;
+}
+
+message ListEnvsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	repeated Env envs = 4;
+}

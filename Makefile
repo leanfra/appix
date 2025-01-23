@@ -1,5 +1,5 @@
-NAME="appix"
-CLINAME="appix-cli"
+NAME="opspillar"
+CLINAME="opspillar-cli"
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
@@ -56,7 +56,7 @@ build:
 .PHONY: cli
 # build cli
 cli:
-	mkdir -p bin/ && go build -ldflags "-X appix/cli/appix-cli/cmd.Branch=${BRANCH}  -X appix/cli/appix-cli/cmd.Version=$(VERSION) -X appix/cli/appix-cli/cmd.Name=${CLINAME}" -o ./bin/ ./cli/...
+	mkdir -p bin/ && go build -ldflags "-X opspillar/cli/opspillar-cli/cmd.Branch=${BRANCH}  -X opspillar/cli/opspillar-cli/cmd.Version=$(VERSION) -X opspillar/cli/opspillar-cli/cmd.Name=${CLINAME}" -o ./bin/ ./cli/...
 
 .PHONY: generate
 # generate

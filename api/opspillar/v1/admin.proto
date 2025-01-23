@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+package api.opspillar.v1;
+
+option go_package = "opspillar/api/opspillar/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.opspillar.v1";
+
+import "google/api/annotations.proto";
+
+service Admin {
+	rpc CreateUsers (CreateUsersRequest) returns (CreateUsersReply) {
+		option (google.api.http) = {	
+			post: "/api/v1/users/create"
+			body: "*"
+		};
+	};
+	rpc UpdateUsers (UpdateUsersRequest) returns (UpdateUsersReply) {
+		option (google.api.http) = {
+			post: "/api/v1/users/update"
+			body: "*"
+		};
+	};
+	rpc DeleteUsers (DeleteUsersRequest) returns (DeleteUsersReply) {
+		option (google.api.http) = {
+			post: "/api/v1/users/delete"
+			body: "*"
+		};
+	};
+	rpc GetUsers (GetUsersRequest) returns (GetUsersReply) {
+		option (google.api.http) = {
+			get: "/api/v1/users/{id}"
+		};
+	};
+	rpc ListUsers (ListUsersRequest) returns (ListUsersReply) {
+		option (google.api.http) = {
+			post: "/api/v1/users/list"
+			body: "*"
+		};
+	};
+
+	rpc Login (LoginReq) returns (LoginReply) {
+		option (google.api.http) = {
+			post: "/api/v1/users/login"
+			body: "*"
+		};
+	};
+	rpc Logout (LogoutReq) returns (LogoutReply) {
+		option (google.api.http) = {
+			post: "/api/v1/users/logout"
+			body: "*"
+		};
+	};
+}
+
+// gratos::model
+message User {
+ 	uint32 id = 1;
+ 	string user_name = 2;
+ 	string password = 3;
+ 	string email = 4;
+ 	string phone = 5;
+	string token = 6;
+}
+
+message ListUserReply {
+	repeated User items = 1;
+}
+
+message LoginReq {
+	string user_name = 1;
+	string password = 2;
+}
+
+message LoginReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	User user = 4;
+}
+
+message LogoutReq {
+	uint32 id = 1;
+}
+
+message LogoutReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+
+message CreateUsersRequest {
+	repeated User users = 1;
+}
+message CreateUsersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message UpdateUsersRequest {
+	repeated User users = 1;
+}
+message UpdateUsersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message DeleteUsersRequest {
+	repeated uint32 ids = 1;
+}
+message DeleteUsersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message GetUsersRequest {
+	uint32 id = 1;
+}
+message GetUsersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	User user = 4;
+}
+
+
+message ListUsersRequest {
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated string user_names = 3;
+	repeated string emails = 4;
+	repeated string phones = 5;
+	repeated uint32 ids = 6;
+}
+
+message ListUsersReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	repeated User users = 4;
+}

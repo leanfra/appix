@@ -1,9 +1,9 @@
 package biz
 
 import (
-	"appix/internal/conf"
-	"appix/internal/data"
-	"appix/internal/data/repo"
+	"opspillar/internal/conf"
+	"opspillar/internal/data"
+	"opspillar/internal/data/repo"
 	"context"
 	"errors"
 	"fmt"

@@ -1,8 +1,8 @@
 package data
 
 import (
-	"appix/internal/conf"
-	"appix/internal/data/repo"
+	"opspillar/internal/conf"
+	"opspillar/internal/data/repo"
 	"context"
 	"time"
 

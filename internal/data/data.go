@@ -1,7 +1,7 @@
 package data
 
 import (
-	"appix/internal/data/sqldb"
+	"opspillar/internal/data/sqldb"
 
 	"github.com/google/wire"
 )

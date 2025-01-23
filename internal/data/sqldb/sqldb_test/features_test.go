@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"appix/internal/data/repo"
-	"appix/internal/data/sqldb"
+	"opspillar/internal/data/repo"
+	"opspillar/internal/data/sqldb"
 
 	"github.com/stretchr/testify/assert"
 )

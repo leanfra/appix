@@ -15,7 +15,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateApplicationsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateApplicationsRequest'
                 required: true
             responses:
                 "200":
@@ -23,7 +23,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateApplicationsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateApplicationsReply'
     /api/v1/applications/delete:
         post:
             tags:
@@ -33,7 +33,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteApplicationsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteApplicationsRequest'
                 required: true
             responses:
                 "200":
@@ -41,7 +41,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteApplicationsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteApplicationsReply'
     /api/v1/applications/list:
         post:
             tags:
@@ -51,7 +51,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListApplicationsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListApplicationsRequest'
                 required: true
             responses:
                 "200":
@@ -59,7 +59,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListApplicationsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListApplicationsReply'
     /api/v1/applications/match-hostgroups:
         post:
             tags:
@@ -69,7 +69,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.MatchAppHostgroupsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.MatchAppHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -77,7 +77,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.MatchAppHostgroupsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.MatchAppHostgroupsReply'
     /api/v1/applications/update:
         post:
             tags:
@@ -87,7 +87,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateApplicationsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateApplicationsRequest'
                 required: true
             responses:
                 "200":
@@ -95,7 +95,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateApplicationsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateApplicationsReply'
     /api/v1/applications/{id}:
         get:
             tags:
@@ -114,7 +114,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetApplicationsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetApplicationsReply'
     /api/v1/clusters/create:
         post:
             tags:
@@ -124,7 +124,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateClustersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateClustersRequest'
                 required: true
             responses:
                 "200":
@@ -132,7 +132,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateClustersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateClustersReply'
     /api/v1/clusters/delete:
         post:
             tags:
@@ -142,7 +142,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteClustersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteClustersRequest'
                 required: true
             responses:
                 "200":
@@ -150,7 +150,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteClustersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteClustersReply'
     /api/v1/clusters/list:
         post:
             tags:
@@ -160,7 +160,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListClustersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListClustersRequest'
                 required: true
             responses:
                 "200":
@@ -168,7 +168,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListClustersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListClustersReply'
     /api/v1/clusters/update:
         post:
             tags:
@@ -178,7 +178,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateClustersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateClustersRequest'
                 required: true
             responses:
                 "200":
@@ -186,7 +186,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateClustersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateClustersReply'
     /api/v1/clusters/{id}:
         get:
             tags:
@@ -205,7 +205,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetClustersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetClustersReply'
     /api/v1/datacenters/create:
         post:
             tags:
@@ -215,7 +215,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateDatacentersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateDatacentersRequest'
                 required: true
             responses:
                 "200":
@@ -223,7 +223,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateDatacentersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateDatacentersReply'
     /api/v1/datacenters/delete:
         post:
             tags:
@@ -233,7 +233,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteDatacentersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteDatacentersRequest'
                 required: true
             responses:
                 "200":
@@ -241,7 +241,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteDatacentersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteDatacentersReply'
     /api/v1/datacenters/list:
         post:
             tags:
@@ -251,7 +251,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListDatacentersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListDatacentersRequest'
                 required: true
             responses:
                 "200":
@@ -259,7 +259,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListDatacentersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListDatacentersReply'
     /api/v1/datacenters/update:
         post:
             tags:
@@ -269,7 +269,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateDatacentersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateDatacentersRequest'
                 required: true
             responses:
                 "200":
@@ -277,7 +277,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateDatacentersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateDatacentersReply'
     /api/v1/datacenters/{id}:
         get:
             tags:
@@ -296,7 +296,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetDatacentersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetDatacentersReply'
     /api/v1/envs/create:
         post:
             tags:
@@ -306,7 +306,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateEnvsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateEnvsRequest'
                 required: true
             responses:
                 "200":
@@ -314,7 +314,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateEnvsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateEnvsReply'
     /api/v1/envs/delete:
         post:
             tags:
@@ -324,7 +324,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteEnvsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteEnvsRequest'
                 required: true
             responses:
                 "200":
@@ -332,7 +332,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteEnvsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteEnvsReply'
     /api/v1/envs/list:
         post:
             tags:
@@ -342,7 +342,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListEnvsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListEnvsRequest'
                 required: true
             responses:
                 "200":
@@ -350,7 +350,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListEnvsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListEnvsReply'
     /api/v1/envs/update:
         post:
             tags:
@@ -360,7 +360,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateEnvsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateEnvsRequest'
                 required: true
             responses:
                 "200":
@@ -368,7 +368,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateEnvsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateEnvsReply'
     /api/v1/envs/{id}:
         get:
             tags:
@@ -387,7 +387,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetEnvsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetEnvsReply'
     /api/v1/features/create:
         post:
             tags:
@@ -397,7 +397,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateFeaturesRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateFeaturesRequest'
                 required: true
             responses:
                 "200":
@@ -405,7 +405,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateFeaturesReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateFeaturesReply'
     /api/v1/features/delete:
         post:
             tags:
@@ -415,7 +415,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteFeaturesRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteFeaturesRequest'
                 required: true
             responses:
                 "200":
@@ -423,7 +423,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteFeaturesReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteFeaturesReply'
     /api/v1/features/list:
         post:
             tags:
@@ -433,7 +433,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListFeaturesRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListFeaturesRequest'
                 required: true
             responses:
                 "200":
@@ -441,7 +441,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListFeaturesReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListFeaturesReply'
     /api/v1/features/update:
         post:
             tags:
@@ -451,7 +451,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateFeaturesRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateFeaturesRequest'
                 required: true
             responses:
                 "200":
@@ -459,7 +459,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateFeaturesReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateFeaturesReply'
     /api/v1/features/{id}:
         get:
             tags:
@@ -478,7 +478,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetFeaturesReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetFeaturesReply'
     /api/v1/hostgroups/create:
         post:
             tags:
@@ -488,7 +488,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateHostgroupsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -496,7 +496,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateHostgroupsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateHostgroupsReply'
     /api/v1/hostgroups/delete:
         post:
             tags:
@@ -506,7 +506,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteHostgroupsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -514,7 +514,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteHostgroupsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteHostgroupsReply'
     /api/v1/hostgroups/list:
         post:
             tags:
@@ -524,7 +524,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListHostgroupsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -532,7 +532,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListHostgroupsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListHostgroupsReply'
     /api/v1/hostgroups/update:
         post:
             tags:
@@ -542,7 +542,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateHostgroupsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateHostgroupsRequest'
                 required: true
             responses:
                 "200":
@@ -550,7 +550,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateHostgroupsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateHostgroupsReply'
     /api/v1/hostgroups/{id}:
         get:
             tags:
@@ -569,7 +569,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetHostgroupsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetHostgroupsReply'
     /api/v1/products:
         post:
             tags:
@@ -579,7 +579,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListProductsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListProductsRequest'
                 required: true
             responses:
                 "200":
@@ -587,7 +587,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListProductsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListProductsReply'
     /api/v1/products/create:
         post:
             tags:
@@ -597,7 +597,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateProductsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateProductsRequest'
                 required: true
             responses:
                 "200":
@@ -605,7 +605,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateProductsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateProductsReply'
     /api/v1/products/delete:
         post:
             tags:
@@ -615,7 +615,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteProductsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteProductsRequest'
                 required: true
             responses:
                 "200":
@@ -623,7 +623,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteProductsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteProductsReply'
     /api/v1/products/update:
         post:
             tags:
@@ -633,7 +633,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateProductsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateProductsRequest'
                 required: true
             responses:
                 "200":
@@ -641,7 +641,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateProductsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateProductsReply'
     /api/v1/products/{id}:
         get:
             tags:
@@ -660,7 +660,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetProductsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetProductsReply'
     /api/v1/tags/create:
         post:
             tags:
@@ -670,7 +670,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateTagsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateTagsRequest'
                 required: true
             responses:
                 "200":
@@ -678,7 +678,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateTagsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateTagsReply'
     /api/v1/tags/delete:
         post:
             tags:
@@ -688,7 +688,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteTagsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteTagsRequest'
                 required: true
             responses:
                 "200":
@@ -696,7 +696,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteTagsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteTagsReply'
     /api/v1/tags/list:
         post:
             tags:
@@ -706,7 +706,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListTagsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListTagsRequest'
                 required: true
             responses:
                 "200":
@@ -714,7 +714,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListTagsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListTagsReply'
     /api/v1/tags/update:
         post:
             tags:
@@ -724,7 +724,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateTagsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateTagsRequest'
                 required: true
             responses:
                 "200":
@@ -732,7 +732,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateTagsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateTagsReply'
     /api/v1/tags/{id}:
         get:
             tags:
@@ -751,7 +751,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetTagsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetTagsReply'
     /api/v1/teams/create:
         post:
             tags:
@@ -761,7 +761,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateTeamsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -769,7 +769,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateTeamsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateTeamsReply'
     /api/v1/teams/delete:
         post:
             tags:
@@ -779,7 +779,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteTeamsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -787,7 +787,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteTeamsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteTeamsReply'
     /api/v1/teams/list:
         post:
             tags:
@@ -797,7 +797,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListTeamsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -805,7 +805,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListTeamsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListTeamsReply'
     /api/v1/teams/update:
         post:
             tags:
@@ -815,7 +815,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateTeamsRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateTeamsRequest'
                 required: true
             responses:
                 "200":
@@ -823,7 +823,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateTeamsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateTeamsReply'
     /api/v1/teams/{id}:
         get:
             tags:
@@ -842,7 +842,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetTeamsReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetTeamsReply'
     /api/v1/users/create:
         post:
             tags:
@@ -852,7 +852,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.CreateUsersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.CreateUsersRequest'
                 required: true
             responses:
                 "200":
@@ -860,7 +860,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.CreateUsersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.CreateUsersReply'
     /api/v1/users/delete:
         post:
             tags:
@@ -870,7 +870,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.DeleteUsersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.DeleteUsersRequest'
                 required: true
             responses:
                 "200":
@@ -878,7 +878,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.DeleteUsersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.DeleteUsersReply'
     /api/v1/users/list:
         post:
             tags:
@@ -888,7 +888,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.ListUsersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.ListUsersRequest'
                 required: true
             responses:
                 "200":
@@ -896,7 +896,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.ListUsersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.ListUsersReply'
     /api/v1/users/login:
         post:
             tags:
@@ -906,7 +906,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.LoginReq'
+                            $ref: '#/components/schemas/api.opspillar.v1.LoginReq'
                 required: true
             responses:
                 "200":
@@ -914,7 +914,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.LoginReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.LoginReply'
     /api/v1/users/logout:
         post:
             tags:
@@ -924,7 +924,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.LogoutReq'
+                            $ref: '#/components/schemas/api.opspillar.v1.LogoutReq'
                 required: true
             responses:
                 "200":
@@ -932,7 +932,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.LogoutReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.LogoutReply'
     /api/v1/users/update:
         post:
             tags:
@@ -942,7 +942,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/api.appix.v1.UpdateUsersRequest'
+                            $ref: '#/components/schemas/api.opspillar.v1.UpdateUsersRequest'
                 required: true
             responses:
                 "200":
@@ -950,7 +950,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.UpdateUsersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.UpdateUsersReply'
     /api/v1/users/{id}:
         get:
             tags:
@@ -969,10 +969,10 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/api.appix.v1.GetUsersReply'
+                                $ref: '#/components/schemas/api.opspillar.v1.GetUsersReply'
 components:
     schemas:
-        api.appix.v1.Application:
+        api.opspillar.v1.Application:
             type: object
             properties:
                 id:
@@ -1009,7 +1009,7 @@ components:
                         type: integer
                         format: uint32
             description: gratos::model
-        api.appix.v1.Cluster:
+        api.opspillar.v1.Cluster:
             type: object
             properties:
                 id:
@@ -1020,7 +1020,7 @@ components:
                 description:
                     type: string
             description: gratos::model
-        api.appix.v1.CreateApplicationsReply:
+        api.opspillar.v1.CreateApplicationsReply:
             type: object
             properties:
                 message:
@@ -1030,14 +1030,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateApplicationsRequest:
+        api.opspillar.v1.CreateApplicationsRequest:
             type: object
             properties:
                 apps:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Application'
-        api.appix.v1.CreateClustersReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Application'
+        api.opspillar.v1.CreateClustersReply:
             type: object
             properties:
                 message:
@@ -1047,14 +1047,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateClustersRequest:
+        api.opspillar.v1.CreateClustersRequest:
             type: object
             properties:
                 clusters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Cluster'
-        api.appix.v1.CreateDatacentersReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Cluster'
+        api.opspillar.v1.CreateDatacentersReply:
             type: object
             properties:
                 message:
@@ -1064,14 +1064,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateDatacentersRequest:
+        api.opspillar.v1.CreateDatacentersRequest:
             type: object
             properties:
                 datacenters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Datacenter'
-        api.appix.v1.CreateEnvsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Datacenter'
+        api.opspillar.v1.CreateEnvsReply:
             type: object
             properties:
                 message:
@@ -1081,14 +1081,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateEnvsRequest:
+        api.opspillar.v1.CreateEnvsRequest:
             type: object
             properties:
                 envs:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Env'
-        api.appix.v1.CreateFeaturesReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Env'
+        api.opspillar.v1.CreateFeaturesReply:
             type: object
             properties:
                 message:
@@ -1098,14 +1098,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateFeaturesRequest:
+        api.opspillar.v1.CreateFeaturesRequest:
             type: object
             properties:
                 features:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.CreateHostgroupsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Feature'
+        api.opspillar.v1.CreateHostgroupsReply:
             type: object
             properties:
                 message:
@@ -1115,14 +1115,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateHostgroupsRequest:
+        api.opspillar.v1.CreateHostgroupsRequest:
             type: object
             properties:
                 hostgroups:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Hostgroup'
-        api.appix.v1.CreateProductsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Hostgroup'
+        api.opspillar.v1.CreateProductsReply:
             type: object
             properties:
                 message:
@@ -1132,14 +1132,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateProductsRequest:
+        api.opspillar.v1.CreateProductsRequest:
             type: object
             properties:
                 products:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Product'
-        api.appix.v1.CreateTagsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Product'
+        api.opspillar.v1.CreateTagsReply:
             type: object
             properties:
                 message:
@@ -1149,14 +1149,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateTagsRequest:
+        api.opspillar.v1.CreateTagsRequest:
             type: object
             properties:
                 tags:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.CreateTeamsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Tag'
+        api.opspillar.v1.CreateTeamsReply:
             type: object
             properties:
                 message:
@@ -1166,14 +1166,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateTeamsRequest:
+        api.opspillar.v1.CreateTeamsRequest:
             type: object
             properties:
                 teams:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Team'
-        api.appix.v1.CreateUsersReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Team'
+        api.opspillar.v1.CreateUsersReply:
             type: object
             properties:
                 message:
@@ -1183,14 +1183,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.CreateUsersRequest:
+        api.opspillar.v1.CreateUsersRequest:
             type: object
             properties:
                 users:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.User'
-        api.appix.v1.Datacenter:
+                        $ref: '#/components/schemas/api.opspillar.v1.User'
+        api.opspillar.v1.Datacenter:
             type: object
             properties:
                 id:
@@ -1201,7 +1201,7 @@ components:
                 description:
                     type: string
             description: gratos::model
-        api.appix.v1.DeleteApplicationsReply:
+        api.opspillar.v1.DeleteApplicationsReply:
             type: object
             properties:
                 message:
@@ -1211,7 +1211,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteApplicationsRequest:
+        api.opspillar.v1.DeleteApplicationsRequest:
             type: object
             properties:
                 ids:
@@ -1219,7 +1219,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteClustersReply:
+        api.opspillar.v1.DeleteClustersReply:
             type: object
             properties:
                 message:
@@ -1229,7 +1229,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteClustersRequest:
+        api.opspillar.v1.DeleteClustersRequest:
             type: object
             properties:
                 ids:
@@ -1237,7 +1237,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteDatacentersReply:
+        api.opspillar.v1.DeleteDatacentersReply:
             type: object
             properties:
                 message:
@@ -1247,7 +1247,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteDatacentersRequest:
+        api.opspillar.v1.DeleteDatacentersRequest:
             type: object
             properties:
                 ids:
@@ -1255,7 +1255,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteEnvsReply:
+        api.opspillar.v1.DeleteEnvsReply:
             type: object
             properties:
                 message:
@@ -1265,7 +1265,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteEnvsRequest:
+        api.opspillar.v1.DeleteEnvsRequest:
             type: object
             properties:
                 ids:
@@ -1273,7 +1273,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteFeaturesReply:
+        api.opspillar.v1.DeleteFeaturesReply:
             type: object
             properties:
                 message:
@@ -1283,7 +1283,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteFeaturesRequest:
+        api.opspillar.v1.DeleteFeaturesRequest:
             type: object
             properties:
                 ids:
@@ -1291,7 +1291,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteHostgroupsReply:
+        api.opspillar.v1.DeleteHostgroupsReply:
             type: object
             properties:
                 message:
@@ -1301,7 +1301,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteHostgroupsRequest:
+        api.opspillar.v1.DeleteHostgroupsRequest:
             type: object
             properties:
                 ids:
@@ -1309,7 +1309,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteProductsReply:
+        api.opspillar.v1.DeleteProductsReply:
             type: object
             properties:
                 message:
@@ -1319,7 +1319,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteProductsRequest:
+        api.opspillar.v1.DeleteProductsRequest:
             type: object
             properties:
                 ids:
@@ -1327,7 +1327,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteTagsReply:
+        api.opspillar.v1.DeleteTagsReply:
             type: object
             properties:
                 message:
@@ -1337,7 +1337,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteTagsRequest:
+        api.opspillar.v1.DeleteTagsRequest:
             type: object
             properties:
                 ids:
@@ -1345,7 +1345,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteTeamsReply:
+        api.opspillar.v1.DeleteTeamsReply:
             type: object
             properties:
                 message:
@@ -1355,7 +1355,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteTeamsRequest:
+        api.opspillar.v1.DeleteTeamsRequest:
             type: object
             properties:
                 ids:
@@ -1363,7 +1363,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.DeleteUsersReply:
+        api.opspillar.v1.DeleteUsersReply:
             type: object
             properties:
                 message:
@@ -1373,7 +1373,7 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.DeleteUsersRequest:
+        api.opspillar.v1.DeleteUsersRequest:
             type: object
             properties:
                 ids:
@@ -1381,7 +1381,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.Env:
+        api.opspillar.v1.Env:
             type: object
             properties:
                 id:
@@ -1392,7 +1392,7 @@ components:
                 description:
                     type: string
             description: gratos::model
-        api.appix.v1.Feature:
+        api.opspillar.v1.Feature:
             type: object
             properties:
                 id:
@@ -1405,7 +1405,7 @@ components:
                 description:
                     type: string
             description: gratos::model
-        api.appix.v1.GetApplicationsReply:
+        api.opspillar.v1.GetApplicationsReply:
             type: object
             properties:
                 message:
@@ -1416,8 +1416,8 @@ components:
                 action:
                     type: string
                 app:
-                    $ref: '#/components/schemas/api.appix.v1.Application'
-        api.appix.v1.GetClustersReply:
+                    $ref: '#/components/schemas/api.opspillar.v1.Application'
+        api.opspillar.v1.GetClustersReply:
             type: object
             properties:
                 message:
@@ -1428,8 +1428,8 @@ components:
                 action:
                     type: string
                 cluster:
-                    $ref: '#/components/schemas/api.appix.v1.Cluster'
-        api.appix.v1.GetDatacentersReply:
+                    $ref: '#/components/schemas/api.opspillar.v1.Cluster'
+        api.opspillar.v1.GetDatacentersReply:
             type: object
             properties:
                 message:
@@ -1440,8 +1440,8 @@ components:
                 action:
                     type: string
                 datacenter:
-                    $ref: '#/components/schemas/api.appix.v1.Datacenter'
-        api.appix.v1.GetEnvsReply:
+                    $ref: '#/components/schemas/api.opspillar.v1.Datacenter'
+        api.opspillar.v1.GetEnvsReply:
             type: object
             properties:
                 message:
@@ -1452,8 +1452,8 @@ components:
                 action:
                     type: string
                 env:
-                    $ref: '#/components/schemas/api.appix.v1.Env'
-        api.appix.v1.GetFeaturesReply:
+                    $ref: '#/components/schemas/api.opspillar.v1.Env'
+        api.opspillar.v1.GetFeaturesReply:
             type: object
             properties:
                 message:
@@ -1464,8 +1464,8 @@ components:
                 action:
                     type: string
                 feature:
-                    $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.GetHostgroupsReply:
+                    $ref: '#/components/schemas/api.opspillar.v1.Feature'
+        api.opspillar.v1.GetHostgroupsReply:
             type: object
             properties:
                 message:
@@ -1476,8 +1476,8 @@ components:
                 action:
                     type: string
                 hostgroup:
-                    $ref: '#/components/schemas/api.appix.v1.Hostgroup'
-        api.appix.v1.GetProductsReply:
+                    $ref: '#/components/schemas/api.opspillar.v1.Hostgroup'
+        api.opspillar.v1.GetProductsReply:
             type: object
             properties:
                 message:
@@ -1488,8 +1488,8 @@ components:
                 action:
                     type: string
                 product:
-                    $ref: '#/components/schemas/api.appix.v1.Product'
-        api.appix.v1.GetTagsReply:
+                    $ref: '#/components/schemas/api.opspillar.v1.Product'
+        api.opspillar.v1.GetTagsReply:
             type: object
             properties:
                 message:
@@ -1500,8 +1500,8 @@ components:
                 action:
                     type: string
                 tag:
-                    $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.GetTeamsReply:
+                    $ref: '#/components/schemas/api.opspillar.v1.Tag'
+        api.opspillar.v1.GetTeamsReply:
             type: object
             properties:
                 message:
@@ -1512,8 +1512,8 @@ components:
                 action:
                     type: string
                 team:
-                    $ref: '#/components/schemas/api.appix.v1.Team'
-        api.appix.v1.GetUsersReply:
+                    $ref: '#/components/schemas/api.opspillar.v1.Team'
+        api.opspillar.v1.GetUsersReply:
             type: object
             properties:
                 message:
@@ -1524,8 +1524,8 @@ components:
                 action:
                     type: string
                 user:
-                    $ref: '#/components/schemas/api.appix.v1.User'
-        api.appix.v1.Hostgroup:
+                    $ref: '#/components/schemas/api.opspillar.v1.User'
+        api.opspillar.v1.Hostgroup:
             type: object
             properties:
                 id:
@@ -1571,7 +1571,7 @@ components:
                         type: integer
                         format: uint32
             description: gratos::model
-        api.appix.v1.ListApplicationsReply:
+        api.opspillar.v1.ListApplicationsReply:
             type: object
             properties:
                 message:
@@ -1584,8 +1584,8 @@ components:
                 apps:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Application'
-        api.appix.v1.ListApplicationsRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.Application'
+        api.opspillar.v1.ListApplicationsRequest:
             type: object
             properties:
                 page:
@@ -1630,7 +1630,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.ListClustersReply:
+        api.opspillar.v1.ListClustersReply:
             type: object
             properties:
                 message:
@@ -1643,8 +1643,8 @@ components:
                 clusters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Cluster'
-        api.appix.v1.ListClustersRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.Cluster'
+        api.opspillar.v1.ListClustersRequest:
             type: object
             properties:
                 page:
@@ -1662,7 +1662,7 @@ components:
                     type: array
                     items:
                         type: string
-        api.appix.v1.ListDatacentersReply:
+        api.opspillar.v1.ListDatacentersReply:
             type: object
             properties:
                 message:
@@ -1675,8 +1675,8 @@ components:
                 datacenters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Datacenter'
-        api.appix.v1.ListDatacentersRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.Datacenter'
+        api.opspillar.v1.ListDatacentersRequest:
             type: object
             properties:
                 page:
@@ -1694,7 +1694,7 @@ components:
                     type: array
                     items:
                         type: string
-        api.appix.v1.ListEnvsReply:
+        api.opspillar.v1.ListEnvsReply:
             type: object
             properties:
                 message:
@@ -1707,8 +1707,8 @@ components:
                 envs:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Env'
-        api.appix.v1.ListEnvsRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.Env'
+        api.opspillar.v1.ListEnvsRequest:
             type: object
             properties:
                 page:
@@ -1726,7 +1726,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.ListFeaturesReply:
+        api.opspillar.v1.ListFeaturesReply:
             type: object
             properties:
                 message:
@@ -1739,8 +1739,8 @@ components:
                 features:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.ListFeaturesRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.Feature'
+        api.opspillar.v1.ListFeaturesRequest:
             type: object
             properties:
                 page:
@@ -1762,7 +1762,7 @@ components:
                     type: array
                     items:
                         type: string
-        api.appix.v1.ListHostgroupsReply:
+        api.opspillar.v1.ListHostgroupsReply:
             type: object
             properties:
                 message:
@@ -1775,8 +1775,8 @@ components:
                 hostgroups:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Hostgroup'
-        api.appix.v1.ListHostgroupsRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.Hostgroup'
+        api.opspillar.v1.ListHostgroupsRequest:
             type: object
             properties:
                 page:
@@ -1839,7 +1839,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.ListProductsReply:
+        api.opspillar.v1.ListProductsReply:
             type: object
             properties:
                 message:
@@ -1852,8 +1852,8 @@ components:
                 products:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Product'
-        api.appix.v1.ListProductsRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.Product'
+        api.opspillar.v1.ListProductsRequest:
             type: object
             properties:
                 page:
@@ -1875,7 +1875,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.ListTagsReply:
+        api.opspillar.v1.ListTagsReply:
             type: object
             properties:
                 message:
@@ -1888,8 +1888,8 @@ components:
                 tags:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.ListTagsRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.Tag'
+        api.opspillar.v1.ListTagsRequest:
             type: object
             properties:
                 page:
@@ -1911,7 +1911,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.ListTeamsReply:
+        api.opspillar.v1.ListTeamsReply:
             type: object
             properties:
                 message:
@@ -1924,8 +1924,8 @@ components:
                 teams:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Team'
-        api.appix.v1.ListTeamsRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.Team'
+        api.opspillar.v1.ListTeamsRequest:
             type: object
             properties:
                 page:
@@ -1952,7 +1952,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.ListUsersReply:
+        api.opspillar.v1.ListUsersReply:
             type: object
             properties:
                 message:
@@ -1965,8 +1965,8 @@ components:
                 users:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.User'
-        api.appix.v1.ListUsersRequest:
+                        $ref: '#/components/schemas/api.opspillar.v1.User'
+        api.opspillar.v1.ListUsersRequest:
             type: object
             properties:
                 page:
@@ -1992,7 +1992,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.LoginReply:
+        api.opspillar.v1.LoginReply:
             type: object
             properties:
                 message:
@@ -2003,15 +2003,15 @@ components:
                 action:
                     type: string
                 user:
-                    $ref: '#/components/schemas/api.appix.v1.User'
-        api.appix.v1.LoginReq:
+                    $ref: '#/components/schemas/api.opspillar.v1.User'
+        api.opspillar.v1.LoginReq:
             type: object
             properties:
                 userName:
                     type: string
                 password:
                     type: string
-        api.appix.v1.LogoutReply:
+        api.opspillar.v1.LogoutReply:
             type: object
             properties:
                 message:
@@ -2021,13 +2021,13 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.LogoutReq:
+        api.opspillar.v1.LogoutReq:
             type: object
             properties:
                 id:
                     type: integer
                     format: uint32
-        api.appix.v1.MatchAppHostgroupsReply:
+        api.opspillar.v1.MatchAppHostgroupsReply:
             type: object
             properties:
                 message:
@@ -2042,7 +2042,7 @@ components:
                     items:
                         type: integer
                         format: uint32
-        api.appix.v1.MatchAppHostgroupsRequest:
+        api.opspillar.v1.MatchAppHostgroupsRequest:
             type: object
             properties:
                 featuresId:
@@ -2056,7 +2056,7 @@ components:
                 teamId:
                     type: integer
                     format: uint32
-        api.appix.v1.Product:
+        api.opspillar.v1.Product:
             type: object
             properties:
                 id:
@@ -2069,7 +2069,7 @@ components:
                 description:
                     type: string
             description: gratos::model
-        api.appix.v1.Tag:
+        api.opspillar.v1.Tag:
             type: object
             properties:
                 id:
@@ -2082,7 +2082,7 @@ components:
                 description:
                     type: string
             description: gratos::model
-        api.appix.v1.Team:
+        api.opspillar.v1.Team:
             type: object
             properties:
                 id:
@@ -2098,7 +2098,7 @@ components:
                     type: integer
                     format: uint32
             description: gratos::model
-        api.appix.v1.UpdateApplicationsReply:
+        api.opspillar.v1.UpdateApplicationsReply:
             type: object
             properties:
                 message:
@@ -2108,14 +2108,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateApplicationsRequest:
+        api.opspillar.v1.UpdateApplicationsRequest:
             type: object
             properties:
                 apps:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Application'
-        api.appix.v1.UpdateClustersReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Application'
+        api.opspillar.v1.UpdateClustersReply:
             type: object
             properties:
                 message:
@@ -2125,14 +2125,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateClustersRequest:
+        api.opspillar.v1.UpdateClustersRequest:
             type: object
             properties:
                 clusters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Cluster'
-        api.appix.v1.UpdateDatacentersReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Cluster'
+        api.opspillar.v1.UpdateDatacentersReply:
             type: object
             properties:
                 message:
@@ -2142,14 +2142,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateDatacentersRequest:
+        api.opspillar.v1.UpdateDatacentersRequest:
             type: object
             properties:
                 datacenters:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Datacenter'
-        api.appix.v1.UpdateEnvsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Datacenter'
+        api.opspillar.v1.UpdateEnvsReply:
             type: object
             properties:
                 message:
@@ -2159,14 +2159,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateEnvsRequest:
+        api.opspillar.v1.UpdateEnvsRequest:
             type: object
             properties:
                 envs:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Env'
-        api.appix.v1.UpdateFeaturesReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Env'
+        api.opspillar.v1.UpdateFeaturesReply:
             type: object
             properties:
                 message:
@@ -2176,14 +2176,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateFeaturesRequest:
+        api.opspillar.v1.UpdateFeaturesRequest:
             type: object
             properties:
                 features:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Feature'
-        api.appix.v1.UpdateHostgroupsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Feature'
+        api.opspillar.v1.UpdateHostgroupsReply:
             type: object
             properties:
                 message:
@@ -2193,14 +2193,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateHostgroupsRequest:
+        api.opspillar.v1.UpdateHostgroupsRequest:
             type: object
             properties:
                 hostgroups:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Hostgroup'
-        api.appix.v1.UpdateProductsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Hostgroup'
+        api.opspillar.v1.UpdateProductsReply:
             type: object
             properties:
                 message:
@@ -2210,14 +2210,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateProductsRequest:
+        api.opspillar.v1.UpdateProductsRequest:
             type: object
             properties:
                 products:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Product'
-        api.appix.v1.UpdateTagsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Product'
+        api.opspillar.v1.UpdateTagsReply:
             type: object
             properties:
                 message:
@@ -2227,14 +2227,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateTagsRequest:
+        api.opspillar.v1.UpdateTagsRequest:
             type: object
             properties:
                 tags:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Tag'
-        api.appix.v1.UpdateTeamsReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Tag'
+        api.opspillar.v1.UpdateTeamsReply:
             type: object
             properties:
                 message:
@@ -2244,14 +2244,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateTeamsRequest:
+        api.opspillar.v1.UpdateTeamsRequest:
             type: object
             properties:
                 teams:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.Team'
-        api.appix.v1.UpdateUsersReply:
+                        $ref: '#/components/schemas/api.opspillar.v1.Team'
+        api.opspillar.v1.UpdateUsersReply:
             type: object
             properties:
                 message:
@@ -2261,14 +2261,14 @@ components:
                     format: int32
                 action:
                     type: string
-        api.appix.v1.UpdateUsersRequest:
+        api.opspillar.v1.UpdateUsersRequest:
             type: object
             properties:
                 users:
                     type: array
                     items:
-                        $ref: '#/components/schemas/api.appix.v1.User'
-        api.appix.v1.User:
+                        $ref: '#/components/schemas/api.opspillar.v1.User'
+        api.opspillar.v1.User:
             type: object
             properties:
                 id:

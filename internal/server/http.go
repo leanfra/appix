@@ -1,10 +1,10 @@
 package server
 
 import (
-	appv1 "appix/api/appix/v1"
-	"appix/internal/conf"
-	"appix/internal/middleware"
-	"appix/internal/service"
+	appv1 "opspillar/api/opspillar/v1"
+	"opspillar/internal/conf"
+	"opspillar/internal/middleware"
+	"opspillar/internal/service"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"

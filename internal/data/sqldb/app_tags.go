@@ -1,7 +1,7 @@
 package sqldb
 
 import (
-	"appix/internal/data/repo"
+	"opspillar/internal/data/repo"
 	"context"
 
 	"github.com/go-kratos/kratos/v2/log"

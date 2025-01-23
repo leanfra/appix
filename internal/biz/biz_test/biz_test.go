@@ -1,7 +1,7 @@
 package biz_test
 
 import (
-	"appix/internal/biz"
+	"opspillar/internal/biz"
 	"reflect"
 	"testing"
 )

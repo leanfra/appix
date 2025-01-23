@@ -1,7 +1,7 @@
 package sqldb_test
 
 import (
-	"appix/internal/data/sqldb"
+	"opspillar/internal/data/sqldb"
 	"os"
 
 	"github.com/go-kratos/kratos/v2/log"

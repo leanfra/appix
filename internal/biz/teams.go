@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"appix/internal/data"
-	"appix/internal/data/repo"
+	"opspillar/internal/data"
+	"opspillar/internal/data/repo"
 
 	"github.com/go-kratos/kratos/v2/log"
 )

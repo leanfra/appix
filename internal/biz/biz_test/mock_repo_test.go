@@ -1,7 +1,7 @@
 package biz_test
 
 import (
-	"appix/internal/data/repo"
+	"opspillar/internal/data/repo"
 	"context"
 	"fmt"
 

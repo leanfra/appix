@@ -1,8 +1,8 @@
 package sqldb
 
 import (
-	"appix/internal/conf"
-	"appix/internal/data/repo"
+	"opspillar/internal/conf"
+	"opspillar/internal/data/repo"
 	"errors"
 	"fmt"
 	"strings"

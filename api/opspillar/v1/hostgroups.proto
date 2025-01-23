@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+package api.opspillar.v1;
+
+option go_package = "opspillar/api/opspillar/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.opspillar.v1";
+
+import "google/api/annotations.proto";
+
+
+
+service Hostgroups {
+	rpc CreateHostgroups (CreateHostgroupsRequest) returns (CreateHostgroupsReply){
+		option (google.api.http) = {
+			post: "/api/v1/hostgroups/create"
+			body: "*"
+		};
+	};
+	rpc UpdateHostgroups (UpdateHostgroupsRequest) returns (UpdateHostgroupsReply){
+		option (google.api.http) = {
+			post: "/api/v1/hostgroups/update"
+			body: "*"
+		};
+	};
+	rpc DeleteHostgroups (DeleteHostgroupsRequest) returns (DeleteHostgroupsReply){
+		option (google.api.http) = {
+			post: "/api/v1/hostgroups/delete"
+			body: "*"
+		};
+	};
+	rpc GetHostgroups (GetHostgroupsRequest) returns (GetHostgroupsReply){
+		option (google.api.http) = {
+			get: "/api/v1/hostgroups/{id}"
+		};
+	};
+	rpc ListHostgroups (ListHostgroupsRequest) returns (ListHostgroupsReply){
+		option (google.api.http) = {
+			post: "/api/v1/hostgroups/list"
+			body: "*"
+		};
+	};
+}
+
+// gratos::model
+message Hostgroup {
+	uint32 id = 1;
+	string name = 2;
+	string description = 3;
+	uint32 cluster_id = 4;
+	uint32 datacenter_id = 5;
+	uint32 env_id = 6;
+	uint32 product_id = 7;
+	uint32 team_id = 8;
+	repeated uint32 features_id = 9;
+	repeated uint32 tags_id = 10;
+	repeated uint32 share_products_id = 11;
+	repeated uint32 share_teams_id = 12;
+}
+
+// Hostgroup readable
+message HostgroupReadable {
+	uint32 id = 1;
+	string name = 2;
+	string description = 3;
+	string cluster = 4;
+	string datacenter = 5;
+	string env = 6;
+	string product = 7;
+	string team = 8;
+	repeated string features = 9;
+	repeated string tags = 10;
+	repeated string share_products = 11;
+	repeated string share_teams = 12;
+}
+
+message CreateHostgroupsRequest {
+	repeated Hostgroup hostgroups = 1;
+}
+message CreateHostgroupsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message UpdateHostgroupsRequest {
+	repeated Hostgroup hostgroups = 1;
+}
+message UpdateHostgroupsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message DeleteHostgroupsRequest {
+	repeated uint32 ids = 1;
+}
+message DeleteHostgroupsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+}
+
+message GetHostgroupsRequest {
+	uint32 id = 1;
+}
+message GetHostgroupsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	Hostgroup hostgroup = 4;
+}
+
+message ListHostgroupsRequest {
+	uint32 page = 1;
+	uint32 page_size = 2;
+	repeated uint32 ids = 3;
+	repeated string names = 4;
+	repeated uint32 clusters_id = 5;
+	repeated uint32 datacenters_id = 6;
+	repeated uint32 envs_id = 7;
+	repeated uint32 products_id = 8;
+	repeated uint32 teams_id = 9;
+	repeated uint32 features_id = 10;
+	repeated uint32 tags_id = 11;
+	repeated uint32 share_products_id = 12;
+	repeated uint32 share_teams_id = 13;
+}
+
+message ListHostgroupsReply {
+	string message = 1;
+	int32 code = 2;
+	string action = 3;
+	repeated Hostgroup hostgroups = 4;
+}

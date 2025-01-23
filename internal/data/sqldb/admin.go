@@ -1,13 +1,13 @@
 package sqldb
 
 import (
-	"appix/internal/data/repo"
+	"opspillar/internal/data/repo"
 	"context"
 	"errors"
 
 	"github.com/go-kratos/kratos/v2/log"
 	//  TODO: modify project name
-	// biz "appix/internal/biz"
+	// biz "opspillar/internal/biz"
 )
 
 type AdminRepoGorm struct {

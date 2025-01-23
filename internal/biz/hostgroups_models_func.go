@@ -1,7 +1,7 @@
 package biz
 
 import (
-	"appix/internal/data/repo"
+	"opspillar/internal/data/repo"
 	"fmt"
 )
 

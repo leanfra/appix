@@ -3,12 +3,12 @@ package service
 import (
 	"context"
 
-	pb "appix/api/appix/v1"
+	pb "opspillar/api/opspillar/v1"
 
 	"github.com/go-kratos/kratos/v2/log"
 
 	//  TODO: modify project name
-	biz "appix/internal/biz"
+	biz "opspillar/internal/biz"
 )
 
 type AdminService struct {

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"appix/internal/data"
+	"opspillar/internal/data"
 	"context"
 	"strings"
 
@@ -25,7 +25,7 @@ func JWTMiddleware(opt JWTMiddlewareOption) middleware.Middleware {
 
 			// Skip JWT check for login endpoint
 			if tr, ok := transport.FromServerContext(ctx); ok {
-				if tr.Operation() == "/api.appix.v1.Admin/Login" {
+				if tr.Operation() == "/api.opspillar.v1.Admin/Login" {
 					return handler(ctx, req)
 				}
 			}

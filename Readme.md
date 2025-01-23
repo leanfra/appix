@@ -1,12 +1,12 @@
-# Appix
+# OpsPillar
 
-[![Go](https://github.com/leanfra/appix/actions/workflows/go.yml/badge.svg)](https://github.com/leanfra/appix/actions/workflows/go.yml)
+[![Go](https://github.com/leanfra/opspillar/actions/workflows/go.yml/badge.svg)](https://github.com/leanfra/opspillar/actions/workflows/go.yml)
 
 # Tag
-Appix, Orchestrate, Optimize.
+opspillar, Orchestrate, Optimize.
 
 # Description:
-Appix is an application-centric CMDB designed for orchestrating microservices. I developed it because I wanted to:
+OpsPillar is an application-centric CMDB designed for orchestrating microservices. I developed it because I wanted to:
 
 - help to manage servers with different features and used by different teams or products.
 - help to manage the applications deployments on kubernetes. Simplify the server selection for products and developer teams.
@@ -37,7 +37,7 @@ Appix is an application-centric CMDB designed for orchestrating microservices. I
 
 ## Concepts
 
-- Application and Hostgroup are the forcus items managed by Appix.
+- Application and Hostgroup are the forcus items managed by OpsPillar.
 - Features are used to describe the application's requirements and hostgroups can provide.
 - Application's matched Hostgroups must have the same Team and Product, and Application's Features must be subset of Hostgroup's Features. 
 - Teams, Products, Environments, Datacenters, Clusters are used to describe the Application and Hostgroups.
@@ -56,13 +56,13 @@ docker run -it \
     -v `pwd`/database:/data/database \
     -p 9000:9000 \
     -p 8000:8000 \
-    appix:v1
+    opspillar:v1
 ```
 
 ## Run cli
 
 ```
-$ appix-cli -h
+$ opspillar-cli -h
 ```
 
 ## examples
@@ -72,7 +72,7 @@ $ appix-cli -h
 - get all applications
 
 ```
-❯ ./appix-cli get apps
+❯ ./opspillar-cli get apps
 +----+------+----------------------+-------+----------+---------+-------+-----------+----------+------------+
 | ID | Name |     Description      | Owner | Stateful | Product | Team  | Features  |   Tags   | Hostgroups |
 +----+------+----------------------+-------+----------+---------+-------+-----------+----------+------------+
@@ -86,7 +86,7 @@ $ appix-cli -h
 - get all hostgroups
 
 ```
-❯ ./appix-cli get hg
+❯ ./opspillar-cli get hg
 +----+------------+---------------------+---------+--------------+-----+---------+-------+-----------+------+---------------+------------+
 | ID |    Name    |     Description     | Cluster |  Datacenter  | Env | Product | Team  | Features  | Tags | ShareProducts | ShareTeams |
 +----+------------+---------------------+---------+--------------+-----+---------+-------+-----------+------+---------------+------------+
