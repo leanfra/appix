@@ -1,10 +1,13 @@
 package repo
 
-import "context"
+import (
+	"context"
+)
 
 const ApplicationTable = "applications"
 
 type Application struct {
+	ChangeInfo
 	Id          uint32 `gorm:"primaryKey;autoIncrement"`
 	Name        string `gorm:"type:varchar(255);index:idx_app_name_env,unique"`
 	Description string `gorm:"type:varchar(255);"`

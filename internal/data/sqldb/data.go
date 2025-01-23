@@ -1,10 +1,10 @@
 package sqldb
 
 import (
-	"opspillar/internal/conf"
-	"opspillar/internal/data/repo"
 	"errors"
 	"fmt"
+	"opspillar/internal/conf"
+	"opspillar/internal/data/repo"
 	"strings"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -100,22 +100,26 @@ func validateData(data *DataGorm) error {
 }
 
 func initTable(db *gorm.DB, model interface{}, table string) error {
-	m := db.Migrator()
-
-	if !m.HasTable(table) {
-		log.Warnf("missing table %s", table)
-		return db.AutoMigrate(model)
+	//m := db.Migrator()
+	err := db.AutoMigrate(model)
+	if err != nil {
+		return err
 	}
 
-	if !m.HasColumn(&repo.Application{}, "owner_id") {
-		m.AddColumn(&repo.Application{}, "owner_id")
-	}
+	//if !m.HasTable(table) {
+	//	log.Warnf("missing table %s", table)
+	//	return db.AutoMigrate(model)
+	//}
 
-	if !m.HasColumn(&repo.Team{}, "leader_id") {
-		m.AddColumn(&repo.Team{}, "leader_id")
-	}
+	//if !m.HasColumn(&repo.Application{}, "owner_id") {
+	//	m.AddColumn(&repo.Application{}, "owner_id")
+	//}
 
-	log.Infof("exists table %s", table)
+	//if !m.HasColumn(&repo.Team{}, "leader_id") {
+	//	m.AddColumn(&repo.Team{}, "leader_id")
+	//}
+
+	log.Infof("migrate table %s", table)
 	return nil
 }
 

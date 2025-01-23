@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -209,6 +210,10 @@ Examples:
 				Features:    make([]string, len(app.FeaturesId)),
 				Tags:        make([]string, len(app.TagsId)),
 				Hostgroups:  make([]string, len(app.HostgroupsId)),
+				CreatedAt:   app.CreatedAt,
+				CreatedBy:   app.CreatedBy,
+				UpdatedAt:   app.UpdatedAt,
+				UpdatedBy:   app.UpdatedBy,
 			}
 
 			// Use cached product name
@@ -250,7 +255,7 @@ Examples:
 			table.SetHeader([]string{
 				"ID", "Name", "Description", "Owner", "Stateful",
 				"Product", "Team",
-				"Features", "Tags", "Hostgroups",
+				"Features", "Tags", "Hostgroups", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt",
 			})
 			table.SetAutoFormatHeaders(false)
 			for _, app := range readableApps {
@@ -265,6 +270,10 @@ Examples:
 					strings.Join(app.Features, ", "),
 					strings.Join(app.Tags, ", "),
 					strings.Join(app.Hostgroups, ", "),
+					app.CreatedBy,
+					time.Unix(app.CreatedAt, 0).Local().Format("2006-01-02 15:04:05"),
+					app.UpdatedBy,
+					time.Unix(app.UpdatedAt, 0).Local().Format("2006-01-02 15:04:05"),
 				})
 			}
 			table.Render()
@@ -284,12 +293,20 @@ Examples:
 					"Team:        %s\n"+
 					"Features:    %s\n"+
 					"Tags:        %s\n"+
-					"Hostgroups:  %s\n\n",
+					"Hostgroups:  %s\n"+
+					"CreatedBy:   %s\n"+
+					"CreatedAt:   %s\n"+
+					"UpdatedBy:   %s\n"+
+					"UpdatedAt:   %s\n\n",
 					app.Id, app.Name, app.Description, app.Owner,
 					app.IsStateful, app.Product, app.Team,
 					strings.Join(app.Features, ", "),
 					strings.Join(app.Tags, ", "),
-					strings.Join(app.Hostgroups, ", "))
+					strings.Join(app.Hostgroups, ", "),
+					app.CreatedBy,
+					time.Unix(app.CreatedAt, 0).Local().Format("2006-01-02 15:04:05"),
+					app.UpdatedBy,
+					time.Unix(app.UpdatedAt, 0).Local().Format("2006-01-02 15:04:05"))
 			}
 		default:
 			fmt.Println("unknown format")

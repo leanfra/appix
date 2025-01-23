@@ -1,8 +1,10 @@
 package biz
 
 import (
-	"opspillar/internal/data/repo"
+	"context"
 	"errors"
+	"opspillar/internal/data"
+	"opspillar/internal/data/repo"
 	"regexp"
 	"strings"
 
@@ -123,4 +125,20 @@ func ValidateCode(code string) error {
 		return errors.New("code invalid")
 	}
 	return nil
+}
+
+func GetCurrentUser(ctx context.Context) (string, error) {
+	v := ctx.Value(data.CtxUserName)
+	usr, ok := v.(string)
+	if ok {
+		return usr, nil
+	}
+	return "", errors.New("current user not found")
+}
+
+type ChangeInfo struct {
+	CreatedBy string
+	UpdatedBy string
+	CreatedAt int64
+	UpdatedAt int64
 }

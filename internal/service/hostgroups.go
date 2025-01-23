@@ -212,6 +212,10 @@ func toPbHostgroup(bizHostgroup *biz.Hostgroup) *pb.Hostgroup {
 		TagsId:          bizHostgroup.TagsId,
 		ShareProductsId: bizHostgroup.ShareProductsId,
 		ShareTeamsId:    bizHostgroup.ShareTeamsId,
+		CreatedAt:       bizHostgroup.CreatedAt,
+		CreatedBy:       bizHostgroup.CreatedBy,
+		UpdatedAt:       bizHostgroup.UpdatedAt,
+		UpdatedBy:       bizHostgroup.UpdatedBy,
 	}
 }
 

@@ -1,8 +1,8 @@
 package biz
 
 import (
-	"opspillar/internal/data/repo"
 	"fmt"
+	"opspillar/internal/data/repo"
 )
 
 func (f *Hostgroup) Validate(isNew bool) error {
@@ -106,6 +106,12 @@ func ToBizHostgroup(t *repo.Hostgroup) (*Hostgroup, error) {
 		EnvId:        t.EnvId,
 		ProductId:    t.ProductId,
 		TeamId:       t.TeamId,
+		ChangeInfo: ChangeInfo{
+			CreatedAt: t.CreatedAt,
+			UpdatedAt: t.UpdatedAt,
+			CreatedBy: t.CreatedBy,
+			UpdatedBy: t.UpdatedBy,
+		},
 	}, nil
 }
 

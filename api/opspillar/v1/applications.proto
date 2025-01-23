@@ -58,6 +58,10 @@ message Application {
 	repeated uint32 features_id = 9;
 	repeated uint32 tags_id = 10;
 	repeated uint32 hostgroups_id = 12;
+	int64 created_at = 14;
+	int64 updated_at = 15;
+	string created_by = 16;
+	string updated_by = 17;
 }
 
 // Application readable
@@ -72,6 +76,10 @@ message ApplicationReadable {
 	repeated string features = 9;
 	repeated string tags = 10;
 	repeated string hostgroups = 12;
+	int64 created_at = 14;
+	int64 updated_at = 15;
+	string created_by = 16;
+	string updated_by = 17;
 }
 
 message CreateApplicationsRequest {

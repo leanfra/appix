@@ -1,10 +1,11 @@
 package biz
 
 import (
-	"opspillar/internal/data"
-	"opspillar/internal/data/repo"
 	"context"
 	"fmt"
+	"opspillar/internal/data"
+	"opspillar/internal/data/repo"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -289,6 +290,11 @@ func (s *HostgroupsUsecase) CreateHostgroups(ctx context.Context, hgs []*Hostgro
 	if err := s.validate(true, hgs); err != nil {
 		return err
 	}
+
+	curUserName, err := GetCurrentUser(ctx)
+	if err != nil {
+		return err
+	}
 	return s.txm.RunInTX(func(tx repo.TX) error {
 		if err := s.enforce(ctx, tx, hgs); err != nil {
 			return err
@@ -303,6 +309,10 @@ func (s *HostgroupsUsecase) CreateHostgroups(ctx context.Context, hgs []*Hostgro
 			if err != nil {
 				return err
 			}
+			dbhg.CreatedAt = time.Now().Unix()
+			dbhg.CreatedBy = curUserName
+			dbhg.UpdatedAt = time.Now().Unix()
+			dbhg.UpdatedBy = curUserName
 
 			if err := s.hgrepo.CreateHostgroups(ctx, tx, []*repo.Hostgroup{dbhg}); err != nil {
 				return err
@@ -431,9 +441,17 @@ func (s *HostgroupsUsecase) UpdateHostgroups(ctx context.Context, hgs []*Hostgro
 	if err := s.validate(false, hgs); err != nil {
 		return err
 	}
+	curUserName, err := GetCurrentUser(ctx)
+	if err != nil {
+		return err
+	}
 	_hgs, err := ToDBHostgroups(hgs)
 	if err != nil {
 		return err
+	}
+	for _, hg := range _hgs {
+		hg.UpdatedAt = time.Now().Unix()
+		hg.UpdatedBy = curUserName
 	}
 
 	return s.txm.RunInTX(func(tx repo.TX) error {

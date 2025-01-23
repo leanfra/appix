@@ -1,11 +1,11 @@
 package biz_test
 
 import (
+	"context"
+	"errors"
 	"opspillar/internal/biz"
 	"opspillar/internal/data"
 	"opspillar/internal/data/repo"
-	"context"
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -37,17 +37,49 @@ func TestCreateHostgroup(t *testing.T) {
 		prdrepo, ahrepo, authzrepo, adminrepo, nil, txm)
 
 	// bad field
-	bad_field := []*biz.Hostgroup{
-		{0, "", "desc", 1, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{0, "name", "desc", 0, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{0, "name", "desc", 1, 0, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{0, "name", "desc", 1, 1, 0, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{0, "name", "desc", 1, 1, 1, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{0, "name", "desc", 1, 1, 1, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
+	bad_fields := []string{
+		"name",
+		"cluster_id",
+		"datacenter_id",
+		"env_id",
+		"product_id",
+		"team_id",
 	}
 
-	for _, bc := range bad_field {
-		err := usecase.CreateHostgroups(ctx, []*biz.Hostgroup{bc})
+	_hg := biz.Hostgroup{
+		Id:              10,
+		Description:     "desc",
+		ClusterId:       1,
+		DatacenterId:    1,
+		EnvId:           1,
+		ProductId:       1,
+		TeamId:          1,
+		FeaturesId:      []uint32{1, 2},
+		TagsId:          []uint32{1, 2},
+		ShareProductsId: []uint32{2, 3},
+		ShareTeamsId:    []uint32{2, 3},
+		Name:            "name",
+		ChangeInfo:      biz.ChangeInfo{},
+	}
+
+	for _, bc := range bad_fields {
+		bhg := _hg
+		switch bc {
+		case "name":
+			bhg.Name = ""
+		case "cluster_id":
+			bhg.ClusterId = 0
+		case "datacenter_id":
+			bhg.DatacenterId = 0
+		case "env_id":
+			bhg.EnvId = 0
+		case "product_id":
+			bhg.ProductId = 0
+		case "team_id":
+			bhg.TeamId = 0
+		}
+
+		err := usecase.CreateHostgroups(ctx, []*biz.Hostgroup{&bhg})
 		t.Logf("bad field: %v", err)
 		assert.Error(t, err)
 	}
@@ -57,7 +89,7 @@ func TestCreateHostgroup(t *testing.T) {
 	adminrepo.On("GetUsers", ctx, mock.Anything, mock.Anything).Return(&repo.User{
 		2, "admin", "admin", "email", "phone"}, nil)
 	hg := []*biz.Hostgroup{
-		{0, "name", "desc", 1, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
+		&_hg,
 	}
 	authcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything, mock.Anything).Return(false, errors.New("enforce fail"))
 	err := usecase.CreateHostgroups(ctx, hg)
@@ -435,25 +467,58 @@ func TestUpdateHostgroup(t *testing.T) {
 		dcrepo, envrepo, ftrepo, tagrepo, teamrepo,
 		prdrepo, ahrepo, authzrepo, adminrepo, nil, txm)
 
-	// bad field
-	bad_field := []*biz.Hostgroup{
-		{1, "", "desc", 1, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{0, "name", "desc", 1, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{10, "name", "desc", 0, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{10, "name", "desc", 1, 0, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{10, "name", "desc", 1, 1, 0, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{10, "name", "desc", 1, 1, 1, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
-		{10, "name", "desc", 1, 1, 1, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
+	bad_fields := []string{
+		"name",
+		"id",
+		"cluster_id",
+		"datacenter_id",
+		"env_id",
+		"product_id",
+		"team_id",
 	}
 
-	for _, bc := range bad_field {
-		err := usecase.UpdateHostgroups(ctx, []*biz.Hostgroup{bc})
+	_hg := biz.Hostgroup{
+		Id:              10,
+		Description:     "desc",
+		ClusterId:       1,
+		DatacenterId:    1,
+		EnvId:           1,
+		ProductId:       1,
+		TeamId:          1,
+		FeaturesId:      []uint32{1, 2},
+		TagsId:          []uint32{1, 2},
+		ShareProductsId: []uint32{2, 3},
+		ShareTeamsId:    []uint32{2, 3},
+		Name:            "name",
+		ChangeInfo:      biz.ChangeInfo{},
+	}
+
+	for _, bc := range bad_fields {
+		bhg := _hg
+		switch bc {
+		case "name":
+			bhg.Name = ""
+		case "id":
+			bhg.Id = 0
+		case "cluster_id":
+			bhg.ClusterId = 0
+		case "datacenter_id":
+			bhg.DatacenterId = 0
+		case "env_id":
+			bhg.EnvId = 0
+		case "product_id":
+			bhg.ProductId = 0
+		case "team_id":
+			bhg.TeamId = 0
+		}
+
+		err := usecase.UpdateHostgroups(ctx, []*biz.Hostgroup{&bhg})
 		t.Logf("bad field: %v", err)
 		assert.Error(t, err)
 	}
 
 	hg := []*biz.Hostgroup{
-		{11, "name", "desc", 1, 1, 1, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}, []uint32{2, 3}},
+		&_hg,
 	}
 
 	teamrepo.On("GetTeams", ctx, mock.Anything, mock.Anything).Return(&repo.Team{
@@ -809,7 +874,20 @@ func TestDeleteHostgroups(t *testing.T) {
 	adminrepo.On("GetUsers", ctx, mock.Anything, mock.Anything).Return(&repo.User{
 		2, "admin", "admin", "email", "phone"}, nil)
 	hgrepo.On("ListHostgroups", ctx, mock.Anything, mock.Anything).Return([]*repo.Hostgroup{
-		{1, "hg1", "desc", 1, 1, 1, 1, 2}}, nil)
+		&repo.Hostgroup{
+			Id:           1,
+			Name:         "hg1",
+			Description:  "desc",
+			ClusterId:    1,
+			DatacenterId: 1,
+			EnvId:        1,
+			ProductId:    1,
+			TeamId:       2,
+			ChangeInfo: repo.ChangeInfo{
+				CreatedBy: "admin",
+				UpdatedBy: "admin",
+			},
+		}}, nil)
 	// enforce fail
 	authzcall := authzrepo.On("Enforce", ctx, mock.Anything, mock.Anything).Return(false, errors.New("enforce fail"))
 	err := usecase.DeleteHostgroups(ctx, []uint32{1})
@@ -1025,6 +1103,12 @@ func TestListHostgroup(t *testing.T) {
 			TagsId:          []uint32{1, 2},
 			ShareProductsId: []uint32{1, 2},
 			ShareTeamsId:    []uint32{1, 2},
+			ChangeInfo: biz.ChangeInfo{
+				CreatedAt: 1,
+				UpdatedAt: 1,
+				CreatedBy: "admin",
+				UpdatedBy: "admin",
+			},
 		},
 	}
 
@@ -1038,6 +1122,12 @@ func TestListHostgroup(t *testing.T) {
 			EnvId:        uint32(1),
 			ProductId:    uint32(1),
 			TeamId:       uint32(1),
+			ChangeInfo: repo.ChangeInfo{
+				CreatedAt: 1,
+				UpdatedAt: 1,
+				CreatedBy: "admin",
+				UpdatedBy: "admin",
+			},
 		},
 	}
 

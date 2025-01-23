@@ -1,6 +1,7 @@
 package biz
 
 type Hostgroup struct {
+	ChangeInfo
 	Id              uint32
 	Name            string
 	Description     string

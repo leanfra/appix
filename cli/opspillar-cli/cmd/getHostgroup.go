@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -267,6 +268,10 @@ Examples:
 				Tags:          make([]string, len(hg.TagsId)),
 				ShareProducts: make([]string, len(hg.ShareProductsId)),
 				ShareTeams:    make([]string, len(hg.ShareTeamsId)),
+				CreatedAt:     hg.CreatedAt,
+				CreatedBy:     hg.CreatedBy,
+				UpdatedAt:     hg.UpdatedAt,
+				UpdatedBy:     hg.UpdatedBy,
 			}
 
 			readable.Cluster = clusterCache[hg.ClusterId]
@@ -303,7 +308,8 @@ Examples:
 			fmt.Println(string(data))
 		case "table":
 			table := tablewriter.NewWriter(os.Stdout)
-			table.SetHeader([]string{"ID", "Name", "Description", "Cluster", "Datacenter", "Env", "Product", "Team", "Features", "Tags", "ShareProducts", "ShareTeams"})
+			table.SetHeader([]string{"ID", "Name", "Description", "Cluster", "Datacenter", "Env",
+				"Product", "Team", "Features", "Tags", "ShareProducts", "ShareTeams", "CreatedBy", "CreatedAt", "UpdatedBy", "UpdatedAt"})
 			table.SetAutoFormatHeaders(false)
 			for _, hg := range readableHostgroups {
 				table.Append([]string{
@@ -319,6 +325,10 @@ Examples:
 					strings.Join(hg.Tags, ", "),
 					strings.Join(hg.ShareProducts, ", "),
 					strings.Join(hg.ShareTeams, ", "),
+					hg.CreatedBy,
+					time.Unix(hg.CreatedAt, 0).Local().Format("2006-01-02 15:04:05"),
+					hg.UpdatedBy,
+					time.Unix(hg.UpdatedAt, 0).Local().Format("2006-01-02 15:04:05"),
 				})
 			}
 			table.Render()
@@ -340,6 +350,10 @@ Examples:
 				fmt.Printf("Tags:          [%s]\n", strings.Join(hg.Tags, ", "))
 				fmt.Printf("ShareProducts: [%s]\n", strings.Join(hg.ShareProducts, ", "))
 				fmt.Printf("ShareTeams:    [%s]\n", strings.Join(hg.ShareTeams, ", "))
+				fmt.Printf("CreatedBy:     %s\n", hg.CreatedBy)
+				fmt.Printf("CreatedAt:     %s\n", time.Unix(hg.CreatedAt, 0).Local().Format("2006-01-02 15:04:05"))
+				fmt.Printf("UpdatedBy:     %s\n", hg.UpdatedBy)
+				fmt.Printf("UpdatedAt:     %s\n", time.Unix(hg.UpdatedAt, 0).Local().Format("2006-01-02 15:04:05"))
 				fmt.Println()
 			}
 		default:

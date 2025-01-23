@@ -21,6 +21,10 @@ var fakeHostgroups = []*repo.Hostgroup{
 		EnvId:        501,
 		ProductId:    101,
 		TeamId:       401,
+		ChangeInfo: repo.ChangeInfo{
+			CreatedBy: "test",
+			UpdatedBy: "test",
+		},
 	},
 	{
 		Name:         "hostgroup2",
@@ -30,6 +34,10 @@ var fakeHostgroups = []*repo.Hostgroup{
 		EnvId:        501,
 		ProductId:    101,
 		TeamId:       401,
+		ChangeInfo: repo.ChangeInfo{
+			CreatedBy: "test",
+			UpdatedBy: "test",
+		},
 	},
 	{
 		Name:         "hostgroup3",
@@ -39,6 +47,10 @@ var fakeHostgroups = []*repo.Hostgroup{
 		EnvId:        303,
 		ProductId:    403,
 		TeamId:       503,
+		ChangeInfo: repo.ChangeInfo{
+			CreatedBy: "test",
+			UpdatedBy: "test",
+		},
 	},
 }
 
@@ -52,6 +64,9 @@ func getFakeHostgroups() []*repo.Hostgroup {
 			DatacenterId: app.DatacenterId,
 			ClusterId:    app.ClusterId,
 			TeamId:       app.TeamId,
+			ChangeInfo: repo.ChangeInfo{
+				UpdatedBy: "test",
+			},
 		}
 	}
 	return data
