@@ -22,4 +22,4 @@ EXPOSE 9000
 VOLUME /data/conf
 VOLUME /data/database
 
-CMD ["./appix", "-conf", "/data/conf/config.yaml"]
+CMD ["./opspillar", "-conf", "/data/conf/config.yaml"]
