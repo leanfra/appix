@@ -1,11 +1,11 @@
 package biz_test
 
 import (
+	"context"
+	"errors"
 	"opspillar/internal/biz"
 	"opspillar/internal/data"
 	"opspillar/internal/data/repo"
-	"context"
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -33,20 +33,44 @@ func TestCreateApp(t *testing.T) {
 		hgrepo, hfrepo, authzrepo, adminrepo, nil, txm)
 
 	// 测试字段验证
-	bad_field := []*biz.Application{
-		{0, "", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{0, "name", "desc", 0, false, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{0, "name", "desc", 10, false, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+	_app := biz.Application{
+		Id:           1,
+		Name:         "test-app",
+		Description:  "desc",
+		OwnerId:      10,
+		IsStateful:   false,
+		ProductId:    1,
+		TeamId:       1,
+		FeaturesId:   []uint32{1, 2},
+		TagsId:       []uint32{1, 2},
+		HostgroupsId: []uint32{2, 3},
+		ChangeInfo:   biz.ChangeInfo{},
 	}
-
-	for _, bc := range bad_field {
-		err := usecase.CreateApplications(ctx, []*biz.Application{bc})
-		t.Logf("bad field: %v", err)
+	bad_fields := []string{
+		"name",
+		"ownerid",
+		"productid",
+		"teamid",
+	}
+	for _, bc := range bad_fields {
+		bad_app := _app
+		switch bc {
+		case "name":
+			bad_app.Name = ""
+		case "ownerid":
+			bad_app.OwnerId = 0
+		case "productid":
+			bad_app.ProductId = 0
+		case "teamid":
+			bad_app.TeamId = 0
+		}
+		err := usecase.CreateApplications(ctx, []*biz.Application{&bad_app})
+		t.Logf("bad field: %s, %v", bc, err)
 		assert.Error(t, err)
 	}
 
 	app := []*biz.Application{
-		{0, "test-app", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		&_app,
 	}
 
 	ctx = context.WithValue(ctx, data.CtxUserName, "demouser")
@@ -321,21 +345,44 @@ func TestUpdateApp(t *testing.T) {
 		hgrepo, hfrepo, authzrepo, adminrepo, nil, txm)
 
 	// bad field
-	bad_field := []*biz.Application{
-		{0, "name", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "name", "desc", 0, false, 0, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
-		{10, "name", "desc", 10, false, 1, 0, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+	_app := biz.Application{
+		Id:           1,
+		Name:         "test-app",
+		Description:  "desc",
+		OwnerId:      10,
+		IsStateful:   false,
+		ProductId:    1,
+		TeamId:       1,
+		FeaturesId:   []uint32{1, 2},
+		TagsId:       []uint32{1, 2},
+		HostgroupsId: []uint32{2, 3},
+		ChangeInfo:   biz.ChangeInfo{},
 	}
-
-	for _, bc := range bad_field {
-		err := usecase.UpdateApplications(ctx, []*biz.Application{bc})
+	bad_fields := []string{
+		"name",
+		"ownerid",
+		"productid",
+		"teamid",
+	}
+	for _, bc := range bad_fields {
+		bad_app := _app
+		switch bc {
+		case "name":
+			bad_app.Name = ""
+		case "ownerid":
+			bad_app.OwnerId = 0
+		case "productid":
+			bad_app.ProductId = 0
+		case "teamid":
+			bad_app.TeamId = 0
+		}
+		err := usecase.UpdateApplications(ctx, []*biz.Application{&bad_app})
 		t.Logf("bad field: %v", err)
 		assert.Error(t, err)
 	}
 
 	app := []*biz.Application{
-		{10, "test-app", "desc", 10, false, 1, 1, []uint32{1, 2}, []uint32{1, 2}, []uint32{2, 3}},
+		&_app,
 	}
 
 	ctx = context.WithValue(ctx, data.CtxUserName, "demouser")
@@ -632,6 +679,12 @@ func TestListApplications(t *testing.T) {
 			ProductId:   1,
 			IsStateful:  true,
 			OwnerId:     10,
+			ChangeInfo: repo.ChangeInfo{
+				CreatedAt: 0,
+				UpdatedAt: 0,
+				CreatedBy: "admin",
+				UpdatedBy: "admin",
+			},
 		},
 		{
 			Id:          2,
@@ -641,6 +694,12 @@ func TestListApplications(t *testing.T) {
 			ProductId:   2,
 			IsStateful:  false,
 			OwnerId:     10,
+			ChangeInfo: repo.ChangeInfo{
+				CreatedAt: 0,
+				UpdatedAt: 0,
+				CreatedBy: "admin",
+				UpdatedBy: "admin",
+			},
 		},
 	}
 	biz_apps := []*biz.Application{
@@ -655,6 +714,12 @@ func TestListApplications(t *testing.T) {
 			TagsId:       []uint32{1, 2},
 			FeaturesId:   []uint32{1, 2},
 			HostgroupsId: []uint32{1, 2},
+			ChangeInfo: biz.ChangeInfo{
+				CreatedAt: 0,
+				UpdatedAt: 0,
+				CreatedBy: "admin",
+				UpdatedBy: "admin",
+			},
 		},
 		{
 			Id:           2,
@@ -667,6 +732,12 @@ func TestListApplications(t *testing.T) {
 			TagsId:       []uint32{1, 2},
 			FeaturesId:   []uint32{1, 2},
 			HostgroupsId: []uint32{1, 2},
+			ChangeInfo: biz.ChangeInfo{
+				CreatedAt: 0,
+				UpdatedAt: 0,
+				CreatedBy: "admin",
+				UpdatedBy: "admin",
+			},
 		},
 	}
 

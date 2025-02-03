@@ -69,6 +69,10 @@ func toPbApp(a *biz.Application) (*pb.Application, error) {
 		FeaturesId:   a.FeaturesId,
 		TagsId:       a.TagsId,
 		HostgroupsId: a.HostgroupsId,
+		CreatedAt:    a.CreatedAt,
+		CreatedBy:    a.CreatedBy,
+		UpdatedAt:    a.UpdatedAt,
+		UpdatedBy:    a.UpdatedBy,
 	}, nil
 }
 

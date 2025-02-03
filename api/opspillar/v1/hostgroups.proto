@@ -56,6 +56,10 @@ message Hostgroup {
 	repeated uint32 tags_id = 10;
 	repeated uint32 share_products_id = 11;
 	repeated uint32 share_teams_id = 12;
+	int64 created_at = 13;
+	int64 updated_at = 14;
+	string created_by = 15;
+	string updated_by = 16;
 }
 
 // Hostgroup readable
@@ -72,6 +76,10 @@ message HostgroupReadable {
 	repeated string tags = 10;
 	repeated string share_products = 11;
 	repeated string share_teams = 12;
+	int64 created_at = 13;
+	int64 updated_at = 14;
+	string created_by = 15;
+	string updated_by = 16;
 }
 
 message CreateHostgroupsRequest {

@@ -1,11 +1,11 @@
 package biz
 
 import (
-	"opspillar/internal/data"
-	"opspillar/internal/data/repo"
 	"context"
 	"errors"
 	"fmt"
+	"opspillar/internal/data/repo"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -230,7 +230,10 @@ func (s *ApplicationsUsecase) validateHostgroupMatch(
 }
 
 func (s *ApplicationsUsecase) enforce(ctx context.Context, tx repo.TX, apps []*Application) error {
-	curUserName := ctx.Value(data.CtxUserName).(string)
+	curUserName, err := GetCurrentUser(ctx)
+	if err != nil {
+		return err
+	}
 	for _, app := range apps {
 		team, err := s.teamrepo.GetTeams(ctx, app.TeamId)
 		if err != nil {
@@ -262,6 +265,11 @@ func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Ap
 		return err
 	}
 
+	curUserName, err := GetCurrentUser(ctx)
+	if err != nil {
+		return err
+	}
+
 	return s.txm.RunInTX(func(tx repo.TX) error {
 
 		if err := s.validateProps(ctx, tx, apps); err != nil {
@@ -278,6 +286,10 @@ func (s *ApplicationsUsecase) CreateApplications(ctx context.Context, apps []*Ap
 			if err != nil {
 				return err
 			}
+			dbapp.CreatedAt = time.Now().UnixMilli()
+			dbapp.UpdatedAt = time.Now().UnixMilli()
+			dbapp.CreatedBy = curUserName
+			dbapp.UpdatedBy = curUserName
 			// create app and get id
 			if err := s.apprepo.CreateApplications(ctx, tx, []*repo.Application{dbapp}); err != nil {
 				return err
@@ -416,9 +428,17 @@ func (s *ApplicationsUsecase) UpdateApplications(ctx context.Context, apps []*Ap
 	if err := s.validate(false, apps); err != nil {
 		return err
 	}
+	curUserName, err := GetCurrentUser(ctx)
+	if err != nil {
+		return err
+	}
 	_apps, err := ToDBApplications(apps)
 	if err != nil {
 		return err
+	}
+	for _, a := range _apps {
+		a.UpdatedBy = curUserName
+		a.UpdatedAt = time.Now().UnixMilli()
 	}
 
 	return s.txm.RunInTX(func(tx repo.TX) error {

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.8.2
 // - protoc             v3.12.4
-// source: opspillar/v1/hostgroups.proto
+// source: api/opspillar/v1/hostgroups.proto
 
 package v1
 

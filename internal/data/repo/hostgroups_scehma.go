@@ -1,10 +1,13 @@
 package repo
 
-import "context"
+import (
+	"context"
+)
 
 const HostgroupTable = "hostgroups"
 
 type Hostgroup struct {
+	ChangeInfo
 	Id           uint32 `gorm:"primaryKey;autoIncrement"`
 	Name         string `gorm:"type:varchar(255);index:idx_hg_name,unique"`
 	Description  string `gorm:"type:varchar(255);"`

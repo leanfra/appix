@@ -1,8 +1,8 @@
 package biz
 
 import (
-	"opspillar/internal/data/repo"
 	"fmt"
+	"opspillar/internal/data/repo"
 )
 
 func (m *Application) Validate(isNew bool) error {
@@ -74,6 +74,7 @@ func ToDBApplication(app *Application) (*repo.Application, error) {
 		return nil, nil
 	}
 	return &repo.Application{
+		ChangeInfo:  repo.ChangeInfo{},
 		Id:          app.Id,
 		Name:        app.Name,
 		Description: app.Description,
@@ -108,6 +109,12 @@ func ToBizApplication(t *repo.Application) (*Application, error) {
 		IsStateful:  t.IsStateful,
 		ProductId:   t.ProductId,
 		TeamId:      t.TeamId,
+		ChangeInfo: ChangeInfo{
+			CreatedAt: t.CreatedAt,
+			UpdatedAt: t.UpdatedAt,
+			CreatedBy: t.CreatedBy,
+			UpdatedBy: t.UpdatedBy,
+		},
 	}, nil
 }
 

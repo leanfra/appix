@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.12.4
-// source: opspillar/v1/hostgroups.proto
+// source: api/opspillar/v1/hostgroups.proto
 
 package v1
 
@@ -269,5 +269,5 @@ var Hostgroups_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "opspillar/v1/hostgroups.proto",
+	Metadata: "api/opspillar/v1/hostgroups.proto",
 }
